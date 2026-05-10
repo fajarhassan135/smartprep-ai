@@ -88,7 +88,7 @@ export default function DashboardPage() {
           <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
           <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
           <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-          {/* Dark toggle */}
+          <a href="/profile" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Profile</a>
           <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
               <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
@@ -175,7 +175,6 @@ export default function DashboardPage() {
                       {activity.score}%
                     </div>
                   </div>
-                  {/* Progress bar */}
                   <div style={{ height: 4, backgroundColor: border, borderRadius: 20 }}>
                     <div style={{ height: 4, width: `${activity.score}%`, backgroundColor: activity.score >= 80 ? "#639922" : activity.score >= 60 ? C.orange : "#E24B4A", borderRadius: 20, transition: "width 0.5s" }} />
                   </div>

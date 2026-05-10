@@ -17,6 +17,8 @@ const C = {
 export default function DashboardPage() {
   const [dark, setDark] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   const bg = dark ? C.kite : C.snow;
   const bgMid = dark ? C.kiteDeep : C.snowMist;
@@ -30,9 +32,20 @@ export default function DashboardPage() {
         window.location.href = "/login";
       } else {
         setUser(data.user);
+        fetchStats(data.user.id);
       }
     });
   }, []);
+
+  async function fetchStats(userId: string) {
+    const { data } = await supabase
+      .from("quiz_sessions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("completed_at", { ascending: false });
+    if (data) setSessions(data);
+    setLoadingStats(false);
+  }
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -54,16 +67,37 @@ export default function DashboardPage() {
     setDark((d) => !d);
   }
 
+  // REAL STATS
+  const totalQuizzes = sessions.length;
+  const avgScore = sessions.length
+    ? Math.round(sessions.reduce((acc, s) => acc + (s.score / s.total_questions) * 100, 0) / sessions.length)
+    : 0;
+  const bestScore = sessions.length
+    ? Math.round(Math.max(...sessions.map((s) => (s.score / s.total_questions) * 100)))
+    : 0;
+
+  // STREAK — count consecutive days
+  function calcStreak() {
+    if (!sessions.length) return 0;
+    const dates = [...new Set(sessions.map((s) => new Date(s.completed_at).toDateString()))];
+    let streak = 1;
+    for (let i = 0; i < dates.length - 1; i++) {
+      const d1 = new Date(dates[i]);
+      const d2 = new Date(dates[i + 1]);
+      const diff = (d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24);
+      if (diff === 1) streak++;
+      else break;
+    }
+    return streak;
+  }
+
+  const streak = calcStreak();
+  const recentSessions = sessions.slice(0, 3);
+
   const subjects = [
     { icon: "📐", title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
     { icon: "📖", title: "English", board: "Pak Board", questions: 320, color: "rgba(160,201,203,0.2)" },
     { icon: "💻", title: "Computer Science", board: "Cambridge", questions: 290, color: "rgba(115,54,53,0.1)" },
-  ];
-
-  const recentActivity = [
-    { subject: "Mathematics", type: "MCQ Quiz", score: 85, total: 100, time: "2 hours ago" },
-    { subject: "English", type: "Short Answer", score: 72, total: 100, time: "Yesterday" },
-    { subject: "Computer Science", type: "MCQ Quiz", score: 91, total: 100, time: "2 days ago" },
   ];
 
   if (!user) {
@@ -88,6 +122,7 @@ export default function DashboardPage() {
           <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
           <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
           <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
+          <a href="/history" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>History</a>
           <a href="/profile" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Profile</a>
           <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
@@ -111,13 +146,13 @@ export default function DashboardPage() {
           <p style={{ fontSize: 14, color: sub }}>Ready to study? Pick up where you left off.</p>
         </div>
 
-        {/* STATS ROW */}
+        {/* REAL STATS ROW */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 48 }}>
           {[
-            { label: "Quizzes taken", value: "24", icon: "📝" },
-            { label: "Avg score", value: "78%", icon: "📊" },
-            { label: "Study streak", value: "5 days", icon: "🔥" },
-            { label: "Rank in class", value: "#3", icon: "🏆" },
+            { label: "Quizzes taken", value: loadingStats ? "..." : totalQuizzes.toString(), icon: "📝" },
+            { label: "Avg score", value: loadingStats ? "..." : totalQuizzes ? `${avgScore}%` : "N/A", icon: "📊" },
+            { label: "Best score", value: loadingStats ? "..." : totalQuizzes ? `${bestScore}%` : "N/A", icon: "🏆" },
+            { label: "Study streak", value: loadingStats ? "..." : `${streak} day${streak !== 1 ? "s" : ""}`, icon: "🔥" },
           ].map((stat) => (
             <div key={stat.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px 24px", border: `1px solid ${border}` }}>
               <div style={{ fontSize: 24, marginBottom: 12 }}>{stat.icon}</div>
@@ -133,7 +168,7 @@ export default function DashboardPage() {
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 500, color: text, letterSpacing: "-0.02em" }}>Your subjects</h2>
-              <a href="/subjects" style={{ fontSize: 12, color: C.orange, textDecoration: "none" }}>View all →</a>
+              <a href="/past-papers" style={{ fontSize: 12, color: C.orange, textDecoration: "none" }}>View all →</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {subjects.map((subject) => (
@@ -157,29 +192,44 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* RECENT ACTIVITY */}
+          {/* REAL RECENT ACTIVITY */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 500, color: text, letterSpacing: "-0.02em" }}>Recent activity</h2>
               <a href="/history" style={{ fontSize: 12, color: C.orange, textDecoration: "none" }}>View all →</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {recentActivity.map((activity, i) => (
-                <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", backdropFilter: "blur(16px)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-                    <div>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{activity.subject}</div>
-                      <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{activity.type} · {activity.time}</div>
-                    </div>
-                    <div style={{ fontSize: 16, fontWeight: 500, color: activity.score >= 80 ? "#639922" : activity.score >= 60 ? C.orange : "#E24B4A" }}>
-                      {activity.score}%
-                    </div>
-                  </div>
-                  <div style={{ height: 4, backgroundColor: border, borderRadius: 20 }}>
-                    <div style={{ height: 4, width: `${activity.score}%`, backgroundColor: activity.score >= 80 ? "#639922" : activity.score >= 60 ? C.orange : "#E24B4A", borderRadius: 20, transition: "width 0.5s" }} />
-                  </div>
+              {loadingStats ? (
+                <div style={{ fontSize: 14, color: sub, padding: "20px" }}>Loading...</div>
+              ) : recentSessions.length === 0 ? (
+                <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "32px 20px", textAlign: "center" }}>
+                  <div style={{ fontSize: 32, marginBottom: 12 }}>📝</div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 6 }}>No quizzes yet</div>
+                  <div style={{ fontSize: 12, color: sub, marginBottom: 16 }}>Take your first quiz to see activity here!</div>
+                  <a href="/quiz" style={{ fontSize: 13, fontWeight: 500, color: C.orange, textDecoration: "none" }}>Start a quiz →</a>
                 </div>
-              ))}
+              ) : (
+                recentSessions.map((session, i) => {
+                  const pct = Math.round((session.score / session.total_questions) * 100);
+                  const date = new Date(session.completed_at).toLocaleDateString("en-US", { day: "numeric", month: "short" });
+                  return (
+                    <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", backdropFilter: "blur(16px)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                        <div>
+                          <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{session.subject}</div>
+                          <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{session.mode === "exam" ? "⏱ Exam" : "🧠 Practice"} · {date}</div>
+                        </div>
+                        <div style={{ fontSize: 16, fontWeight: 500, color: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A" }}>
+                          {pct}%
+                        </div>
+                      </div>
+                      <div style={{ height: 4, backgroundColor: border, borderRadius: 20 }}>
+                        <div style={{ height: 4, width: `${pct}%`, backgroundColor: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A", borderRadius: 20, transition: "width 0.5s" }} />
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
 

@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 
 const C = {
@@ -8,8 +10,13 @@ const C = {
 };
 
 export default function ProfilePage() {
-  const [dark, setDark] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
+  const [user, setUser] = useState<User | null>(null);
   const [fullName, setFullName] = useState("");
   const [school, setSchool] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +32,13 @@ export default function ProfilePage() {
   const text = dark ? C.snow : C.kite;
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -91,9 +105,9 @@ export default function ProfilePage() {
 
       {/* NAVBAR */}
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
           Exam<span style={{ color: C.orange }}>Prep</span> AI
-        </a>
+        </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
           <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>

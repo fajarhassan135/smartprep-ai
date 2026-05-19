@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const cleaned = raw.replace(/```json|```/g, "").trim();
     const result = JSON.parse(cleaned);
     return NextResponse.json(result);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

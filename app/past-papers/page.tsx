@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -19,7 +20,12 @@ const papers = [
 ];
 
 export default function PastPapersPage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [selectedBoard, setSelectedBoard] = useState("All");
 
@@ -28,6 +34,13 @@ export default function PastPapersPage() {
   const text = dark ? C.snow : C.kite;
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   const filtered = papers.filter((p) => {
     if (selectedSubject !== "All" && p.subject !== selectedSubject) return false;
@@ -38,7 +51,7 @@ export default function PastPapersPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</a>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
           <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>

@@ -1,5 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 
 const C = {
@@ -14,10 +16,23 @@ const C = {
   aqua: "#A0C9CB",
 };
 
+type QuizSessionRow = {
+  score: number;
+  total_questions: number;
+  completed_at: string;
+  subject: string;
+  mode: string;
+};
+
 export default function DashboardPage() {
-  const [dark, setDark] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [sessions, setSessions] = useState<any[]>([]);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
+  const [user, setUser] = useState<User | null>(null);
+  const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
 
   const bg = dark ? C.kite : C.snow;
@@ -25,6 +40,23 @@ export default function DashboardPage() {
   const text = dark ? C.snow : C.kite;
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+
+  async function fetchStats(userId: string) {
+    const { data } = await supabase
+      .from("quiz_sessions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("completed_at", { ascending: false });
+    if (data) setSessions(data as QuizSessionRow[]);
+    setLoadingStats(false);
+  }
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -37,23 +69,16 @@ export default function DashboardPage() {
     });
   }, []);
 
-  async function fetchStats(userId: string) {
-    const { data } = await supabase
-      .from("quiz_sessions")
-      .select("*")
-      .eq("user_id", userId)
-      .order("completed_at", { ascending: false });
-    if (data) setSessions(data);
-    setLoadingStats(false);
-  }
-
   async function handleLogout() {
     await supabase.auth.signOut();
     window.location.href = "/";
   }
 
   function toggleDark() {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
+    const ctx = new AudioContextClass();
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
     oscillator.connect(gain);
@@ -64,6 +89,7 @@ export default function DashboardPage() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
     oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + 0.1);
+    localStorage.setItem("darkMode", String(!dark));
     setDark((d) => !d);
   }
 
@@ -113,9 +139,9 @@ export default function DashboardPage() {
 
       {/* NAVBAR */}
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
           Exam<span style={{ color: C.orange }}>Prep</span> AI
-        </a>
+        </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <a href="/dashboard" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>Dashboard</a>
           <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>

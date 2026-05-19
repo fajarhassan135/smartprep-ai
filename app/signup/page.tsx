@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
@@ -16,6 +17,12 @@ const C = {
 
 export default function SignupPage() {
   const router = useRouter();
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +30,20 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const bg = dark ? C.kite : C.snow;
+  const text = dark ? C.snow : C.kite;
+  const sub = dark ? C.garnetLight : C.garnet;
+  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const inputBorder = dark ? "rgba(245,244,237,0.15)" : "rgba(53,30,28,0.15)";
+  const inputBg = dark ? "rgba(255,255,255,0.06)" : "#fff";
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   async function handleSignup() {
     setLoading(true);
@@ -41,13 +62,23 @@ export default function SignupPage() {
     setLoading(false);
   }
 
+  function toggleDark() {
+    localStorage.setItem("darkMode", String(!dark));
+    setDark((d) => !d);
+  }
+
   if (success) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: C.snow, fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s", position: "relative" }}>
+        <button type="button" onClick={toggleDark} style={{ position: "absolute", top: 24, right: 40, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
+            <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+          </div>
+        </button>
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
           <div style={{ fontSize: 48, marginBottom: 20 }}>📬</div>
-          <h2 style={{ fontSize: 28, fontWeight: 500, color: C.kite, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
-          <p style={{ fontSize: 14, color: C.garnet, lineHeight: 1.7 }}>
+          <h2 style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
+          <p style={{ fontSize: 14, color: sub, lineHeight: 1.7 }}>
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
           </p>
           <a href="/login" style={{ display: "inline-block", marginTop: 28, padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
@@ -59,24 +90,31 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: C.snow, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid rgba(53,30,28,0.08)` }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => router.back()} style={{ background: "none", border: "none", color: "#733635", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
+          <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
           </button>
-          <a href="/" style={{ fontSize: 18, color: C.kite, textDecoration: "none", lineHeight: 1 }}>
+          <Link href="/" style={{ fontSize: 18, color: text, textDecoration: "none", lineHeight: 1 }}>
             ⌂
-          </a>
-          <a href="/" style={{ fontSize: 15, fontWeight: 500, color: C.kite, textDecoration: "none", letterSpacing: "-0.03em" }}>
+          </Link>
+          <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             Exam<span style={{ color: C.orange }}>Prep</span> AI
+          </Link>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
+              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+            </div>
+          </button>
+          <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>
+            Already have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Log in</span>
           </a>
         </div>
-        <a href="/login" style={{ fontSize: 13, color: C.garnet, textDecoration: "none" }}>
-          Already have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Log in</span>
-        </a>
       </nav>
 
       {/* FORM */}
@@ -86,8 +124,8 @@ export default function SignupPage() {
           {/* HEADER */}
           <div style={{ marginBottom: 40 }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Get started free</p>
-            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: C.kite, marginBottom: 8 }}>Create account</h1>
-            <p style={{ fontSize: 14, color: C.garnet, lineHeight: 1.6 }}>Join thousands of students preparing smarter.</p>
+            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
+            <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Join thousands of students preparing smarter.</p>
           </div>
 
           {/* ERROR */}
@@ -99,49 +137,49 @@ export default function SignupPage() {
 
           {/* NAME */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>Full name</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Full name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Fajar Warriach"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
           {/* EMAIL */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>Email</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
           {/* SCHOOL */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>School <span style={{ color: C.garnetLight, fontWeight: 400 }}>(optional)</span></label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>School <span style={{ color: sub, fontWeight: 400 }}>(optional)</span></label>
             <input
               type="text"
               value={school}
               onChange={(e) => setSchool(e.target.value)}
               placeholder="Your school name"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
           {/* PASSWORD */}
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>Password</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 6 characters"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -154,7 +192,7 @@ export default function SignupPage() {
             {loading ? "Creating account..." : "Create account"}
           </button>
 
-          <p style={{ textAlign: "center", fontSize: 12, color: C.garnetLight, marginTop: 24, lineHeight: 1.6 }}>
+          <p style={{ textAlign: "center", fontSize: 12, color: sub, marginTop: 24, lineHeight: 1.6 }}>
             Already have an account?{" "}
             <a href="/login" style={{ color: C.orange, textDecoration: "none", fontWeight: 500 }}>Log in</a>
           </p>

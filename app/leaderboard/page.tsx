@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -18,7 +19,12 @@ const leaderboardData = [
 ];
 
 export default function LeaderboardPage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [filter, setFilter] = useState<"all" | "week" | "month">("all");
 
   const bg = dark ? C.kite : C.snow;
@@ -27,10 +33,17 @@ export default function LeaderboardPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</a>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
           <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
@@ -65,7 +78,7 @@ export default function LeaderboardPage() {
             { val: "month", label: "This month" },
             { val: "week", label: "This week" },
           ].map((f) => (
-            <button key={f.val} onClick={() => setFilter(f.val as any)} style={{ padding: "8px 16px", borderRadius: 999, border: filter === f.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: filter === f.val ? "rgba(255,96,55,0.08)" : bg, color: filter === f.val ? C.orange : text, fontSize: 12, fontWeight: filter === f.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
+            <button key={f.val} onClick={() => setFilter(f.val as "all" | "week" | "month")} style={{ padding: "8px 16px", borderRadius: 999, border: filter === f.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: filter === f.val ? "rgba(255,96,55,0.08)" : bg, color: filter === f.val ? C.orange : text, fontSize: 12, fontWeight: filter === f.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
               {f.label}
             </button>
           ))}

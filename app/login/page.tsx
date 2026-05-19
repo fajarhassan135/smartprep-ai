@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
 
@@ -16,10 +17,30 @@ const C = {
 
 export default function LoginPage() {
   const router = useRouter();
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const bg = dark ? C.kite : C.snow;
+  const text = dark ? C.snow : C.kite;
+  const sub = dark ? C.garnetLight : C.garnet;
+  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const inputBorder = dark ? "rgba(245,244,237,0.15)" : "rgba(53,30,28,0.15)";
+  const inputBg = dark ? "rgba(255,255,255,0.06)" : "#fff";
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   async function handleLogin() {
     setLoading(true);
@@ -33,25 +54,37 @@ export default function LoginPage() {
     setLoading(false);
   }
 
+  function toggleDark() {
+    localStorage.setItem("darkMode", String(!dark));
+    setDark((d) => !d);
+  }
+
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: C.snow, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid rgba(53,30,28,0.08)` }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => router.back()} style={{ background: "none", border: "none", color: "#733635", cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
+          <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
           </button>
-          <a href="/" style={{ fontSize: 18, color: C.kite, textDecoration: "none", lineHeight: 1 }}>
+          <Link href="/" style={{ fontSize: 18, color: text, textDecoration: "none", lineHeight: 1 }}>
             ⌂
-          </a>
-          <a href="/" style={{ fontSize: 15, fontWeight: 500, color: C.kite, textDecoration: "none", letterSpacing: "-0.03em" }}>
+          </Link>
+          <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             Exam<span style={{ color: C.orange }}>Prep</span> AI
+          </Link>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
+              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+            </div>
+          </button>
+          <a href="/signup" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>
+            Don&apos;t have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Sign up</span>
           </a>
         </div>
-        <a href="/signup" style={{ fontSize: 13, color: C.garnet, textDecoration: "none" }}>
-          Don't have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Sign up</span>
-        </a>
       </nav>
 
       {/* FORM */}
@@ -61,8 +94,8 @@ export default function LoginPage() {
           {/* HEADER */}
           <div style={{ marginBottom: 40 }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Welcome back</p>
-            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: C.kite, marginBottom: 8 }}>Log in</h1>
-            <p style={{ fontSize: 14, color: C.garnet, lineHeight: 1.6 }}>Continue your exam preparation journey.</p>
+            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Log in</h1>
+            <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Continue your exam preparation journey.</p>
           </div>
 
           {/* ERROR */}
@@ -74,25 +107,25 @@ export default function LoginPage() {
 
           {/* EMAIL */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>Email</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
           {/* PASSWORD */}
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: C.kite, display: "block", marginBottom: 6 }}>Password</label>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid rgba(53,30,28,0.15)`, backgroundColor: "#fff", fontSize: 14, color: C.kite, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -107,9 +140,9 @@ export default function LoginPage() {
 
           {/* DIVIDER */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
-            <div style={{ flex: 1, height: 1, backgroundColor: "rgba(53,30,28,0.08)" }} />
-            <span style={{ fontSize: 12, color: C.garnetLight }}>or</span>
-            <div style={{ flex: 1, height: 1, backgroundColor: "rgba(53,30,28,0.08)" }} />
+            <div style={{ flex: 1, height: 1, backgroundColor: border }} />
+            <span style={{ fontSize: 12, color: sub }}>or</span>
+            <div style={{ flex: 1, height: 1, backgroundColor: border }} />
           </div>
 
           {/* GOOGLE */}
@@ -117,13 +150,13 @@ export default function LoginPage() {
             onClick={async () => {
               await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/dashboard` } });
             }}
-            style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: "#fff", color: C.kite, fontWeight: 500, fontSize: 14, border: `1px solid rgba(53,30,28,0.15)`, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+            style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: inputBg, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${inputBorder}`, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
           >
             <span style={{ fontSize: 18 }}>G</span> Continue with Google
           </button>
 
-          <p style={{ textAlign: "center", fontSize: 12, color: C.garnetLight, marginTop: 24 }}>
-            Don't have an account?{" "}
+          <p style={{ textAlign: "center", fontSize: 12, color: sub, marginTop: 24 }}>
+            Don&apos;t have an account?{" "}
             <a href="/signup" style={{ color: C.orange, textDecoration: "none", fontWeight: 500 }}>Sign up</a>
           </p>
 

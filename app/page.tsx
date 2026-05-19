@@ -1,8 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
 
   const C = {
     snow: "#F5F4ED",
@@ -23,6 +28,13 @@ export default function HomePage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
+
   const subjects = [
     { icon: "📐", title: "Mathematics", sub: "Algebra · Calculus · Statistics", board: "Cambridge" },
     { icon: "📖", title: "English", sub: "Comprehension · Writing · Grammar", board: "Pak Board" },
@@ -37,10 +49,6 @@ export default function HomePage() {
     { icon: "🏆", title: "Class Leaderboard", desc: "Compete with classmates and stay motivated with school-based rankings." },
     { icon: "📄", title: "Past Papers", desc: "Access organized past papers by year, subject, board and chapter." },
   ];
-
-  const s: React.CSSProperties = {
-    all: "unset" as const,
-  };
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, color: text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
@@ -199,7 +207,10 @@ export default function HomePage() {
   );
 
   function toggleDark() {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
+    const ctx = new AudioContextClass();
     const oscillator = ctx.createOscillator();
     const gain = ctx.createGain();
     oscillator.connect(gain);
@@ -210,6 +221,7 @@ export default function HomePage() {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
     oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + 0.1);
+    localStorage.setItem("darkMode", String(!dark));
     setDark((d) => !d);
   }
 }

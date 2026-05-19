@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -16,7 +17,12 @@ const defaultCards = [
 ];
 
 export default function FlashcardsPage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [cards, setCards] = useState(defaultCards);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -32,6 +38,13 @@ export default function FlashcardsPage() {
   const text = dark ? C.snow : C.kite;
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
 
   function addCard() {
     if (!newFront || !newBack) return;
@@ -50,7 +63,7 @@ export default function FlashcardsPage() {
       });
       const data = await res.json();
       setCards([...cards, ...data.cards]);
-    } catch (e) {
+    } catch {
       alert("Failed to generate flashcards");
     }
     setGenerating(false);
@@ -59,7 +72,7 @@ export default function FlashcardsPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</a>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
           <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
@@ -81,7 +94,7 @@ export default function FlashcardsPage() {
             { val: "study", label: "🧠 Study mode" },
             { val: "create", label: "✏️ Create" },
           ].map((m) => (
-            <button key={m.val} onClick={() => setMode(m.val as any)} style={{ padding: "10px 20px", borderRadius: 10, border: mode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: mode === m.val ? "rgba(255,96,55,0.08)" : bg, color: mode === m.val ? C.orange : text, fontSize: 13, fontWeight: mode === m.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
+            <button key={m.val} onClick={() => setMode(m.val as "browse" | "study" | "create")} style={{ padding: "10px 20px", borderRadius: 10, border: mode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: mode === m.val ? "rgba(255,96,55,0.08)" : bg, color: mode === m.val ? C.orange : text, fontSize: 13, fontWeight: mode === m.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
               {m.label}
             </button>
           ))}

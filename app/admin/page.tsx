@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
 const C = {
@@ -8,7 +9,12 @@ const C = {
 };
 
 export default function AdminPage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [subject, setSubject] = useState("");
   const [board, setBoard] = useState("");
   const [year, setYear] = useState("");
@@ -23,20 +29,27 @@ export default function AdminPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
+
   async function handleUpload() {
     if (!file || !subject || !board || !year) return;
     setUploading(true);
     try {
       const fileName = `${board}-${subject}-${year}-${paper}-${Date.now()}.pdf`;
-      const { data, error } = await supabase.storage
+      const { error } = await supabase.storage
         .from("past-papers")
         .upload(fileName, file);
       if (error) throw error;
       setSuccess(true);
       setFile(null);
       setSubject(""); setBoard(""); setYear(""); setPaper("");
-    } catch (e: any) {
-      alert("Upload failed: " + e.message);
+    } catch (e: unknown) {
+      alert("Upload failed: " + (e instanceof Error ? e.message : String(e)));
     }
     setUploading(false);
   }
@@ -44,7 +57,7 @@ export default function AdminPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <a href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</a>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
           <span style={{ fontSize: 13, color: C.orange, fontWeight: 500 }}>Admin</span>

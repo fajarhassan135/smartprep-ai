@@ -27,7 +27,12 @@ type Question = {
 type Mode = "setup" | "quiz" | "results";
 
 export default function QuizPage() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("darkMode") === "true";
+    }
+    return false;
+  });
   const [mode, setMode] = useState<Mode>("setup");
   const [subject, setSubject] = useState("");
   const [board, setBoard] = useState("");
@@ -44,7 +49,7 @@ export default function QuizPage() {
   const [selectedOption, setSelectedOption] = useState("");
   const [answered, setAnswered] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const bg = dark ? C.kite : C.snow;
   const bgMid = dark ? C.kiteDeep : C.snowMist;
@@ -52,6 +57,34 @@ export default function QuizPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
+  async function finishQuiz() {
+    clearInterval(timerRef.current);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("quiz_sessions").insert({
+          user_id: user.id,
+          subject,
+          board,
+          mode: examMode,
+          score,
+          total_questions: questions.length,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to save quiz session", e);
+    }
+    setMode("results");
+  }
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      const saved = localStorage.getItem("darkMode") === "true";
+      setDark(saved);
+    });
+  }, []);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- interval is reset only when mode/examMode change; finishQuiz reads latest state when the timer fires.
   useEffect(() => {
     if (examMode === "exam" && mode === "quiz" && timeLeft > 0) {
       timerRef.current = setInterval(() => {
@@ -90,7 +123,7 @@ export default function QuizPage() {
       if (examMode === "exam") setTimeLeft(questionCount * 90);
       setMode("quiz");
       setCurrentQ(0);
-    } catch (e) {
+    } catch {
       alert("Failed to generate quiz. Please try again.");
     }
     setLoading(false);
@@ -137,7 +170,7 @@ export default function QuizPage() {
       if (data.verdict === "correct") setScore((s) => s + 1);
       else if (data.verdict === "partial") setScore((s) => s + 0.5);
       setAnswered(true);
-    } catch (e) {
+    } catch {
       alert("Failed to grade answer.");
     }
     setGrading(false);
@@ -154,13 +187,11 @@ export default function QuizPage() {
     }
   }
 
-  function finishQuiz() {
-    clearInterval(timerRef.current);
-    setMode("results");
-  }
-
   function playClick() {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const AudioContextClass =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
+    const ctx = new AudioContextClass();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.connect(g); g.connect(ctx.destination);
@@ -187,7 +218,6 @@ export default function QuizPage() {
           <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Set up your quiz</h1>
           <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Choose your subject, board and mode to get started.</p>
 
-          {/* SUBJECT */}
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Subject</label>
             <div style={{ display: "flex", gap: 10 }}>
@@ -199,7 +229,6 @@ export default function QuizPage() {
             </div>
           </div>
 
-          {/* BOARD */}
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Board</label>
             <div style={{ display: "flex", gap: 10 }}>
@@ -211,7 +240,6 @@ export default function QuizPage() {
             </div>
           </div>
 
-          {/* QUESTION COUNT */}
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Number of questions</label>
             <div style={{ display: "flex", gap: 10 }}>
@@ -223,7 +251,6 @@ export default function QuizPage() {
             </div>
           </div>
 
-          {/* MODE */}
           <div style={{ marginBottom: 40 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Mode</label>
             <div style={{ display: "flex", gap: 10 }}>
@@ -231,7 +258,7 @@ export default function QuizPage() {
                 { val: "practice", label: "🧠 Practice", desc: "Hints & explanations" },
                 { val: "exam", label: "⏱ Exam", desc: "Timed, no hints" },
               ].map((m) => (
-                <button key={m.val} onClick={() => { setExamMode(m.val as any); playClick(); }} style={{ flex: 1, padding: "14px", borderRadius: 12, border: examMode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: examMode === m.val ? "rgba(255,96,55,0.08)" : bg, color: examMode === m.val ? C.orange : text, fontWeight: examMode === m.val ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "all 0.15s" }}>
+                <button key={m.val} onClick={() => { setExamMode(m.val as "practice" | "exam"); playClick(); }} style={{ flex: 1, padding: "14px", borderRadius: 12, border: examMode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: examMode === m.val ? "rgba(255,96,55,0.08)" : bg, color: examMode === m.val ? C.orange : text, fontWeight: examMode === m.val ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "all 0.15s" }}>
                   <div>{m.label}</div>
                   <div style={{ fontSize: 11, color: sub, marginTop: 4 }}>{m.desc}</div>
                 </button>
@@ -268,14 +295,11 @@ export default function QuizPage() {
           </div>
         </nav>
 
-        {/* PROGRESS BAR */}
         <div style={{ height: 3, backgroundColor: bgMid }}>
           <div style={{ height: 3, width: `${progress}%`, backgroundColor: C.orange, transition: "width 0.4s" }} />
         </div>
 
         <div style={{ maxWidth: 680, margin: "0 auto", padding: "48px 24px" }}>
-
-          {/* QUESTION TYPE BADGE */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
             <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>
               {q.type === "mcq" ? "Multiple choice" : "Short answer"}
@@ -283,12 +307,10 @@ export default function QuizPage() {
             <span style={{ fontSize: 11, color: sub }}>{subject} · {board}</span>
           </div>
 
-          {/* QUESTION */}
           <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 18, padding: "28px 32px", marginBottom: 24, backdropFilter: "blur(16px)" }}>
             <p style={{ fontSize: 17, fontWeight: 500, color: text, lineHeight: 1.65, margin: 0 }}>{q.question}</p>
           </div>
 
-          {/* MCQ OPTIONS */}
           {q.type === "mcq" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
               {q.options?.map((opt, i) => {
@@ -309,7 +331,6 @@ export default function QuizPage() {
             </div>
           )}
 
-          {/* SHORT ANSWER */}
           {q.type === "short" && (
             <div style={{ marginBottom: 24 }}>
               <textarea
@@ -327,7 +348,6 @@ export default function QuizPage() {
             </div>
           )}
 
-          {/* FEEDBACK */}
           {answered && feedback[currentQ] && (
             <div style={{ padding: "16px 20px", borderRadius: 12, backgroundColor: feedback[currentQ] === "correct" ? "rgba(99,153,34,0.1)" : feedback[currentQ] === "incorrect" ? "rgba(226,75,74,0.1)" : "rgba(255,96,55,0.08)", border: `1px solid ${feedback[currentQ] === "correct" ? "rgba(99,153,34,0.3)" : feedback[currentQ] === "incorrect" ? "rgba(226,75,74,0.3)" : "rgba(255,96,55,0.2)"}`, marginBottom: 24 }}>
               <div style={{ fontSize: 13, fontWeight: 500, color: feedback[currentQ] === "correct" ? "#639922" : feedback[currentQ] === "incorrect" ? "#E24B4A" : C.orange, marginBottom: 6 }}>
@@ -339,7 +359,6 @@ export default function QuizPage() {
             </div>
           )}
 
-          {/* NEXT BUTTON */}
           {answered && (
             <button onClick={nextQuestion} style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
               {currentQ + 1 >= questions.length ? "See results →" : "Next question →"}
@@ -376,7 +395,6 @@ export default function QuizPage() {
         <h1 style={{ fontSize: 56, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>{percentage}%</h1>
         <p style={{ fontSize: 16, color: sub, marginBottom: 48 }}>{getMessage()}</p>
 
-        {/* SCORE BREAKDOWN */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 48 }}>
           {[
             { label: "Correct", value: Math.round(score), color: "#639922" },
@@ -396,6 +414,9 @@ export default function QuizPage() {
           </button>
           <a href="/dashboard" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: bgMid, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>
             Dashboard
+          </a>
+          <a href="/history" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: bgMid, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>
+            View history →
           </a>
         </div>
       </div>

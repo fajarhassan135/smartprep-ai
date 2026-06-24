@@ -57,7 +57,7 @@ export default function QuizPage() {
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
   async function finishQuiz() {
-    clearInterval(timerRef.current);
+    if (timerRef.current) clearInterval(timerRef.current);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
@@ -83,7 +83,7 @@ export default function QuizPage() {
       timerRef.current = setInterval(() => {
         setTimeLeft((t) => {
           if (t <= 1) {
-            clearInterval(timerRef.current);
+            if (timerRef.current) clearInterval(timerRef.current);
             finishQuiz();
             return 0;
           }
@@ -91,7 +91,9 @@ export default function QuizPage() {
         });
       }, 1000);
     }
-    return () => clearInterval(timerRef.current);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [mode, examMode]);
 
   function formatTime(seconds: number) {

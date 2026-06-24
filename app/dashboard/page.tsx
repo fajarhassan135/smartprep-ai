@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
+import { useTheme } from "../../lib/ThemeContext";
+import Navbar from "../../lib/Navbar";
 
 const C = {
   snow: "#F5F4ED",
@@ -25,12 +26,7 @@ type QuizSessionRow = {
 };
 
 export default function DashboardPage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
@@ -52,13 +48,6 @@ export default function DashboardPage() {
   }
 
   useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
-
-  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         window.location.href = "/login";
@@ -68,30 +57,6 @@ export default function DashboardPage() {
       }
     });
   }, []);
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  }
-
-  function toggleDark() {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
-    const ctx = new AudioContextClass();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.frequency.setValueAtTime(600, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.1);
-    localStorage.setItem("darkMode", String(!dark));
-    setDark((d) => !d);
-  }
 
   // REAL STATS
   const totalQuizzes = sessions.length;
@@ -121,9 +86,12 @@ export default function DashboardPage() {
   const recentSessions = sessions.slice(0, 3);
 
   const subjects = [
-    { icon: "📐", title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
-    { icon: "📖", title: "English", board: "Pak Board", questions: 320, color: "rgba(160,201,203,0.2)" },
-    { icon: "💻", title: "Computer Science", board: "Cambridge", questions: 290, color: "rgba(115,54,53,0.1)" },
+    { title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
+    { title: "English", board: "Pak Board", questions: 320, color: "rgba(160,201,203,0.2)" },
+    { title: "Computer Science", board: "Cambridge", questions: 290, color: "rgba(115,54,53,0.1)" },
+    { title: "Physics", board: "Cambridge", questions: 260, color: "rgba(115,54,53,0.1)" },
+    { title: "Business Studies", board: "Pak Board", questions: 240, color: "rgba(160,201,203,0.2)" },
+    { title: "Economics", board: "Cambridge", questions: 210, color: "rgba(255,96,55,0.1)" },
   ];
 
   if (!user) {
@@ -137,29 +105,7 @@ export default function DashboardPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
 
-      {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-          Exam<span style={{ color: C.orange }}>Prep</span> AI
-        </Link>
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <a href="/dashboard" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>Dashboard</a>
-          <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
-          <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
-          <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
-          <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-          <a href="/history" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>History</a>
-          <a href="/profile" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Profile</a>
-          <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
-              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
-            </div>
-          </button>
-          <button onClick={handleLogout} style={{ fontSize: 13, fontWeight: 500, padding: "9px 20px", borderRadius: 999, backgroundColor: "transparent", color: C.orange, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
-            Log out
-          </button>
-        </div>
-      </nav>
+      <Navbar active="/dashboard" />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px" }}>
 
@@ -200,8 +146,8 @@ export default function DashboardPage() {
               {subjects.map((subject) => (
                 <div key={subject.title} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}
                   onClick={() => window.location.href = "/quiz"}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
-                    {subject.icon}
+                  <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: C.orangeDark, flexShrink: 0 }}>
+                  {subject.title[0]}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>

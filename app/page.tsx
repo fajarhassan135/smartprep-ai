@@ -1,13 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useTheme } from "../lib/ThemeContext";
 
 export default function HomePage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark, toggleDark } = useTheme();
 
   const C = {
     snow: "#F5F4ED",
@@ -28,26 +23,22 @@ export default function HomePage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
-
   const subjects = [
-    { icon: "📐", title: "Mathematics", sub: "Algebra · Calculus · Statistics", board: "Cambridge" },
-    { icon: "📖", title: "English", sub: "Comprehension · Writing · Grammar", board: "Pak Board" },
-    { icon: "💻", title: "Computer Science", sub: "Programming · Data · Networks", board: "Cambridge" },
+    { title: "Mathematics", sub: "Algebra · Calculus · Statistics", board: "Cambridge" },
+    { title: "English", sub: "Comprehension · Writing · Grammar", board: "Pak Board" },
+    { title: "Computer Science", sub: "Programming · Data · Networks", board: "Cambridge" },
+    { title: "Physics", sub: "Mechanics · Electromagnetism · Waves", board: "Cambridge" },
+    { title: "Business Studies", sub: "Marketing · Finance · Management", board: "Pak Board" },
+    { title: "Economics", sub: "Micro · Macro · National Income", board: "Cambridge" },
   ];
 
   const features = [
-    { icon: "🤖", title: "AI Quiz Generation", desc: "Questions generated from real past papers, tailored to your board and level." },
-    { icon: "⏱", title: "Timed Exam Mode", desc: "Simulate real exam conditions with a countdown timer and strict mode." },
-    { icon: "📊", title: "Progress Analytics", desc: "Track your scores, weak topics, and improvement over time." },
-    { icon: "🃏", title: "Flashcards", desc: "Create and study flashcards for quick revision before your exam." },
-    { icon: "🏆", title: "Class Leaderboard", desc: "Compete with classmates and stay motivated with school-based rankings." },
-    { icon: "📄", title: "Past Papers", desc: "Access organized past papers by year, subject, board and chapter." },
+    { title: "AI Quiz Generation", desc: "Questions generated from real past papers, tailored to your board and level." },
+    { title: "Timed Exam Mode", desc: "Simulate real exam conditions with a countdown timer and strict mode." },
+    { title: "Progress Analytics", desc: "Track your scores, weak topics, and improvement over time." },
+    { title: "Flashcards", desc: "Create and study flashcards for quick revision before your exam." },
+    { title: "Class Leaderboard", desc: "Compete with classmates and stay motivated with school-based rankings." },
+    { title: "Past Papers", desc: "Access organized past papers by year, subject, board and chapter." },
   ];
 
   return (
@@ -62,40 +53,13 @@ export default function HomePage() {
           <a href="#subjects" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Subjects</a>
           <a href="#features" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Features</a>
           <button
-  onClick={toggleDark}
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: 0,
-  }}
->
-  {/* Toggle track */}
-  <div style={{
-    width: 44,
-    height: 24,
-    borderRadius: 999,
-    backgroundColor: dark ? C.snow : C.kite,
-    position: "relative",
-    transition: "background 0.3s",
-    flexShrink: 0,
-  }}>
-    {/* Toggle thumb */}
-    <div style={{
-      width: 18,
-      height: 18,
-      borderRadius: 999,
-      backgroundColor: dark ? C.kite : C.snow,
-      position: "absolute",
-      top: 3,
-      left: dark ? 23 : 3,
-      transition: "left 0.3s",
-    }} />
-  </div>
-</button>
+            onClick={toggleDark}
+            style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          >
+            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
+              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+            </div>
+          </button>
           <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Log in</a>
           <a href="/signup" style={{ fontSize: 13, fontWeight: 500, padding: "9px 20px", borderRadius: 999, backgroundColor: C.orange, color: "#fff", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
             Sign up
@@ -148,8 +112,8 @@ export default function HomePage() {
         <div style={{ background: dark ? `linear-gradient(135deg, ${C.kite} 0%, ${C.kiteDeep} 60%, #1e3030 100%)` : `linear-gradient(135deg, ${C.snow} 0%, ${C.snowMist} 60%, rgba(160,201,203,0.27) 100%)`, borderRadius: 24, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
           {subjects.map((subject) => (
             <div key={subject.title} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.6)", border: dark ? "0.5px solid rgba(255,255,255,0.1)" : "0.5px solid rgba(255,255,255,0.9)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,96,55,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
-                {subject.icon}
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,96,55,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: C.orangeDark, flexShrink: 0 }}>
+                {subject.title[0]}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
@@ -171,7 +135,6 @@ export default function HomePage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
             {features.map((f) => (
               <div key={f.title} style={{ backgroundColor: bg, borderRadius: 18, padding: 24, border: `1px solid ${border}` }}>
-                <div style={{ fontSize: 28, marginBottom: 14 }}>{f.icon}</div>
                 <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 8 }}>{f.title}</div>
                 <div style={{ fontSize: 13, color: sub, lineHeight: 1.65 }}>{f.desc}</div>
               </div>
@@ -205,23 +168,4 @@ export default function HomePage() {
 
     </div>
   );
-
-  function toggleDark() {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
-    const ctx = new AudioContextClass();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.frequency.setValueAtTime(600, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.1);
-    localStorage.setItem("darkMode", String(!dark));
-    setDark((d) => !d);
-  }
 }

@@ -1,13 +1,24 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import { useTheme } from "../../lib/ThemeContext";
+import Navbar from "../../lib/Navbar";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
   garnet: "#733635", garnetLight: "#a07070", orange: "#FF6037", orangeDark: "#c44a26", aqua: "#A0C9CB",
 };
 
-const papers = [
+type Paper = {
+  subject: string;
+  board: string;
+  year: number;
+  paper: string;
+  level: string;
+  topics: string[];
+  fileUrl?: string;
+};
+
+const papers: Paper[] = [
   { subject: "Mathematics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Algebra", "Geometry", "Statistics"] },
   { subject: "Mathematics", board: "Cambridge", year: 2022, paper: "Paper 2", level: "IGCSE", topics: ["Calculus", "Trigonometry"] },
   { subject: "Mathematics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "Matric", topics: ["Algebra", "Geometry"] },
@@ -17,15 +28,16 @@ const papers = [
   { subject: "Computer Science", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Programming", "Data Structures"] },
   { subject: "Computer Science", board: "Cambridge", year: 2022, paper: "Paper 2", level: "IGCSE", topics: ["Networks", "Databases"] },
   { subject: "Computer Science", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["OOP", "Web Development"] },
+  { subject: "Physics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "A-Level", topics: ["Mechanics", "Waves"] },
+  { subject: "Physics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Electromagnetism", "Optics"] },
+  { subject: "Business Studies", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Marketing", "Finance"] },
+  { subject: "Business Studies", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Management", "Operations"] },
+  { subject: "Economics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "A-Level", topics: ["Microeconomics", "Macroeconomics"] },
+  { subject: "Economics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Demand & Supply", "National Income"] },
 ];
 
 export default function PastPapersPage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark } = useTheme();
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [selectedBoard, setSelectedBoard] = useState("All");
 
@@ -35,31 +47,23 @@ export default function PastPapersPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
-
   const filtered = papers.filter((p) => {
     if (selectedSubject !== "All" && p.subject !== selectedSubject) return false;
     if (selectedBoard !== "All" && p.board !== selectedBoard) return false;
     return true;
   });
 
+  function handleDownload(paper: Paper) {
+    if (paper.fileUrl) {
+      window.open(paper.fileUrl, "_blank");
+    } else {
+      alert("This past paper hasn't been uploaded yet. Check back soon.");
+    }
+  }
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
-          <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
-          <a href="/past-papers" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>Past Papers</a>
-          <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
-          <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-        </div>
-      </nav>
+      <Navbar active="/past-papers" />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Past Papers</p>
@@ -70,8 +74,8 @@ export default function PastPapersPage() {
         <div style={{ display: "flex", gap: 12, marginBottom: 40, flexWrap: "wrap" }}>
           <div>
             <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 6 }}>Subject</label>
-            <div style={{ display: "flex", gap: 8 }}>
-              {["All", "Mathematics", "English", "Computer Science"].map((s) => (
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["All", "Mathematics", "English", "Computer Science", "Physics", "Business Studies", "Economics"].map((s) => (
                 <button key={s} onClick={() => setSelectedSubject(s)} style={{ padding: "8px 16px", borderRadius: 999, border: selectedSubject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: selectedSubject === s ? "rgba(255,96,55,0.08)" : bg, color: selectedSubject === s ? C.orange : text, fontSize: 12, fontWeight: selectedSubject === s ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
                   {s}
                 </button>
@@ -111,8 +115,8 @@ export default function PastPapersPage() {
                 <button onClick={() => window.location.href = `/quiz?subject=${paper.subject}&board=${paper.board}`} style={{ flex: 1, padding: "10px", borderRadius: 10, backgroundColor: C.orange, color: "#fff", fontSize: 12, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
                   Generate quiz
                 </button>
-                <button style={{ padding: "10px 14px", borderRadius: 10, backgroundColor: bgMid, color: text, fontSize: 12, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
-                  Download
+                <button onClick={() => handleDownload(paper)} style={{ padding: "10px 14px", borderRadius: 10, backgroundColor: bgMid, color: text, fontSize: 12, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
+                  {paper.fileUrl ? "Download" : "Coming soon"}
                 </button>
               </div>
             </div>

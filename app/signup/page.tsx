@@ -1,14 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
+import { useTheme } from "../../lib/ThemeContext";
 
 const C = {
   snow: "#F5F4ED",
-  snowMist: "#ECECDC",
   kite: "#351E1C",
-  kiteDeep: "#2a1715",
   garnet: "#733635",
   garnetLight: "#a07070",
   orange: "#FF6037",
@@ -17,13 +16,9 @@ const C = {
 
 export default function SignupPage() {
   const router = useRouter();
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark, toggleDark } = useTheme();
   const [name, setName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [school, setSchool] = useState("");
@@ -38,20 +33,13 @@ export default function SignupPage() {
   const inputBorder = dark ? "rgba(245,244,237,0.15)" : "rgba(53,30,28,0.15)";
   const inputBg = dark ? "rgba(255,255,255,0.06)" : "#fff";
 
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
-
   async function handleSignup() {
     setLoading(true);
     setError("");
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: name, school } },
+      options: { data: { full_name: name, display_name: displayName || name, school } },
     });
     if (error) {
       setError(error.message);
@@ -60,11 +48,6 @@ export default function SignupPage() {
       router.push("/login");
     }
     setLoading(false);
-  }
-
-  function toggleDark() {
-    localStorage.setItem("darkMode", String(!dark));
-    setDark((d) => !d);
   }
 
   if (success) {
@@ -76,7 +59,6 @@ export default function SignupPage() {
           </div>
         </button>
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>📬</div>
           <h2 style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
           <p style={{ fontSize: 14, color: sub, lineHeight: 1.7 }}>
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
@@ -98,9 +80,6 @@ export default function SignupPage() {
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
           </button>
-          <Link href="/" style={{ fontSize: 18, color: text, textDecoration: "none", lineHeight: 1 }}>
-            ⌂
-          </Link>
           <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             Exam<span style={{ color: C.orange }}>Prep</span> AI
           </Link>
@@ -121,21 +100,18 @@ export default function SignupPage() {
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
         <div style={{ width: "100%", maxWidth: 420 }}>
 
-          {/* HEADER */}
           <div style={{ marginBottom: 40 }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Get started free</p>
             <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
             <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Join thousands of students preparing smarter.</p>
           </div>
 
-          {/* ERROR */}
           {error && (
             <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.orangeDark }}>
               {error}
             </div>
           )}
 
-          {/* NAME */}
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Full name</label>
             <input
@@ -147,7 +123,19 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* EMAIL */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>
+              Display name <span style={{ color: sub, fontWeight: 400 }}>(shown on leaderboard — optional)</span>
+            </label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="e.g. FJ or a nickname"
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${inputBorder}`, backgroundColor: inputBg, fontSize: 14, color: text, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+            />
+          </div>
+
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email</label>
             <input
@@ -159,7 +147,6 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* SCHOOL */}
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>School <span style={{ color: sub, fontWeight: 400 }}>(optional)</span></label>
             <input
@@ -171,7 +158,6 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* PASSWORD */}
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Password</label>
             <input
@@ -183,7 +169,6 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* BUTTON */}
           <button
             onClick={handleSignup}
             disabled={loading}

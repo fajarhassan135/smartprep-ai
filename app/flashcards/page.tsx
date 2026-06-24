@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState } from "react";
+import { useTheme } from "../../lib/ThemeContext";
+import Navbar from "../../lib/Navbar";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -17,12 +18,7 @@ const defaultCards = [
 ];
 
 export default function FlashcardsPage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark } = useTheme();
   const [cards, setCards] = useState(defaultCards);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -38,13 +34,6 @@ export default function FlashcardsPage() {
   const text = dark ? C.snow : C.kite;
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
-
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
 
   function addCard() {
     if (!newFront || !newBack) return;
@@ -69,18 +58,19 @@ export default function FlashcardsPage() {
     setGenerating(false);
   }
 
+  function goPrev() {
+    setCurrent((c) => Math.max(0, c - 1));
+    setFlipped(false);
+  }
+
+  function goNext() {
+    setCurrent((c) => Math.min(cards.length - 1, c + 1));
+    setFlipped(false);
+  }
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Exam<span style={{ color: C.orange }}>Prep</span> AI</Link>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
-          <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
-          <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
-          <a href="/flashcards" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>Flashcards</a>
-          <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-        </div>
-      </nav>
+      <Navbar active="/flashcards" />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Flashcards</p>
@@ -90,9 +80,9 @@ export default function FlashcardsPage() {
         {/* MODE TABS */}
         <div style={{ display: "flex", gap: 8, marginBottom: 40 }}>
           {[
-            { val: "browse", label: "📚 Browse" },
-            { val: "study", label: "🧠 Study mode" },
-            { val: "create", label: "✏️ Create" },
+            { val: "browse", label: "Browse" },
+            { val: "study", label: "Study mode" },
+            { val: "create", label: "Create" },
           ].map((m) => (
             <button key={m.val} onClick={() => setMode(m.val as "browse" | "study" | "create")} style={{ padding: "10px 20px", borderRadius: 10, border: mode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: mode === m.val ? "rgba(255,96,55,0.08)" : bg, color: mode === m.val ? C.orange : text, fontSize: 13, fontWeight: mode === m.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
               {m.label}
@@ -113,26 +103,58 @@ export default function FlashcardsPage() {
           </div>
         )}
 
-        {/* STUDY MODE */}
+        {/* STUDY MODE — real 3D flip */}
         {mode === "study" && (
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>{current + 1} / {cards.length}</div>
-            <div onClick={() => setFlipped(!flipped)} style={{ cursor: "pointer", perspective: "1000px", marginBottom: 32 }}>
-              <div style={{ width: "100%", minHeight: 280, borderRadius: 24, padding: "48px 40px", display: "flex", alignItems: "center", justifyContent: "center", background: flipped ? C.orange : dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.9)", border: `1px solid ${flipped ? C.orange : border}`, backdropFilter: "blur(16px)", transition: "all 0.3s", cursor: "pointer" }}>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: flipped ? "rgba(255,255,255,0.7)" : sub, marginBottom: 16 }}>
-                    {flipped ? "Answer" : "Question — click to reveal"}
+
+            <div
+              className="flashcard-scene"
+              onClick={() => setFlipped(!flipped)}
+              style={{ cursor: "pointer", marginBottom: 32 }}
+            >
+              <div className={`flashcard-inner ${flipped ? "is-flipped" : ""}`}>
+                <div
+                  className="flashcard-face front"
+                  style={{
+                    background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.9)",
+                    border: `1px solid ${border}`,
+                    backdropFilter: "blur(16px)",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: sub, marginBottom: 16 }}>
+                      Question — click to reveal
+                    </div>
+                    <div style={{ fontSize: 20, fontWeight: 500, color: text, lineHeight: 1.5 }}>
+                      {cards[current].front}
+                    </div>
                   </div>
-                  <div style={{ fontSize: 20, fontWeight: 500, color: flipped ? "#fff" : text, lineHeight: 1.5 }}>
-                    {flipped ? cards[current].back : cards[current].front}
+                </div>
+
+                <div
+                  className="flashcard-face back"
+                  style={{
+                    background: C.orange,
+                    border: `1px solid ${C.orange}`,
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>
+                      Answer
+                    </div>
+                    <div style={{ fontSize: 20, fontWeight: 500, color: "#fff", lineHeight: 1.5 }}>
+                      {cards[current].back}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-              <button onClick={() => { setCurrent((c) => Math.max(0, c - 1)); setFlipped(false); }} disabled={current === 0} style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: bg, color: text, fontSize: 14, cursor: "pointer", fontFamily: "inherit", opacity: current === 0 ? 0.4 : 1 }}>← Prev</button>
+              <button onClick={goPrev} disabled={current === 0} style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: bg, color: text, fontSize: 14, cursor: "pointer", fontFamily: "inherit", opacity: current === 0 ? 0.4 : 1 }}>← Prev</button>
               <button onClick={() => setFlipped(!flipped)} style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${C.orange}`, backgroundColor: "rgba(255,96,55,0.08)", color: C.orange, fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>Flip card</button>
-              <button onClick={() => { setCurrent((c) => Math.min(cards.length - 1, c + 1)); setFlipped(false); }} disabled={current === cards.length - 1} style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: bg, color: text, fontSize: 14, cursor: "pointer", fontFamily: "inherit", opacity: current === cards.length - 1 ? 0.4 : 1 }}>Next →</button>
+              <button onClick={goNext} disabled={current === cards.length - 1} style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: bg, color: text, fontSize: 14, cursor: "pointer", fontFamily: "inherit", opacity: current === cards.length - 1 ? 0.4 : 1 }}>Next →</button>
             </div>
           </div>
         )}
@@ -169,7 +191,7 @@ export default function FlashcardsPage() {
                 {generating ? "Generating..." : "Generate 5 cards with AI"}
               </button>
               <div style={{ marginTop: 16, padding: "16px", borderRadius: 12, backgroundColor: bgMid, fontSize: 13, color: sub, lineHeight: 1.6 }}>
-                💡 AI will generate 5 flashcards on your chosen topic using exam-appropriate content for your board.
+                AI will generate 5 flashcards on your chosen topic using exam-appropriate content for your board.
               </div>
             </div>
           </div>

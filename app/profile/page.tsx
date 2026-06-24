@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
+import { useTheme } from "../../lib/ThemeContext";
+import Navbar from "../../lib/Navbar";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -10,14 +11,10 @@ const C = {
 };
 
 export default function ProfilePage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [fullName, setFullName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [school, setSchool] = useState("");
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -34,34 +31,50 @@ export default function ProfilePage() {
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
   useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    async function load() {
+      const { data } = await supabase.auth.getUser();
       if (!data.user) {
         window.location.href = "/login";
-      } else {
-        setUser(data.user);
-        setFullName(data.user.user_metadata?.full_name || "");
-        setSchool(data.user.user_metadata?.school || "");
-        setEmail(data.user.email || "");
+        return;
       }
-    });
+      setUser(data.user);
+      setFullName(data.user.user_metadata?.full_name || "");
+      setEmail(data.user.email || "");
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("display_name, school")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profile) {
+        setDisplayName(profile.display_name || "");
+        setSchool(profile.school || "");
+      }
+    }
+    load();
   }, []);
 
   async function saveProfile() {
+    if (!user) return;
     setSaving(true);
     setSuccessMsg("");
     setErrorMsg("");
-    const { error } = await supabase.auth.updateUser({
-      data: { full_name: fullName, school },
+
+    const { error: authError } = await supabase.auth.updateUser({
+      data: { full_name: fullName, school, display_name: displayName },
     });
-    if (error) setErrorMsg(error.message);
-    else setSuccessMsg("Profile updated successfully!");
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ display_name: displayName, school })
+      .eq("id", user.id);
+
+    if (authError || profileError) {
+      setErrorMsg((authError || profileError)?.message || "Something went wrong.");
+    } else {
+      setSuccessMsg("Profile updated successfully!");
+    }
     setSaving(false);
   }
 
@@ -87,11 +100,6 @@ export default function ProfilePage() {
     setSavingPassword(false);
   }
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    window.location.href = "/";
-  }
-
   if (!user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.snow, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
@@ -103,33 +111,16 @@ export default function ProfilePage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
 
-      {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-          Exam<span style={{ color: C.orange }}>Prep</span> AI
-        </Link>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
-          <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
-          <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
-          <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
-          <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-          <a href="/profile" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>Profile</a>
-          <button onClick={handleLogout} style={{ fontSize: 13, fontWeight: 500, padding: "9px 20px", borderRadius: 999, backgroundColor: "transparent", color: C.orange, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
-            Log out
-          </button>
-        </div>
-      </nav>
+      <Navbar active="/profile" />
 
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Account</p>
         <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your profile</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Manage your account details and password.</p>
 
-        {/* SUCCESS / ERROR */}
         {successMsg && (
           <div style={{ backgroundColor: "rgba(99,153,34,0.1)", border: "1px solid rgba(99,153,34,0.3)", borderRadius: 12, padding: "14px 20px", marginBottom: 24, fontSize: 13, color: "#639922" }}>
-            ✓ {successMsg}
+            {successMsg}
           </div>
         )}
         {errorMsg && (
@@ -146,7 +137,7 @@ export default function ProfilePage() {
           <div>
             <div style={{ fontSize: 18, fontWeight: 500, color: text, marginBottom: 4 }}>{fullName || "Student"}</div>
             <div style={{ fontSize: 13, color: sub }}>{email}</div>
-            {school && <div style={{ fontSize: 12, color: sub, marginTop: 2 }}>🏫 {school}</div>}
+            {school && <div style={{ fontSize: 12, color: sub, marginTop: 2 }}>{school}</div>}
           </div>
         </div>
 
@@ -161,6 +152,19 @@ export default function ProfilePage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your full name"
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+            />
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>
+              Display name <span style={{ color: sub, fontWeight: 400 }}>(shown on leaderboard)</span>
+            </label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="e.g. FJ or a nickname"
               style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
@@ -224,10 +228,10 @@ export default function ProfilePage() {
 
         {/* DANGER ZONE */}
         <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid rgba(226,75,74,0.2)`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
-          <h2 style={{ fontSize: 16, fontWeight: 500, color: "#E24B4A", marginBottom: 8 }}>Danger zone</h2>
-          <p style={{ fontSize: 13, color: sub, marginBottom: 20 }}>Once you log out all your session data will be cleared.</p>
-          <button onClick={handleLogout} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
-            Log out of all devices
+          <h2 style={{ fontSize: 16, fontWeight: 500, color: "#E24B4A", marginBottom: 8 }}>Account</h2>
+          <p style={{ fontSize: 13, color: sub, marginBottom: 20 }}>Logging out will end your current session on this device.</p>
+          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
+            Log out
           </button>
         </div>
 

@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
+import { useTheme } from "../../lib/ThemeContext";
+import Navbar from "../../lib/Navbar";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -15,15 +16,11 @@ type QuizSessionRow = {
   completed_at: string;
   subject: string;
   mode: string;
+  difficulty?: string;
 };
 
 export default function HistoryPage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
+  const { dark } = useTheme();
   const [user, setUser] = useState<User | null>(null);
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,13 +42,6 @@ export default function HistoryPage() {
     if (data) setSessions(data as QuizSessionRow[]);
     setLoading(false);
   }
-
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -85,21 +75,7 @@ export default function HistoryPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
 
-      {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-          Exam<span style={{ color: C.orange }}>Prep</span> AI
-        </Link>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
-          <a href="/quiz" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Quiz</a>
-          <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past Papers</a>
-          <a href="/flashcards" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Flashcards</a>
-          <a href="/leaderboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Leaderboard</a>
-          <a href="/profile" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Profile</a>
-          <a href="/history" style={{ fontSize: 13, color: C.orange, textDecoration: "none", fontWeight: 500 }}>History</a>
-        </div>
-      </nav>
+      <Navbar active="/history" />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz History</p>
@@ -109,12 +85,11 @@ export default function HistoryPage() {
         {/* STATS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 40 }}>
           {[
-            { label: "Total quizzes", value: sessions.length, icon: "📝" },
-            { label: "Average score", value: `${avgScore}%`, icon: "📊" },
-            { label: "Best score", value: `${bestScore}%`, icon: "🏆" },
+            { label: "Total quizzes", value: sessions.length },
+            { label: "Average score", value: `${avgScore}%` },
+            { label: "Best score", value: `${bestScore}%` },
           ].map((stat) => (
             <div key={stat.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px 24px", border: `1px solid ${border}` }}>
-              <div style={{ fontSize: 24, marginBottom: 12 }}>{stat.icon}</div>
               <div style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 4 }}>{stat.value}</div>
               <div style={{ fontSize: 12, color: sub }}>{stat.label}</div>
             </div>
@@ -122,8 +97,8 @@ export default function HistoryPage() {
         </div>
 
         {/* FILTER */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-          {["All", "Mathematics", "English", "Computer Science"].map((f) => (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+          {["All", "Mathematics", "English", "Computer Science", "Physics", "Business Studies", "Economics"].map((f) => (
             <button key={f} onClick={() => setFilter(f)} style={{ padding: "8px 16px", borderRadius: 999, border: filter === f ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: filter === f ? "rgba(255,96,55,0.08)" : bg, color: filter === f ? C.orange : text, fontSize: 12, fontWeight: filter === f ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
               {f}
             </button>
@@ -135,7 +110,6 @@ export default function HistoryPage() {
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading your quiz history...</div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px", background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", borderRadius: 20, border: `1px solid ${border}` }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>📝</div>
             <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No quizzes yet</div>
             <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>Take your first quiz to see your history here!</div>
             <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
@@ -153,8 +127,11 @@ export default function HistoryPage() {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 500, color: text, marginBottom: 4 }}>{session.subject}</div>
-                      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                        <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>{session.mode === "exam" ? "⏱ Exam mode" : "🧠 Practice mode"}</span>
+                      <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                        <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>{session.mode === "exam" ? "Exam mode" : "Practice mode"}</span>
+                        {session.difficulty && (
+                          <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, backgroundColor: bgMid, color: sub, textTransform: "capitalize" }}>{session.difficulty}</span>
+                        )}
                         <span style={{ fontSize: 11, color: sub }}>{session.total_questions} questions</span>
                         <span style={{ fontSize: 11, color: sub }}>{date} · {time}</span>
                       </div>

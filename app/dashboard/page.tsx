@@ -58,7 +58,6 @@ export default function DashboardPage() {
     });
   }, []);
 
-  // REAL STATS
   const totalQuizzes = sessions.length;
   const avgScore = sessions.length
     ? Math.round(sessions.reduce((acc, s) => acc + (s.score / s.total_questions) * 100, 0) / sessions.length)
@@ -67,7 +66,6 @@ export default function DashboardPage() {
     ? Math.round(Math.max(...sessions.map((s) => (s.score / s.total_questions) * 100)))
     : 0;
 
-  // STREAK — count consecutive days
   function calcStreak() {
     if (!sessions.length) return 0;
     const dates = [...new Set(sessions.map((s) => new Date(s.completed_at).toDateString()))];
@@ -84,6 +82,26 @@ export default function DashboardPage() {
 
   const streak = calcStreak();
   const recentSessions = sessions.slice(0, 3);
+  const greetings = [
+    `Hey ${user?.user_metadata?.full_name?.split(" ")[0] || "there"}!`,
+    "Hey diva!",
+    "Hey legend!",
+    "Hey champ!",
+    "Hey superstar!",
+    "Hey genius!",
+  ];
+  
+  const punchlines = [
+    "Time to lock in.",
+    "No cap, let's get this score up.",
+    "Lock in, future topper.",
+    "Bestie, your streak is calling.",
+    "Main character energy starts with a quiz.",
+    "Let's get this bag of marks.",
+  ];
+  
+  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  const punchline = punchlines[Math.floor(Math.random() * punchlines.length)];
 
   const subjects = [
     { title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
@@ -109,25 +127,22 @@ export default function DashboardPage() {
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px" }}>
 
-        {/* WELCOME */}
-        <div style={{ marginBottom: 48 }}>
-          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 8 }}>Welcome back</p>
-          <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>
-            {user?.user_metadata?.full_name || user?.email?.split("@")[0]} 👋
-          </h1>
-          <p style={{ fontSize: 14, color: sub }}>Ready to study? Pick up where you left off.</p>
-        </div>
+      <div style={{ marginBottom: 48 }}>
+  <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 8 }}>Welcome back</p>
+  <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>
+    {greeting}
+  </h1>
+  <p style={{ fontSize: 14, color: sub }}>{punchline}</p>
+</div>
 
-        {/* REAL STATS ROW */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 48 }}>
           {[
-            { label: "Quizzes taken", value: loadingStats ? "..." : totalQuizzes.toString(), icon: "📝" },
-            { label: "Avg score", value: loadingStats ? "..." : totalQuizzes ? `${avgScore}%` : "N/A", icon: "📊" },
-            { label: "Best score", value: loadingStats ? "..." : totalQuizzes ? `${bestScore}%` : "N/A", icon: "🏆" },
-            { label: "Study streak", value: loadingStats ? "..." : `${streak} day${streak !== 1 ? "s" : ""}`, icon: "🔥" },
+            { label: "Quizzes taken", value: loadingStats ? "..." : totalQuizzes.toString() },
+            { label: "Avg score", value: loadingStats ? "..." : totalQuizzes ? `${avgScore}%` : "N/A" },
+            { label: "Best score", value: loadingStats ? "..." : totalQuizzes ? `${bestScore}%` : "N/A" },
+            { label: "Study streak", value: loadingStats ? "..." : `${streak} day${streak !== 1 ? "s" : ""}` },
           ].map((stat) => (
             <div key={stat.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px 24px", border: `1px solid ${border}` }}>
-              <div style={{ fontSize: 24, marginBottom: 12 }}>{stat.icon}</div>
               <div style={{ fontSize: 24, fontWeight: 500, color: text, marginBottom: 4 }}>{stat.value}</div>
               <div style={{ fontSize: 12, color: sub }}>{stat.label}</div>
             </div>
@@ -136,7 +151,6 @@ export default function DashboardPage() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
 
-          {/* SUBJECTS */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 500, color: text, letterSpacing: "-0.02em" }}>Your subjects</h2>
@@ -147,7 +161,7 @@ export default function DashboardPage() {
                 <div key={subject.title} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}
                   onClick={() => window.location.href = "/quiz"}>
                   <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: C.orangeDark, flexShrink: 0 }}>
-                  {subject.title[0]}
+                    {subject.title[0]}
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
@@ -164,7 +178,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* REAL RECENT ACTIVITY */}
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 500, color: text, letterSpacing: "-0.02em" }}>Recent activity</h2>
@@ -175,7 +188,6 @@ export default function DashboardPage() {
                 <div style={{ fontSize: 14, color: sub, padding: "20px" }}>Loading...</div>
               ) : recentSessions.length === 0 ? (
                 <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "32px 20px", textAlign: "center" }}>
-                  <div style={{ fontSize: 32, marginBottom: 12 }}>📝</div>
                   <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 6 }}>No quizzes yet</div>
                   <div style={{ fontSize: 12, color: sub, marginBottom: 16 }}>Take your first quiz to see activity here!</div>
                   <a href="/quiz" style={{ fontSize: 13, fontWeight: 500, color: C.orange, textDecoration: "none" }}>Start a quiz →</a>
@@ -189,7 +201,7 @@ export default function DashboardPage() {
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div>
                           <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{session.subject}</div>
-                          <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{session.mode === "exam" ? "⏱ Exam" : "🧠 Practice"} · {date}</div>
+                          <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{session.mode === "exam" ? "Exam" : "Practice"} · {date}</div>
                         </div>
                         <div style={{ fontSize: 16, fontWeight: 500, color: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A" }}>
                           {pct}%
@@ -207,7 +219,6 @@ export default function DashboardPage() {
 
         </div>
 
-        {/* START QUIZ BANNER */}
         <div style={{ marginTop: 32, backgroundColor: C.orange, borderRadius: 20, padding: "32px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <h3 style={{ fontSize: 20, fontWeight: 500, color: "#fff", marginBottom: 6, letterSpacing: "-0.02em" }}>Ready for a quiz?</h3>

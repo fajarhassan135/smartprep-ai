@@ -23,6 +23,11 @@ export default function ProfilePage() {
   const [savingPassword, setSavingPassword] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showAvatarPreview, setShowAvatarPreview] = useState(false);
 
   const bg = dark ? C.kite : C.snow;
   const bgMid = dark ? C.kiteDeep : C.snowMist;
@@ -43,13 +48,14 @@ export default function ProfilePage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("display_name, school")
+        .select("display_name, school, avatar_url")
         .eq("id", data.user.id)
         .single();
 
       if (profile) {
         setDisplayName(profile.display_name || "");
         setSchool(profile.school || "");
+        setAvatarUrl(profile.avatar_url || null);
       }
     }
     load();
@@ -100,6 +106,92 @@ export default function ProfilePage() {
     setSavingPassword(false);
   }
 
+  async function handleAvatarUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!user || !e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      setErrorMsg("Please upload a JPEG, PNG, or WebP image.");
+      return;
+    }
+
+    const maxSizeBytes = 2 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      setErrorMsg("Image must be smaller than 2MB.");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    const fileExt = file.name.split(".").pop();
+    const filePath = `${user.id}/avatar.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      setErrorMsg(uploadError.message);
+      setUploadingAvatar(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: publicUrl })
+      .eq("id", user.id);
+
+    if (updateError) {
+      setErrorMsg(updateError.message);
+    } else {
+      setAvatarUrl(publicUrl);
+      setSuccessMsg("Profile picture updated!");
+    }
+
+    setUploadingAvatar(false);
+  }
+
+  async function handleDeleteAccount() {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+
+      if (!accessToken) {
+        setErrorMsg("Session expired. Please log in again.");
+        setDeleting(false);
+        return;
+      }
+
+      const res = await fetch("/api/delete-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, accessToken }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setErrorMsg(result.error || "Could not delete account.");
+        setDeleting(false);
+        return;
+      }
+
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    } catch {
+      setErrorMsg("Something went wrong. Please try again.");
+      setDeleting(false);
+    }
+  }
+
   if (!user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.snow, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
@@ -131,13 +223,39 @@ export default function ProfilePage() {
 
         {/* AVATAR */}
         <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 40 }}>
-          <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 500, color: "#fff", flexShrink: 0 }}>
-            {fullName ? fullName[0].toUpperCase() : email[0].toUpperCase()}
+          <div style={{ position: "relative" }}>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile picture"
+                onClick={() => setShowAvatarPreview(true)}
+                style={{ width: 72, height: 72, borderRadius: 999, objectFit: "cover", flexShrink: 0, cursor: "pointer" }}
+              />
+            ) : (
+              <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 500, color: "#fff", flexShrink: 0 }}>
+                {fullName ? fullName[0].toUpperCase() : email[0].toUpperCase()}
+              </div>
+            )}
+            <label
+              htmlFor="avatarInput"
+              style={{ position: "absolute", bottom: -4, right: -4, width: 26, height: 26, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", border: `2px solid ${bg}`, fontSize: 12, color: "#fff" }}
+            >
+              +
+            </label>
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleAvatarUpload}
+              style={{ display: "none" }}
+              disabled={uploadingAvatar}
+            />
           </div>
           <div>
             <div style={{ fontSize: 18, fontWeight: 500, color: text, marginBottom: 4 }}>{fullName || "Student"}</div>
             <div style={{ fontSize: 13, color: sub }}>{email}</div>
             {school && <div style={{ fontSize: 12, color: sub, marginTop: 2 }}>{school}</div>}
+            {uploadingAvatar && <div style={{ fontSize: 12, color: C.orange, marginTop: 4 }}>Uploading...</div>}
           </div>
         </div>
 
@@ -230,12 +348,84 @@ export default function ProfilePage() {
         <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid rgba(226,75,74,0.2)`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
           <h2 style={{ fontSize: 16, fontWeight: 500, color: "#E24B4A", marginBottom: 8 }}>Account</h2>
           <p style={{ fontSize: 13, color: sub, marginBottom: 20 }}>Logging out will end your current session on this device.</p>
-          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit", marginBottom: 24 }}>
             Log out
           </button>
+
+          <div style={{ borderTop: "1px solid rgba(226,75,74,0.2)", paddingTop: 24 }}>
+            <p style={{ fontSize: 13, color: sub, marginBottom: 16 }}>
+              Deleting your account permanently removes your profile, quiz history, and leaderboard standing. This cannot be undone.
+            </p>
+            {!showDeleteConfirm ? (
+              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
+                Delete account
+              </button>
+            ) : (
+              <div>
+                <p style={{ fontSize: 13, fontWeight: 500, color: "#E24B4A", marginBottom: 12 }}>
+                  Are you sure? This is permanent.
+                </p>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button onClick={handleDeleteAccount} disabled={deleting} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "#E24B4A", color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: deleting ? 0.6 : 1 }}>
+                    {deleting ? "Deleting..." : "Yes, delete my account"}
+                  </button>
+                  <button onClick={() => setShowDeleteConfirm(false)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
       </div>
+
+      {/* AVATAR PREVIEW MODAL */}
+      {showAvatarPreview && avatarUrl && (
+        <div
+          onClick={() => setShowAvatarPreview(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.75)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            cursor: "pointer",
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ position: "relative" }}>
+            <img
+              src={avatarUrl}
+              alt="Profile picture preview"
+              style={{ maxWidth: "min(80vw, 480px)", maxHeight: "80vh", borderRadius: 16, objectFit: "contain", display: "block" }}
+            />
+            <button
+              onClick={() => setShowAvatarPreview(false)}
+              style={{
+                position: "absolute",
+                top: -16,
+                right: -16,
+                width: 32,
+                height: 32,
+                borderRadius: 999,
+                backgroundColor: "#fff",
+                color: C.kite,
+                border: "none",
+                cursor: "pointer",
+                fontSize: 16,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

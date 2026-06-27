@@ -29,35 +29,36 @@ body {
   border: 0.5px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  .flashcard-scene {
-    perspective: 1200px;
-  }
-  
-  .flashcard-inner {
-    position: relative;
-    width: 100%;
-    min-height: 280px;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-  
-  .flashcard-inner.is-flipped {
-    transform: rotateY(180deg);
-  }
-  
-  .flashcard-face {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 24px;
-    padding: 48px 40px;
-    backface-visibility: hidden;
-    box-sizing: border-box;
-  }
-  
-  .flashcard-face.back {
-    transform: rotateY(180deg);
-  }
+}
+
+.flashcard-scene {
+  perspective: 1200px;
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flashcard-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  padding: 48px 40px;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+}
+
+.flashcard-face.back {
+  transform: rotateY(180deg);
 }

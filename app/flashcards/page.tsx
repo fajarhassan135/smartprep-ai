@@ -28,6 +28,7 @@ export default function FlashcardsPage() {
   const [newSubject, setNewSubject] = useState("");
   const [generating, setGenerating] = useState(false);
   const [aiSubject, setAiSubject] = useState("");
+  const [generateSuccess, setGenerateSuccess] = useState(false);
 
   const bg = dark ? C.kite : C.snow;
   const bgMid = dark ? C.kiteDeep : C.snowMist;
@@ -44,6 +45,7 @@ export default function FlashcardsPage() {
   async function generateAICards() {
     if (!aiSubject) return;
     setGenerating(true);
+    setGenerateSuccess(false);
     try {
       const res = await fetch("/api/generate-flashcards", {
         method: "POST",
@@ -52,6 +54,7 @@ export default function FlashcardsPage() {
       });
       const data = await res.json();
       setCards([...cards, ...data.cards]);
+      setGenerateSuccess(true);
     } catch {
       alert("Failed to generate flashcards");
     }
@@ -190,6 +193,11 @@ export default function FlashcardsPage() {
               <button onClick={generateAICards} disabled={generating || !aiSubject} style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: generating ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: generating ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: !aiSubject ? 0.5 : 1 }}>
                 {generating ? "Generating..." : "Generate 5 cards with AI"}
               </button>
+              {generateSuccess && (
+                <div style={{ marginTop: 12, padding: "12px 16px", borderRadius: 10, backgroundColor: "rgba(99,153,34,0.1)", border: "1px solid rgba(99,153,34,0.3)", fontSize: 13, color: "#639922" }}>
+                  Your cards have been generated. Head to &quot;Browse&quot; or &quot;Study mode&quot; to check them out.
+                </div>
+              )}
               <div style={{ marginTop: 16, padding: "16px", borderRadius: 12, backgroundColor: bgMid, fontSize: 13, color: sub, lineHeight: 1.6 }}>
                 AI will generate 5 flashcards on your chosen topic using exam-appropriate content for your board.
               </div>

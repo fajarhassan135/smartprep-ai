@@ -22,6 +22,8 @@ export default function AdminPage() {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [authState, setAuthState] = useState<"checking" | "denied" | "ok">("checking");
+  const [authError, setAuthError] = useState("");
 
   const bg = dark ? C.kite : C.snow;
   const bgMid = dark ? C.kiteDeep : C.snowMist;
@@ -36,15 +38,57 @@ export default function AdminPage() {
     });
   }, []);
 
+  // The server decides who is an admin; this only controls what the page shows.
+  // Every upload is re-checked server side, so a forged answer here buys nothing.
+  useEffect(() => {
+    async function checkAccess() {
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) {
+        window.location.href = "/login";
+        return;
+      }
+      const res = await fetch("/api/upload-past-paper", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const result = await res.json();
+      if (res.ok && result.isAdmin) {
+        setAuthState("ok");
+      } else {
+        setAuthError(result.error || "You do not have admin access.");
+        setAuthState("denied");
+      }
+    }
+    checkAccess();
+  }, []);
+
   async function handleUpload() {
     if (!file || !subject || !board || !year) return;
     setUploading(true);
     try {
-      const fileName = `${board}-${subject}-${year}-${paper}-${Date.now()}.pdf`;
-      const { error } = await supabase.storage
-        .from("past-papers")
-        .upload(fileName, file);
-      if (error) throw error;
+      const { data } = await supabase.auth.getSession();
+      const accessToken = data.session?.access_token;
+      if (!accessToken) {
+        alert("Session expired. Please log in again.");
+        setUploading(false);
+        return;
+      }
+
+      const form = new FormData();
+      form.append("file", file);
+      form.append("subject", subject);
+      form.append("board", board);
+      form.append("year", year);
+      form.append("paper", paper);
+
+      const res = await fetch("/api/upload-past-paper", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: form,
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || "Upload failed");
+
       setSuccess(true);
       setFile(null);
       setSubject(""); setBoard(""); setYear(""); setPaper("");
@@ -52,6 +96,24 @@ export default function AdminPage() {
       alert("Upload failed: " + (e instanceof Error ? e.message : String(e)));
     }
     setUploading(false);
+  }
+
+  if (authState !== "ok") {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif", padding: 24 }}>
+        {authState === "checking" ? (
+          <div style={{ fontSize: 14, color: sub }}>Checking access...</div>
+        ) : (
+          <div style={{ textAlign: "center", maxWidth: 380 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 500, color: text, marginBottom: 10, letterSpacing: "-0.02em" }}>Admins only</h1>
+            <p style={{ fontSize: 14, color: sub, lineHeight: 1.7, marginBottom: 24 }}>{authError}</p>
+            <a href="/dashboard" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
+              Back to dashboard
+            </a>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (

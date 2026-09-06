@@ -56,7 +56,21 @@ export default function QuizPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
-  async function finishQuiz() {
+  // The exam timer fires from inside an interval that was created when the quiz
+  // started, so it cannot read `score` from that stale closure. Every caller
+  // passes the score explicitly, and the timer reads it from this ref.
+  const scoreRef = useRef(0);
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  // The timer calls this from inside a state updater, which React may invoke
+  // more than once, so guard against saving the same session twice.
+  const finishedRef = useRef(false);
+
+  async function finishQuiz(finalScore: number) {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     if (timerRef.current) clearInterval(timerRef.current);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -67,7 +81,7 @@ export default function QuizPage() {
           board,
           mode: examMode,
           difficulty,
-          score,
+          score: finalScore,
           total_questions: questions.length,
         });
       }
@@ -77,14 +91,16 @@ export default function QuizPage() {
     setMode("results");
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- interval is reset only when mode/examMode change; finishQuiz reads latest state when the timer fires.
+  // The interval is deliberately created once per quiz, so it must not be
+  // rebuilt as `timeLeft` ticks down. `finishQuiz` is read from the closure but
+  // takes the score as an argument, so nothing stale is captured.
   useEffect(() => {
     if (examMode === "exam" && mode === "quiz" && timeLeft > 0) {
       timerRef.current = setInterval(() => {
         setTimeLeft((t) => {
           if (t <= 1) {
             if (timerRef.current) clearInterval(timerRef.current);
-            finishQuiz();
+            finishQuiz(scoreRef.current);
             return 0;
           }
           return t - 1;
@@ -94,6 +110,7 @@ export default function QuizPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, examMode]);
 
   function formatTime(seconds: number) {
@@ -113,6 +130,7 @@ export default function QuizPage() {
       });
       const data = await res.json();
       setQuestions(data.questions);
+      finishedRef.current = false;
       setAnswers(new Array(data.questions.length).fill(""));
       setFeedback(new Array(data.questions.length).fill(""));
       if (examMode === "exam") setTimeLeft(questionCount * 90);
@@ -173,7 +191,7 @@ export default function QuizPage() {
 
   function nextQuestion() {
     if (currentQ + 1 >= questions.length) {
-      finishQuiz();
+      finishQuiz(score);
     } else {
       setCurrentQ((q) => q + 1);
       setAnswered(false);
@@ -407,7 +425,7 @@ export default function QuizPage() {
         </div>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => { setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={() => { finishedRef.current = false; setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
             Try again
           </button>
           <a href="/dashboard" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: bgMid, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>

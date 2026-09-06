@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
 
 const C = {
@@ -27,7 +27,7 @@ type QuizSessionRow = {
 
 export default function DashboardPage() {
   const { dark } = useTheme();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, status } = useAuthGuard();
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -37,26 +37,26 @@ export default function DashboardPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
-  async function fetchStats(userId: string) {
-    const { data } = await supabase
-      .from("quiz_sessions")
-      .select("*")
-      .eq("user_id", userId)
-      .order("completed_at", { ascending: false });
-    if (data) setSessions(data as QuizSessionRow[]);
-    setLoadingStats(false);
-  }
-
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) {
-        window.location.href = "/login";
-      } else {
-        setUser(data.user);
-        fetchStats(data.user.id);
-      }
-    });
-  }, []);
+    if (!user) return;
+    let cancelled = false;
+
+    async function fetchStats(userId: string) {
+      const { data } = await supabase
+        .from("quiz_sessions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("completed_at", { ascending: false });
+      if (cancelled) return;
+      if (data) setSessions(data as QuizSessionRow[]);
+      setLoadingStats(false);
+    }
+
+    fetchStats(user.id);
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   const totalQuizzes = sessions.length;
   const avgScore = sessions.length
@@ -112,7 +112,7 @@ export default function DashboardPage() {
     { title: "Economics", board: "Cambridge", questions: 210, color: "rgba(255,96,55,0.1)" },
   ];
 
-  if (!user) {
+  if (status !== "ready" || !user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.snow, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
         <div style={{ fontSize: 14, color: C.garnet }}>Loading...</div>

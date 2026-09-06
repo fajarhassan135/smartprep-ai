@@ -1,10 +1,15 @@
 import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: NextRequest) {
   try {
+    const auth = await requireVerifiedUser(req);
+    if (!auth.ok) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
     const { subject } = await req.json();
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",

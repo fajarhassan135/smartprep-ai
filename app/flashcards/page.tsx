@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { authHeader } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -19,6 +21,7 @@ const defaultCards = [
 
 export default function FlashcardsPage() {
   const { dark } = useTheme();
+  const { status } = useAuthGuard();
   const [cards, setCards] = useState(defaultCards);
   const [current, setCurrent] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -49,7 +52,7 @@ export default function FlashcardsPage() {
     try {
       const res = await fetch("/api/generate-flashcards", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await authHeader()) },
         body: JSON.stringify({ subject: aiSubject }),
       });
       const data = await res.json();
@@ -69,6 +72,14 @@ export default function FlashcardsPage() {
   function goNext() {
     setCurrent((c) => Math.min(cards.length - 1, c + 1));
     setFlipped(false);
+  }
+
+  if (status !== "ready") {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ fontSize: 14, color: sub }}>Loading...</div>
+      </div>
+    );
   }
 
   return (

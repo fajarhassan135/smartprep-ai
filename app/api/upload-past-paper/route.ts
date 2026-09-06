@@ -25,6 +25,9 @@ async function resolveAdmin(accessToken: string | null) {
   if (error || !data.user) {
     return { ok: false as const, status: 401, error: "Session expired. Please log in again." };
   }
+  if (!data.user.email_confirmed_at) {
+    return { ok: false as const, status: 403, error: "Please verify your email address first." };
+  }
 
   const allowed = adminEmails();
   if (allowed.length === 0) {

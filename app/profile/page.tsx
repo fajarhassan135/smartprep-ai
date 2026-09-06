@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
 
 const C = {
@@ -12,7 +12,7 @@ const C = {
 
 export default function ProfilePage() {
   const { dark } = useTheme();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, status } = useAuthGuard();
   const [fullName, setFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [school, setSchool] = useState("");
@@ -36,20 +36,16 @@ export default function ProfilePage() {
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
   useEffect(() => {
-    async function load() {
-      const { data } = await supabase.auth.getUser();
-      if (!data.user) {
-        window.location.href = "/login";
-        return;
-      }
-      setUser(data.user);
-      setFullName(data.user.user_metadata?.full_name || "");
-      setEmail(data.user.email || "");
+    if (!user) return;
+
+    async function load(currentUser: NonNullable<typeof user>) {
+      setFullName(currentUser.user_metadata?.full_name || "");
+      setEmail(currentUser.email || "");
 
       const { data: profile } = await supabase
         .from("profiles")
         .select("display_name, school, avatar_url")
-        .eq("id", data.user.id)
+        .eq("id", currentUser.id)
         .single();
 
       if (profile) {
@@ -58,8 +54,8 @@ export default function ProfilePage() {
         setAvatarUrl(profile.avatar_url || null);
       }
     }
-    load();
-  }, []);
+    load(user);
+  }, [user]);
 
   async function saveProfile() {
     if (!user) return;
@@ -192,7 +188,7 @@ export default function ProfilePage() {
     }
   }
 
-  if (!user) {
+  if (status !== "ready" || !user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.snow, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
         <div style={{ fontSize: 14, color: C.garnet }}>Loading...</div>

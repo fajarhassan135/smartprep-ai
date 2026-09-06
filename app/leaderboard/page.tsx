@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -20,6 +21,7 @@ type LeaderboardRow = {
 
 export default function LeaderboardPage() {
   const { dark } = useTheme();
+  const { status } = useAuthGuard();
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -49,6 +51,14 @@ export default function LeaderboardPage() {
 
   const top3 = rows.slice(0, 3);
   const rest = rows.slice(3);
+
+  if (status !== "ready") {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ fontSize: 14, color: sub }}>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>

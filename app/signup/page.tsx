@@ -34,18 +34,28 @@ export default function SignupPage() {
   const inputBg = dark ? "rgba(255,255,255,0.06)" : "#fff";
 
   async function handleSignup() {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setLoading(true);
     setError("");
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
-      options: { data: { full_name: name, display_name: displayName || name, school } },
+      options: {
+        data: { full_name: name, display_name: displayName || name, school },
+        // Where the link in the confirmation email brings them back to.
+        emailRedirectTo: `${window.location.origin}/verified`,
+      },
     });
     if (error) {
       setError(error.message);
     } else {
+      // Stay here and tell them to check their inbox. Nothing in the app opens
+      // up until they click the link, so sending them to login would just
+      // bounce them back to the verify screen.
       setSuccess(true);
-      router.push("/login");
     }
     setLoading(false);
   }
@@ -61,7 +71,9 @@ export default function SignupPage() {
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
           <h2 style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
           <p style={{ fontSize: 14, color: sub, lineHeight: 1.7 }}>
-            We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
+            We sent a confirmation link to <strong>{email}</strong>. Click it to
+            activate your account, then come back here and log in. If it hasn&apos;t
+            arrived in a minute, check your spam folder.
           </p>
           <a href="/login" style={{ display: "inline-block", marginTop: 28, padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
             Go to login

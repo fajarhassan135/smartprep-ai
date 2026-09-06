@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import type { User } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
 
 const C = {
@@ -21,7 +21,7 @@ type QuizSessionRow = {
 
 export default function HistoryPage() {
   const { dark } = useTheme();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, status } = useAuthGuard();
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
@@ -32,27 +32,27 @@ export default function HistoryPage() {
   const sub = dark ? C.garnetLight : C.garnet;
   const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
 
-  async function fetchHistory(userId: string) {
-    const { data } = await supabase
-      .from("quiz_sessions")
-      .select("*")
-      .eq("user_id", userId)
-      .order("completed_at", { ascending: false });
-
-    if (data) setSessions(data as QuizSessionRow[]);
-    setLoading(false);
-  }
-
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (!data.user) {
-        window.location.href = "/login";
-      } else {
-        setUser(data.user);
-        fetchHistory(data.user.id);
-      }
-    });
-  }, []);
+    if (!user) return;
+    let cancelled = false;
+
+    async function fetchHistory(userId: string) {
+      const { data } = await supabase
+        .from("quiz_sessions")
+        .select("*")
+        .eq("user_id", userId)
+        .order("completed_at", { ascending: false });
+
+      if (cancelled) return;
+      if (data) setSessions(data as QuizSessionRow[]);
+      setLoading(false);
+    }
+
+    fetchHistory(user.id);
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   const filtered = filter === "All" ? sessions : sessions.filter((s) => s.subject === filter);
 
@@ -64,7 +64,7 @@ export default function HistoryPage() {
     ? Math.round(Math.max(...sessions.map((s) => (s.score / s.total_questions) * 100)))
     : 0;
 
-  if (!user) {
+  if (status !== "ready" || !user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: C.snow, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
         <div style={{ fontSize: 14, color: C.garnet }}>Loading...</div>

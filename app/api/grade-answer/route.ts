@@ -1,5 +1,6 @@
 import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -7,6 +8,10 @@ const groq = new Groq({
 
 export async function POST(req: NextRequest) {
   try {
+    const auth = await requireVerifiedUser(req);
+    if (!auth.ok) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
     const { question, modelAnswer, keywords, studentAnswer, subject, board } =
       await req.json();
 

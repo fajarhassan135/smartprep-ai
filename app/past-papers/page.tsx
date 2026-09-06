@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -38,6 +39,7 @@ const papers: Paper[] = [
 
 export default function PastPapersPage() {
   const { dark } = useTheme();
+  const { status } = useAuthGuard();
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [selectedBoard, setSelectedBoard] = useState("All");
 
@@ -59,6 +61,14 @@ export default function PastPapersPage() {
     } else {
       alert("This past paper hasn't been uploaded yet. Check back soon.");
     }
+  }
+
+  if (status !== "ready") {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ fontSize: 14, color: sub }}>Loading...</div>
+      </div>
+    );
   }
 
   return (

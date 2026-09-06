@@ -45,9 +45,13 @@ export default function LoginPage() {
   async function handleLogin() {
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError(error.message);
+    } else if (!data.user?.email_confirmed_at) {
+      // Supabase only refuses unconfirmed logins when the project requires
+      // confirmation, so check here too and hold them at the verify screen.
+      router.push("/verify-email");
     } else {
       router.push("/dashboard");
     }

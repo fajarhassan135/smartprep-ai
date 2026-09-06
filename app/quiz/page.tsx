@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "../../lib/supabase";
+import { supabase, authHeader } from "../../lib/supabase";
 import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
+import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
   snow: "#F5F4ED",
@@ -31,6 +32,7 @@ type Difficulty = "easy" | "medium" | "hard";
 
 export default function QuizPage() {
   const { dark } = useTheme();
+  const { status } = useAuthGuard();
   const [mode, setMode] = useState<Mode>("setup");
   const [subject, setSubject] = useState("");
   const [board, setBoard] = useState("");
@@ -125,7 +127,7 @@ export default function QuizPage() {
     try {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await authHeader()) },
         body: JSON.stringify({ subject, board, count: questionCount, difficulty }),
       });
       const data = await res.json();
@@ -163,7 +165,7 @@ export default function QuizPage() {
     try {
       const res = await fetch("/api/grade-answer", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(await authHeader()) },
         body: JSON.stringify({
           question: questions[currentQ].question,
           modelAnswer: questions[currentQ].model_answer,
@@ -213,6 +215,14 @@ export default function QuizPage() {
     g.gain.setValueAtTime(0.1, ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
     o.start(); o.stop(ctx.currentTime + 0.08);
+  }
+
+  if (status !== "ready") {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ fontSize: 14, color: sub }}>Loading...</div>
+      </div>
+    );
   }
 
   // SETUP SCREEN

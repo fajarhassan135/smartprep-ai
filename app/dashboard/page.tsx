@@ -21,8 +21,23 @@ type QuizSessionRow = {
   total_questions: number;
   completed_at: string;
   subject: string;
+  board: string | null;
   mode: string;
 };
+
+const SUBJECTS = [
+  "Mathematics",
+  "English",
+  "Computer Science",
+  "Physics",
+  "Business Studies",
+  "Economics",
+];
+
+/** "Cambridge IGCSE/A-Level" -> "Cambridge", anything else -> "Pak Board". */
+function shortBoard(board: string) {
+  return board.startsWith("Cambridge") ? "Cambridge" : "Pak Board";
+}
 
 export default function DashboardPage() {
   const { user, status } = useAuthGuard();
@@ -120,14 +135,21 @@ export default function DashboardPage() {
   const greeting = greetings[greetingIndex];
   const punchline = punchlines[punchlineIndex];
 
-  const subjects = [
-    { title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
-    { title: "English", board: "Pak Board", questions: 320, color: "var(--teal-badge)" },
-    { title: "Computer Science", board: "Cambridge", questions: 290, color: "rgba(115,54,53,0.1)" },
-    { title: "Physics", board: "Cambridge", questions: 260, color: "rgba(115,54,53,0.1)" },
-    { title: "Business Studies", board: "Pak Board", questions: 240, color: "var(--teal-badge)" },
-    { title: "Economics", board: "Cambridge", questions: 210, color: "rgba(255,96,55,0.1)" },
-  ];
+  // Built from the user's own sessions rather than invented counts. Subjects
+  // they have actually worked on come first; the rest stay as prompts to start.
+  const subjects = SUBJECTS.map((title) => {
+    const mine = sessions.filter((s) => s.subject === title);
+    const attempts = mine.length;
+    const avg = attempts
+      ? Math.round(mine.reduce((acc, s) => acc + (s.score / s.total_questions) * 100, 0) / attempts)
+      : null;
+    const best = attempts
+      ? Math.round(Math.max(...mine.map((s) => (s.score / s.total_questions) * 100)))
+      : null;
+    // `sessions` is ordered newest first, so the first match is the last board used.
+    const lastBoard = mine.find((s) => s.board)?.board ?? null;
+    return { title, attempts, avg, best, lastBoard };
+  }).sort((a, b) => b.attempts - a.attempts);
 
   if (status !== "ready" || !user) {
     return (
@@ -142,7 +164,7 @@ export default function DashboardPage() {
 
       <Navbar active="/dashboard" />
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
 
       <div style={{ marginBottom: 48 }}>
   <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 8 }}>Welcome back</p>
@@ -152,7 +174,7 @@ export default function DashboardPage() {
   <p style={{ fontSize: 14, color: sub }}>{punchline}</p>
 </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 16, marginBottom: 48 }}>
           {[
             { label: "Quizzes taken", value: loadingStats ? "..." : totalQuizzes.toString() },
             { label: "Avg score", value: loadingStats ? "..." : totalQuizzes ? `${avgScore}%` : "N/A" },
@@ -166,32 +188,43 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
 
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <h2 style={{ fontSize: 18, fontWeight: 500, color: text, letterSpacing: "-0.02em" }}>Your subjects</h2>
-              <a href="/past-papers" style={{ fontSize: 12, color: C.orange, textDecoration: "none" }}>View all →</a>
+              <a href="/quiz" style={{ fontSize: 12, color: C.orange, textDecoration: "none" }}>New quiz →</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {subjects.map((subject) => (
-                <div key={subject.title} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}
-                  onClick={() => window.location.href = "/quiz"}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "var(--accent-ink)", flexShrink: 0 }}>
-                    {subject.title[0]}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
-                    <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{subject.questions} questions available</div>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-                    <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: subject.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
-                      {subject.board}
-                    </span>
-                    <span style={{ fontSize: 11, color: C.orange }}>Start quiz →</span>
-                  </div>
-                </div>
-              ))}
+              {subjects.map((subject) => {
+                const board = subject.lastBoard ? shortBoard(subject.lastBoard) : null;
+                return (
+                  <a key={subject.title} href={`/quiz?subject=${encodeURIComponent(subject.title)}`}
+                    style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)", textDecoration: "none" }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.attempts ? "var(--accent-badge)" : "var(--bg-mid)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: subject.attempts ? "var(--accent-ink)" : sub, flexShrink: 0 }}>
+                      {subject.title[0]}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
+                      <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>
+                        {subject.attempts
+                          ? `${subject.attempts} quiz${subject.attempts === 1 ? "" : "zes"} · ${subject.avg}% average · ${subject.best}% best`
+                          : "Not tried yet"}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                      {board && (
+                        <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: board === "Cambridge" ? "var(--teal-badge)" : "var(--accent-badge)", color: board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
+                          {board}
+                        </span>
+                      )}
+                      <span style={{ fontSize: 11, color: C.orange }}>
+                        {subject.attempts ? "Practise again →" : "Start quiz →"}
+                      </span>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -236,10 +269,10 @@ export default function DashboardPage() {
 
         </div>
 
-        <div style={{ marginTop: 32, backgroundColor: C.orange, borderRadius: 20, padding: "32px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ marginTop: 32, backgroundColor: C.orange, borderRadius: 20, padding: "32px clamp(20px, 4vw, 40px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
           <div>
             <h3 style={{ fontSize: 20, fontWeight: 500, color: "#fff", marginBottom: 6, letterSpacing: "-0.02em" }}>Ready for a quiz?</h3>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>AI will generate questions from your past papers instantly.</p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>Pick a subject, board and difficulty — questions are generated instantly.</p>
           </div>
           <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: "#fff", color: C.orange, fontWeight: 500, fontSize: 14, borderRadius: 12, textDecoration: "none", flexShrink: 0 }}>
             Start quiz →

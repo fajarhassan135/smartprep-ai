@@ -27,6 +27,15 @@ type Question = {
   keywords?: string[];
 };
 
+const SUBJECT_OPTIONS = [
+  "Mathematics",
+  "English",
+  "Computer Science",
+  "Physics",
+  "Business Studies",
+  "Economics",
+];
+
 type Mode = "setup" | "quiz" | "results";
 type Verdict = "correct" | "partial" | "incorrect" | "";
 type Difficulty = "easy" | "medium" | "hard";
@@ -34,7 +43,15 @@ type Difficulty = "easy" | "medium" | "hard";
 export default function QuizPage() {
   const { status } = useAuthGuard();
   const [mode, setMode] = useState<Mode>("setup");
-  const [subject, setSubject] = useState("");
+  // Deep link from the dashboard: /quiz?subject=Physics arrives with the
+  // subject already chosen. Read lazily rather than with useSearchParams so the
+  // page does not need a Suspense boundary; the setup screen only renders once
+  // the auth guard resolves on the client, so this never runs during SSR.
+  const [subject, setSubject] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const requested = new URLSearchParams(window.location.search).get("subject");
+    return requested && SUBJECT_OPTIONS.includes(requested) ? requested : "";
+  });
   const [board, setBoard] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [questionCount, setQuestionCount] = useState(10);
@@ -264,7 +281,7 @@ export default function QuizPage() {
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Subject</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {["Mathematics", "English", "Computer Science", "Physics", "Business Studies", "Economics"].map((s) => (
+              {SUBJECT_OPTIONS.map((s) => (
                 <button key={s} onClick={() => { setSubject(s); playClick(); }} style={{ flex: "1 1 30%", padding: "12px 8px", borderRadius: 12, border: subject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: subject === s ? "rgba(255,96,55,0.08)" : bg, color: subject === s ? C.orange : text, fontWeight: subject === s ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                   {s}
                 </button>

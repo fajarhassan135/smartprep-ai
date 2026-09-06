@@ -2,7 +2,7 @@
 import { useTheme } from "../lib/ThemeContext";
 
 export default function HomePage() {
-  const { dark, toggleDark } = useTheme();
+  const { toggleDark } = useTheme();
 
   const C = {
     snow: "#F5F4ED",
@@ -17,11 +17,11 @@ export default function HomePage() {
     aquaDark: "#2a6b6d",
   };
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   const subjects = [
     { title: "Mathematics", sub: "Algebra · Calculus · Statistics", board: "Cambridge" },
@@ -56,8 +56,8 @@ export default function HomePage() {
             onClick={toggleDark}
             style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
           >
-            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
-              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: "var(--text)", position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
+              <div className="theme-switch-knob" />
             </div>
           </button>
           <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Log in</a>
@@ -109,17 +109,17 @@ export default function HomePage() {
       <section id="subjects" style={{ maxWidth: 900, margin: "0 auto", padding: "72px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Subjects</p>
         <h2 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Pick your subject & start</h2>
-        <div style={{ background: dark ? `linear-gradient(135deg, ${C.kite} 0%, ${C.kiteDeep} 60%, #1e3030 100%)` : `linear-gradient(135deg, ${C.snow} 0%, ${C.snowMist} 60%, rgba(160,201,203,0.27) 100%)`, borderRadius: 24, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ background: "var(--hero-panel)", borderRadius: 24, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
           {subjects.map((subject) => (
-            <div key={subject.title} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.6)", border: dark ? "0.5px solid rgba(255,255,255,0.1)" : "0.5px solid rgba(255,255,255,0.9)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,96,55,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: C.orangeDark, flexShrink: 0 }}>
+            <div key={subject.title} style={{ background: "var(--card)", border: "var(--glass-border)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,96,55,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "var(--accent-ink)", flexShrink: 0 }}>
                 {subject.title[0]}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
                 <div style={{ fontSize: 12, color: sub, marginTop: 3 }}>{subject.sub}</div>
               </div>
-              <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, background: subject.board === "Cambridge" ? "rgba(160,201,203,0.25)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? C.aquaDark : C.orangeDark, flexShrink: 0 }}>
+              <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, background: subject.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)", flexShrink: 0 }}>
                 {subject.board}
               </span>
             </div>

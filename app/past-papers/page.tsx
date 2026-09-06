@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
@@ -38,16 +37,15 @@ const papers: Paper[] = [
 ];
 
 export default function PastPapersPage() {
-  const { dark } = useTheme();
   const { status } = useAuthGuard();
   const [selectedSubject, setSelectedSubject] = useState("All");
   const [selectedBoard, setSelectedBoard] = useState("All");
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   const filtered = papers.filter((p) => {
     if (selectedSubject !== "All" && p.subject !== selectedSubject) return false;
@@ -107,9 +105,9 @@ export default function PastPapersPage() {
         {/* PAPERS GRID */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
           {filtered.map((paper, i) => (
-            <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 16, padding: "24px", backdropFilter: "blur(16px)" }}>
+            <div key={i} style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "24px", backdropFilter: "blur(16px)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: paper.board === "Cambridge" ? "rgba(160,201,203,0.25)" : "rgba(255,96,55,0.1)", color: paper.board === "Cambridge" ? "#2a6b6d" : C.orangeDark }}>
+                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: paper.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: paper.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
                   {paper.board}
                 </span>
                 <span style={{ fontSize: 12, color: sub }}>{paper.year}</span>

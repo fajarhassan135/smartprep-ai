@@ -16,7 +16,7 @@ const C = {
 
 export default function SignupPage() {
   const router = useRouter();
-  const { dark, toggleDark } = useTheme();
+  const { toggleDark } = useTheme();
   const [name, setName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,12 +26,12 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const bg = dark ? C.kite : C.snow;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
-  const inputBorder = dark ? "rgba(245,244,237,0.15)" : "rgba(53,30,28,0.15)";
-  const inputBg = dark ? "rgba(255,255,255,0.06)" : "#fff";
+  const bg = "var(--bg)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
+  const inputBorder = "var(--border-strong)";
+  const inputBg = "var(--input-bg)";
 
   async function handleSignup() {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
@@ -64,8 +64,8 @@ export default function SignupPage() {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.3s", position: "relative" }}>
         <button type="button" onClick={toggleDark} style={{ position: "absolute", top: 24, right: 40, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
-            <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+          <div className="theme-switch">
+            <div className="theme-switch-knob" />
           </div>
         </button>
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
@@ -98,8 +98,8 @@ export default function SignupPage() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
           <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
-              <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+            <div className="theme-switch">
+              <div className="theme-switch-knob" />
             </div>
           </button>
           <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>
@@ -119,7 +119,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: C.orangeDark }}>
+            <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: "var(--accent-ink)" }}>
               {error}
             </div>
           )}

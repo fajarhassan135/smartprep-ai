@@ -1,38 +1,34 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 
 type ThemeContextType = {
-  dark: boolean;
   toggleDark: () => void;
 };
 
 const ThemeContext = createContext<ThemeContextType>({
-  dark: false,
   toggleDark: () => {},
 });
 
+/**
+ * The theme is a `dark` class on <html>, set by the blocking script in
+ * app/layout.tsx before the first paint. Colours come from CSS variables keyed
+ * off that class, so nothing here needs React state — which is what used to
+ * cause the flash of light theme on every navigation.
+ */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
-    setDark(isDark);
-  }, []);
-
   function toggleDark() {
-    const next = !dark;
-    setDark(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+    const root = document.documentElement;
+    const next = !root.classList.contains("dark");
+    root.classList.toggle("dark", next);
+    try {
+      localStorage.setItem("theme", next ? "dark" : "light");
+    } catch {
+      // Private mode or blocked storage: the theme just won't persist.
     }
   }
 
   return (
-    <ThemeContext.Provider value={{ dark, toggleDark }}>
+    <ThemeContext.Provider value={{ toggleDark }}>
       {children}
     </ThemeContext.Provider>
   );

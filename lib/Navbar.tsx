@@ -13,14 +13,14 @@ const C = {
 };
 
 export default function Navbar({ active }: { active?: string }) {
-  const { dark, toggleDark } = useTheme();
+  const { toggleDark } = useTheme();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [initial, setInitial] = useState("?");
 
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const bg = dark ? C.kite : C.snow;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const bg = "var(--bg)";
+  const border = "var(--border)";
 
   useEffect(() => {
     async function loadAvatar() {
@@ -85,8 +85,8 @@ export default function Navbar({ active }: { active?: string }) {
           </a>
         ))}
         <button onClick={handleToggleClick} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Toggle dark mode">
-          <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: dark ? C.snow : C.kite, position: "relative", transition: "background 0.3s" }}>
-            <div style={{ width: 18, height: 18, borderRadius: 999, backgroundColor: dark ? C.kite : C.snow, position: "absolute", top: 3, left: dark ? 23 : 3, transition: "left 0.3s" }} />
+          <div className="theme-switch">
+            <div className="theme-switch-knob" />
           </div>
         </button>
         <a href="/profile" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>

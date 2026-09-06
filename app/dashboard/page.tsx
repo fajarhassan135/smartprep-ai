@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
 
@@ -26,16 +25,15 @@ type QuizSessionRow = {
 };
 
 export default function DashboardPage() {
-  const { dark } = useTheme();
   const { user, status } = useAuthGuard();
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   useEffect(() => {
     if (!user) return;
@@ -68,13 +66,26 @@ export default function DashboardPage() {
 
   function calcStreak() {
     if (!sessions.length) return 0;
-    const dates = [...new Set(sessions.map((s) => new Date(s.completed_at).toDateString()))];
+
+    const dayMs = 1000 * 60 * 60 * 24;
+    const startOfDay = (value: string | Date) => {
+      const d = new Date(value);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime();
+    };
+
+    const days = [...new Set(sessions.map((s) => startOfDay(s.completed_at)))].sort((a, b) => b - a);
+    const today = startOfDay(new Date());
+
+    // A streak has to be live. Studying five days straight last month is not a
+    // current streak, so unless the most recent day is today or yesterday the
+    // count is zero.
+    const gapFromToday = (today - days[0]) / dayMs;
+    if (gapFromToday > 1) return 0;
+
     let streak = 1;
-    for (let i = 0; i < dates.length - 1; i++) {
-      const d1 = new Date(dates[i]);
-      const d2 = new Date(dates[i + 1]);
-      const diff = (d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24);
-      if (diff === 1) streak++;
+    for (let i = 0; i < days.length - 1; i++) {
+      if ((days[i] - days[i + 1]) / dayMs === 1) streak++;
       else break;
     }
     return streak;
@@ -100,15 +111,21 @@ export default function DashboardPage() {
     "Let's get this bag of marks.",
   ];
   
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
-  const punchline = punchlines[Math.floor(Math.random() * punchlines.length)];
+  // Picked once per visit rather than on every render, so the greeting stops
+  // changing under the reader whenever something else updates. Safe to
+  // randomise in the initialiser: this block only renders after the auth guard
+  // resolves on the client, so it is never part of the server output.
+  const [greetingIndex] = useState(() => Math.floor(Math.random() * greetings.length));
+  const [punchlineIndex] = useState(() => Math.floor(Math.random() * punchlines.length));
+  const greeting = greetings[greetingIndex];
+  const punchline = punchlines[punchlineIndex];
 
   const subjects = [
     { title: "Mathematics", board: "Cambridge", questions: 480, color: "rgba(255,96,55,0.1)" },
-    { title: "English", board: "Pak Board", questions: 320, color: "rgba(160,201,203,0.2)" },
+    { title: "English", board: "Pak Board", questions: 320, color: "var(--teal-badge)" },
     { title: "Computer Science", board: "Cambridge", questions: 290, color: "rgba(115,54,53,0.1)" },
     { title: "Physics", board: "Cambridge", questions: 260, color: "rgba(115,54,53,0.1)" },
-    { title: "Business Studies", board: "Pak Board", questions: 240, color: "rgba(160,201,203,0.2)" },
+    { title: "Business Studies", board: "Pak Board", questions: 240, color: "var(--teal-badge)" },
     { title: "Economics", board: "Cambridge", questions: 210, color: "rgba(255,96,55,0.1)" },
   ];
 
@@ -158,9 +175,9 @@ export default function DashboardPage() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {subjects.map((subject) => (
-                <div key={subject.title} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}
+                <div key={subject.title} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}
                   onClick={() => window.location.href = "/quiz"}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: C.orangeDark, flexShrink: 0 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, backgroundColor: subject.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "var(--accent-ink)", flexShrink: 0 }}>
                     {subject.title[0]}
                   </div>
                   <div style={{ flex: 1 }}>
@@ -168,7 +185,7 @@ export default function DashboardPage() {
                     <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>{subject.questions} questions available</div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
-                    <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: subject.board === "Cambridge" ? "rgba(160,201,203,0.25)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? "#2a6b6d" : C.orangeDark }}>
+                    <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: subject.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
                       {subject.board}
                     </span>
                     <span style={{ fontSize: 11, color: C.orange }}>Start quiz →</span>
@@ -187,7 +204,7 @@ export default function DashboardPage() {
               {loadingStats ? (
                 <div style={{ fontSize: 14, color: sub, padding: "20px" }}>Loading...</div>
               ) : recentSessions.length === 0 ? (
-                <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "32px 20px", textAlign: "center" }}>
+                <div style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "32px 20px", textAlign: "center" }}>
                   <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 6 }}>No quizzes yet</div>
                   <div style={{ fontSize: 12, color: sub, marginBottom: 16 }}>Take your first quiz to see activity here!</div>
                   <a href="/quiz" style={{ fontSize: 13, fontWeight: 500, color: C.orange, textDecoration: "none" }}>Start a quiz →</a>
@@ -197,7 +214,7 @@ export default function DashboardPage() {
                   const pct = Math.round((session.score / session.total_questions) * 100);
                   const date = new Date(session.completed_at).toLocaleDateString("en-US", { day: "numeric", month: "short" });
                   return (
-                    <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.7)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", backdropFilter: "blur(16px)" }}>
+                    <div key={i} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", backdropFilter: "blur(16px)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div>
                           <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{session.subject}</div>

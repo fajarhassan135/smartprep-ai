@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 
 const C = {
   snow: "#F5F4ED", kite: "#351E1C", garnet: "#733635",
@@ -17,13 +16,12 @@ type State = "checking" | "verified" | "failed";
  * the link already established.
  */
 export default function VerifiedPage() {
-  const { dark } = useTheme();
   const [state, setState] = useState<State>("checking");
   const [message, setMessage] = useState("");
 
-  const bg = dark ? C.kite : C.snow;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
+  const bg = "var(--bg)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
 
   useEffect(() => {
     async function confirm() {

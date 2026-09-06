@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
+import { formatMarks } from "../../lib/formatMarks";
 
 const C = {
   snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
@@ -20,17 +20,16 @@ type QuizSessionRow = {
 };
 
 export default function HistoryPage() {
-  const { dark } = useTheme();
   const { user, status } = useAuthGuard();
   const [sessions, setSessions] = useState<QuizSessionRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("All");
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   useEffect(() => {
     if (!user) return;
@@ -109,7 +108,7 @@ export default function HistoryPage() {
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading your quiz history...</div>
         ) : filtered.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px", background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", borderRadius: 20, border: `1px solid ${border}` }}>
+          <div style={{ textAlign: "center", padding: "60px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
             <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No quizzes yet</div>
             <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>Take your first quiz to see your history here!</div>
             <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
@@ -123,7 +122,7 @@ export default function HistoryPage() {
               const date = new Date(session.completed_at).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
               const time = new Date(session.completed_at).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
               return (
-                <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 16, padding: "20px 24px", backdropFilter: "blur(16px)" }}>
+                <div key={i} style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "20px 24px", backdropFilter: "blur(16px)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div>
                       <div style={{ fontSize: 15, fontWeight: 500, color: text, marginBottom: 4 }}>{session.subject}</div>
@@ -138,7 +137,7 @@ export default function HistoryPage() {
                     </div>
                     <div style={{ textAlign: "right" }}>
                       <div style={{ fontSize: 24, fontWeight: 500, color: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A" }}>{pct}%</div>
-                      <div style={{ fontSize: 11, color: sub }}>{session.score}/{session.total_questions} correct</div>
+                      <div style={{ fontSize: 11, color: sub }}>{formatMarks(session.score)}/{session.total_questions} marks</div>
                     </div>
                   </div>
                   <div style={{ height: 4, backgroundColor: border, borderRadius: 20 }}>

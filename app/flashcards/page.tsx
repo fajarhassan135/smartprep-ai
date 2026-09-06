@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { authHeader } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
@@ -20,7 +19,6 @@ const defaultCards = [
 ];
 
 export default function FlashcardsPage() {
-  const { dark } = useTheme();
   const { status } = useAuthGuard();
   const [cards, setCards] = useState(defaultCards);
   const [current, setCurrent] = useState(0);
@@ -33,11 +31,11 @@ export default function FlashcardsPage() {
   const [aiSubject, setAiSubject] = useState("");
   const [generateSuccess, setGenerateSuccess] = useState(false);
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   function addCard() {
     if (!newFront || !newBack) return;
@@ -56,10 +54,15 @@ export default function FlashcardsPage() {
         body: JSON.stringify({ subject: aiSubject }),
       });
       const data = await res.json();
+      if (!res.ok || !Array.isArray(data.cards) || data.cards.length === 0) {
+        alert(data.error || "Failed to generate flashcards.");
+        setGenerating(false);
+        return;
+      }
       setCards([...cards, ...data.cards]);
       setGenerateSuccess(true);
     } catch {
-      alert("Failed to generate flashcards");
+      alert("Could not reach the flashcard generator. Check your connection and try again.");
     }
     setGenerating(false);
   }
@@ -108,7 +111,7 @@ export default function FlashcardsPage() {
         {mode === "browse" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
             {cards.map((card, i) => (
-              <div key={i} style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 16, padding: "24px", backdropFilter: "blur(16px)" }}>
+              <div key={i} style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "24px", backdropFilter: "blur(16px)" }}>
                 <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, backgroundColor: bgMid, color: sub, display: "inline-block", marginBottom: 16 }}>{card.subject}</span>
                 <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 12 }}>{card.front}</div>
                 <div style={{ fontSize: 13, color: sub, lineHeight: 1.6, paddingTop: 12, borderTop: `1px solid ${border}` }}>{card.back}</div>
@@ -131,7 +134,7 @@ export default function FlashcardsPage() {
                 <div
                   className="flashcard-face front"
                   style={{
-                    background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.9)",
+                    background: "var(--card-solid)",
                     border: `1px solid ${border}`,
                     backdropFilter: "blur(16px)",
                   }}
@@ -180,15 +183,15 @@ export default function FlashcardsPage() {
               <h3 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 20 }}>Create manually</h3>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Front (question)</label>
-                <textarea value={newFront} onChange={(e) => setNewFront(e.target.value)} placeholder="Enter the question..." style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", minHeight: 80, resize: "vertical", outline: "none", boxSizing: "border-box" }} />
+                <textarea value={newFront} onChange={(e) => setNewFront(e.target.value)} placeholder="Enter the question..." style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", minHeight: 80, resize: "vertical", outline: "none", boxSizing: "border-box" }} />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Back (answer)</label>
-                <textarea value={newBack} onChange={(e) => setNewBack(e.target.value)} placeholder="Enter the answer..." style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", minHeight: 80, resize: "vertical", outline: "none", boxSizing: "border-box" }} />
+                <textarea value={newBack} onChange={(e) => setNewBack(e.target.value)} placeholder="Enter the answer..." style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", minHeight: 80, resize: "vertical", outline: "none", boxSizing: "border-box" }} />
               </div>
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Subject</label>
-                <input type="text" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} placeholder="e.g. Mathematics" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                <input type="text" value={newSubject} onChange={(e) => setNewSubject(e.target.value)} placeholder="e.g. Mathematics" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
               </div>
               <button onClick={addCard} style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
                 Add card
@@ -199,7 +202,7 @@ export default function FlashcardsPage() {
               <h3 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 20 }}>Generate with AI</h3>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Subject or topic</label>
-                <input type="text" value={aiSubject} onChange={(e) => setAiSubject(e.target.value)} placeholder="e.g. Quadratic equations" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                <input type="text" value={aiSubject} onChange={(e) => setAiSubject(e.target.value)} placeholder="e.g. Quadratic equations" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
               </div>
               <button onClick={generateAICards} disabled={generating || !aiSubject} style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: generating ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: generating ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: !aiSubject ? 0.5 : 1 }}>
                 {generating ? "Generating..." : "Generate 5 cards with AI"}

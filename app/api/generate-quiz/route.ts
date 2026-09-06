@@ -1,6 +1,7 @@
 import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
+import { rateLimit } from "../../../lib/rateLimit";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -12,11 +13,48 @@ const difficultyInstructions: Record<string, string> = {
   hard: "Questions should be challenging, requiring deeper analysis, multi-step reasoning, or synthesis of multiple concepts. Use the kind of difficulty expected in the hardest past-paper questions for this board and subject.",
 };
 
+type LooseQuestion = {
+  type?: unknown;
+  question?: unknown;
+  options?: unknown;
+  answer?: unknown;
+  model_answer?: unknown;
+};
+
+/** An MCQ needs four options and a letter answer; a short answer needs a model answer. */
+function isUsableQuestion(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false;
+  const q = value as LooseQuestion;
+  if (typeof q.question !== "string" || !q.question.trim()) return false;
+
+  if (q.type === "mcq") {
+    return (
+      Array.isArray(q.options) &&
+      q.options.length === 4 &&
+      q.options.every((o) => typeof o === "string") &&
+      typeof q.answer === "string" &&
+      ["A", "B", "C", "D"].includes(q.answer.trim().toUpperCase())
+    );
+  }
+  if (q.type === "short") {
+    return typeof q.model_answer === "string" && q.model_answer.trim().length > 0;
+  }
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const auth = await requireVerifiedUser(req);
     if (!auth.ok) {
       return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
+
+    const limited = rateLimit(`quiz:${auth.user.id}`, 20, 60_000);
+    if (!limited.allowed) {
+      return NextResponse.json(
+        { error: "You're going a bit fast. Try again in a moment." },
+        { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
+      );
     }
     const { subject, board, count, difficulty } = await req.json();
 
@@ -41,7 +79,28 @@ export async function POST(req: NextRequest) {
 
     const raw = completion.choices[0]?.message?.content || "[]";
     const cleaned = raw.replace(/```json|```/g, "").trim();
-    const questions = JSON.parse(cleaned);
+
+    // The model is asked for JSON but is not guaranteed to give it, so parse
+    // defensively and keep only questions the quiz screen can actually render.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch {
+      return NextResponse.json(
+        { error: "The question generator returned something unreadable. Please try again." },
+        { status: 502 }
+      );
+    }
+
+    const questions = Array.isArray(parsed) ? parsed.filter(isUsableQuestion) : [];
+
+    if (questions.length === 0) {
+      return NextResponse.json(
+        { error: "No usable questions came back. Please try again." },
+        { status: 502 }
+      );
+    }
+
     return NextResponse.json({ questions });
   } catch (error) {
     console.error(error);

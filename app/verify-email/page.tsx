@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 
 const C = {
   snow: "#F5F4ED", kite: "#351E1C", garnet: "#733635",
@@ -13,16 +12,15 @@ const C = {
  * They can resend the link or sign out; there is no way past this screen.
  */
 export default function VerifyEmailPage() {
-  const { dark } = useTheme();
   const [email, setEmail] = useState("");
   const [checking, setChecking] = useState(true);
   const [sending, setSending] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
-  const bg = dark ? C.kite : C.snow;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
+  const bg = "var(--bg)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
 
   useEffect(() => {
     async function load() {

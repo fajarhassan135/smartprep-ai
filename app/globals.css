@@ -15,7 +15,92 @@ html {
 
 body {
   font-family: "DM Sans", sans-serif;
+  background-color: var(--bg);
 }
+
+/* ---------------------------------------------------------------
+   Theme tokens.
+
+   Colours live here rather than in React state so the first paint is
+   already correct. The blocking script in app/layout.tsx puts `.dark`
+   on <html> before anything renders, which means no white flash on
+   navigation while React catches up.
+   --------------------------------------------------------------- */
+:root {
+  --bg: #F5F4ED;
+  --bg-mid: #ECECDC;
+  --text: #351E1C;
+  --sub: #733635;
+  --border: rgba(53, 30, 28, 0.08);
+  --border-strong: rgba(53, 30, 28, 0.15);
+  --card: rgba(255, 255, 255, 0.7);
+  --card-strong: rgba(255, 255, 255, 0.8);
+  --input-bg: #ffffff;
+  --accent: #FF6037;
+  /* Readable-on-the-current-background versions of the two accent inks.
+     The light-mode values are too dark to see against the dark surface,
+     so each mode gets its own. */
+  --accent-ink: #B2401F;
+  --teal-ink: #1F5557;
+  --teal-badge: rgba(160, 201, 203, 0.25);
+  --accent-badge: rgba(255, 96, 55, 0.1);
+  --toggle-track: #351E1C;
+  --toggle-knob: #F5F4ED;
+  --toggle-knob-x: 3px;
+  --card-solid: rgba(255, 255, 255, 0.9);
+  --glass-border: 0.5px solid rgba(255, 255, 255, 0.9);
+  --hero-panel: linear-gradient(135deg, #F5F4ED 0%, #ECECDC 60%, rgba(160, 201, 203, 0.27) 100%);
+}
+
+html.dark {
+  --bg: #351E1C;
+  --bg-mid: #2a1715;
+  --text: #F5F4ED;
+  --sub: #C49797;
+  --border: rgba(245, 244, 237, 0.08);
+  --border-strong: rgba(245, 244, 237, 0.15);
+  --card: rgba(255, 255, 255, 0.06);
+  --card-strong: rgba(255, 255, 255, 0.06);
+  --input-bg: rgba(255, 255, 255, 0.06);
+  --accent-ink: #FF9270;
+  --teal-ink: #9CD1D3;
+  --teal-badge: rgba(160, 201, 203, 0.18);
+  --accent-badge: rgba(255, 96, 55, 0.16);
+  --toggle-track: #F5F4ED;
+  --toggle-knob: #351E1C;
+  --toggle-knob-x: 23px;
+  --card-solid: rgba(255, 255, 255, 0.06);
+  --glass-border: 0.5px solid rgba(255, 255, 255, 0.1);
+  --hero-panel: linear-gradient(135deg, #351E1C 0%, #2a1715 60%, #1e3030 100%);
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* The theme switch is styled from CSS for the same reason as the colours:
+   driving the knob from React state made it jump on every page load. */
+.theme-switch {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background-color: var(--toggle-track);
+  position: relative;
+  transition: background-color 0.3s;
+}
+
+.theme-switch-knob {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background-color: var(--toggle-knob);
+  position: absolute;
+  top: 3px;
+  left: var(--toggle-knob-x);
+  transition: left 0.3s, background-color 0.3s;
+}
+
 
 .glass-light {
   background: rgba(255, 255, 255, 0.55);

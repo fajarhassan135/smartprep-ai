@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
@@ -20,17 +19,16 @@ type LeaderboardRow = {
 };
 
 export default function LeaderboardPage() {
-  const { dark } = useTheme();
   const { status } = useAuthGuard();
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   useEffect(() => {
     async function load() {
@@ -72,7 +70,7 @@ export default function LeaderboardPage() {
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading leaderboard...</div>
         ) : rows.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "60px", background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", borderRadius: 20, border: `1px solid ${border}` }}>
+          <div style={{ textAlign: "center", padding: "60px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
             <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No rankings yet</div>
             <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>Be the first to take a quiz and claim the top spot!</div>
             <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
@@ -87,7 +85,7 @@ export default function LeaderboardPage() {
                 {top3.map((row, i) => {
                   const rank = i + 1;
                   return (
-                    <div key={row.user_id} style={{ background: rank === 1 ? `linear-gradient(135deg, ${C.orange}, ${C.orangeDark})` : dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${rank === 1 ? C.orange : border}`, borderRadius: 20, padding: "28px 20px", textAlign: "center", backdropFilter: "blur(16px)" }}>
+                    <div key={row.user_id} style={{ background: rank === 1 ? `linear-gradient(135deg, ${C.orange}, ${C.orangeDark})` : "var(--card-strong)", border: `1px solid ${rank === 1 ? C.orange : border}`, borderRadius: 20, padding: "28px 20px", textAlign: "center", backdropFilter: "blur(16px)" }}>
                       <div style={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: rank === 1 ? "rgba(255,255,255,0.85)" : sub, marginBottom: 12 }}>Rank {rank}</div>
                       <div style={{ fontSize: 15, fontWeight: 500, color: rank === 1 ? "#fff" : text, marginBottom: 4 }}>
                         {row.display_name || "Anonymous"} {row.user_id === currentUserId && <span style={{ fontSize: 11 }}>(you)</span>}
@@ -107,7 +105,7 @@ export default function LeaderboardPage() {
                 const rank = i + 4;
                 const isYou = row.user_id === currentUserId;
                 return (
-                  <div key={row.user_id} style={{ background: isYou ? "rgba(255,96,55,0.08)" : dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px 24px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }}>
+                  <div key={row.user_id} style={{ background: isYou ? "rgba(255,96,55,0.08)" : "var(--card-strong)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px 24px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }}>
                     <div style={{ width: 32, height: 32, borderRadius: 999, backgroundColor: bgMid, color: sub, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
                       {rank}
                     </div>

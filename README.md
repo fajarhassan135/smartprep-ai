@@ -1,41 +1,50 @@
-<<<<<<< HEAD
-# smartprep-ai
-An Ai generated platform that will help Cambridge and Fsc\Ics students prepare for their CIES and Board exams
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SmartPrep AI
 
-## Getting Started
+An AI study platform for Cambridge (IGCSE / A-Level) and Pakistan Board
+(Matric / FSc) students preparing for their exams.
 
-First, run the development server:
+## What it does
+
+- **AI quizzes** — generated per subject, board and difficulty, in practice or
+  timed exam mode, with short answers marked by AI.
+- **Flashcards** — hand-written or AI-generated per subject.
+- **Past papers** — browse by subject and board.
+- **Progress** — quiz history, per-subject stats, study streak, leaderboard.
+
+## Running it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env.local`:
 
-## Learn More
+```
+NEXT_PUBLIC_SUPABASE_URL=       # Supabase project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Supabase anon key (public, safe in the browser)
+SUPABASE_SERVICE_ROLE_KEY=      # server only — never expose to the client
+GROQ_API_KEY=                   # server only
+ADMIN_EMAILS=                   # comma-separated emails allowed to use /admin
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Supabase setup
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Two settings live in the Supabase dashboard, not in this repo:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Authentication → Sign In / Providers → Email → Confirm email** must be
+   **on**. The app refuses access to accounts with an unconfirmed email, and
+   without this setting no confirmation mail is ever sent.
+2. **Row Level Security** must be enabled on `profiles` and `quiz_sessions`,
+   and the `avatars` and `past-papers` storage buckets need policies. The app
+   talks to Supabase from the browser with the anon key, so these policies are
+   the real access control.
 
-## Deploy on Vercel
+## Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> 82272a2 (initial commit)
+Next.js 16 (App Router), React 19, TypeScript, Supabase (auth, Postgres,
+storage), Groq (Llama 3.3 70B) for generation and marking.

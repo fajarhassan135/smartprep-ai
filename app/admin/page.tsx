@@ -9,12 +9,6 @@ const C = {
 };
 
 export default function AdminPage() {
-  const [dark, setDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("darkMode") === "true";
-    }
-    return false;
-  });
   const [subject, setSubject] = useState("");
   const [board, setBoard] = useState("");
   const [year, setYear] = useState("");
@@ -25,18 +19,11 @@ export default function AdminPage() {
   const [authState, setAuthState] = useState<"checking" | "denied" | "ok">("checking");
   const [authError, setAuthError] = useState("");
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
-
-  useEffect(() => {
-    queueMicrotask(() => {
-      const saved = localStorage.getItem("darkMode") === "true";
-      setDark(saved);
-    });
-  }, []);
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   // The server decides who is an admin; this only controls what the page shows.
   // Every upload is re-checked server side, so a forged answer here buys nothing.
@@ -137,12 +124,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
+        <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
             <div>
               <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Subject</label>
-              <select value={subject} onChange={(e) => setSubject(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
+              <select value={subject} onChange={(e) => setSubject(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
                 <option value="">Select subject</option>
                 <option>Mathematics</option>
                 <option>English</option>
@@ -151,7 +138,7 @@ export default function AdminPage() {
             </div>
             <div>
               <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Board</label>
-              <select value={board} onChange={(e) => setBoard(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
+              <select value={board} onChange={(e) => setBoard(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
                 <option value="">Select board</option>
                 <option>Cambridge IGCSE/A-Level</option>
                 <option>Pakistan Board (Matric/FSc)</option>
@@ -162,11 +149,11 @@ export default function AdminPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
             <div>
               <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Year</label>
-              <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2023" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+              <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2023" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
             </div>
             <div>
               <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Paper number</label>
-              <input type="text" value={paper} onChange={(e) => setPaper(e.target.value)} placeholder="e.g. Paper 1" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+              <input type="text" value={paper} onChange={(e) => setPaper(e.target.value)} placeholder="e.g. Paper 1" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
             </div>
           </div>
 

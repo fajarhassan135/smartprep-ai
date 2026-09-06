@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { supabase, authHeader } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import Navbar from "../../lib/Navbar";
+import { formatMarks } from "../../lib/formatMarks";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
@@ -28,10 +28,10 @@ type Question = {
 };
 
 type Mode = "setup" | "quiz" | "results";
+type Verdict = "correct" | "partial" | "incorrect" | "";
 type Difficulty = "easy" | "medium" | "hard";
 
 export default function QuizPage() {
-  const { dark } = useTheme();
   const { status } = useAuthGuard();
   const [mode, setMode] = useState<Mode>("setup");
   const [subject, setSubject] = useState("");
@@ -43,8 +43,10 @@ export default function QuizPage() {
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<string[]>([]);
+  const [verdicts, setVerdicts] = useState<Verdict[]>([]);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [setupError, setSetupError] = useState("");
   const [grading, setGrading] = useState(false);
   const [shortAnswer, setShortAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -52,11 +54,11 @@ export default function QuizPage() {
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   // The exam timer fires from inside an interval that was created when the quiz
   // started, so it cannot read `score` from that stale closure. Every caller
@@ -124,6 +126,7 @@ export default function QuizPage() {
   async function generateQuiz() {
     if (!subject || !board) return;
     setLoading(true);
+    setSetupError("");
     try {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
@@ -131,15 +134,25 @@ export default function QuizPage() {
         body: JSON.stringify({ subject, board, count: questionCount, difficulty }),
       });
       const data = await res.json();
+
+      // The route validates the model's output, but a 502 or an empty list
+      // still has to be shown rather than crashing on data.questions.length.
+      if (!res.ok || !Array.isArray(data.questions) || data.questions.length === 0) {
+        setSetupError(data.error || "Could not generate a quiz. Please try again.");
+        setLoading(false);
+        return;
+      }
+
       setQuestions(data.questions);
       finishedRef.current = false;
       setAnswers(new Array(data.questions.length).fill(""));
       setFeedback(new Array(data.questions.length).fill(""));
+      setVerdicts(new Array(data.questions.length).fill(""));
       if (examMode === "exam") setTimeLeft(questionCount * 90);
       setMode("quiz");
       setCurrentQ(0);
     } catch {
-      alert("Failed to generate quiz. Please try again.");
+      setSetupError("Could not reach the question generator. Check your connection and try again.");
     }
     setLoading(false);
   }
@@ -157,6 +170,9 @@ export default function QuizPage() {
     const newFeedback = [...feedback];
     newFeedback[currentQ] = correct ? "correct" : "incorrect";
     setFeedback(newFeedback);
+    const newVerdicts = [...verdicts];
+    newVerdicts[currentQ] = correct ? "correct" : "incorrect";
+    setVerdicts(newVerdicts);
   }
 
   async function checkShort() {
@@ -176,12 +192,21 @@ export default function QuizPage() {
         }),
       });
       const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to grade answer.");
+        setGrading(false);
+        return;
+      }
       const newAnswers = [...answers];
       newAnswers[currentQ] = shortAnswer;
       setAnswers(newAnswers);
       const newFeedback = [...feedback];
       newFeedback[currentQ] = data.feedback;
       setFeedback(newFeedback);
+      const newVerdicts = [...verdicts];
+      newVerdicts[currentQ] =
+        data.verdict === "correct" ? "correct" : data.verdict === "partial" ? "partial" : "incorrect";
+      setVerdicts(newVerdicts);
       if (data.verdict === "correct") setScore((s) => s + 1);
       else if (data.verdict === "partial") setScore((s) => s + 0.5);
       setAnswered(true);
@@ -295,6 +320,12 @@ export default function QuizPage() {
             </div>
           </div>
 
+          {setupError && (
+            <div style={{ backgroundColor: "rgba(226,75,74,0.1)", border: "1px solid rgba(226,75,74,0.3)", borderRadius: 12, padding: "14px 18px", marginBottom: 16, fontSize: 13, color: "#E24B4A" }}>
+              {setupError}
+            </div>
+          )}
+
           <button onClick={generateQuiz} disabled={!subject || !board || loading} style={{ width: "100%", padding: "15px", borderRadius: 12, backgroundColor: !subject || !board ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: !subject || !board ? "not-allowed" : "pointer", fontFamily: "inherit", opacity: !subject || !board ? 0.5 : 1 }}>
             {loading ? "Generating quiz..." : "Generate quiz →"}
           </button>
@@ -336,7 +367,7 @@ export default function QuizPage() {
             <span style={{ fontSize: 11, color: sub }}>{subject} · {board} · {difficulty}</span>
           </div>
 
-          <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 18, padding: "28px 32px", marginBottom: 24, backdropFilter: "blur(16px)" }}>
+          <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 18, padding: "28px 32px", marginBottom: 24, backdropFilter: "blur(16px)" }}>
             <p style={{ fontSize: 17, fontWeight: 500, color: text, lineHeight: 1.65, margin: 0 }}>{q.question}</p>
           </div>
 
@@ -367,7 +398,7 @@ export default function QuizPage() {
                 onChange={(e) => setShortAnswer(e.target.value)}
                 disabled={answered}
                 placeholder="Write your answer here..."
-                style={{ width: "100%", minHeight: 120, padding: "14px 16px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }}
+                style={{ width: "100%", minHeight: 120, padding: "14px 16px", borderRadius: 12, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", resize: "vertical", outline: "none", boxSizing: "border-box" }}
               />
               {!answered && (
                 <button onClick={checkShort} disabled={grading || !shortAnswer.trim()} style={{ marginTop: 12, padding: "12px 24px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
@@ -419,13 +450,14 @@ export default function QuizPage() {
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz complete</p>
         <h1 style={{ fontSize: 56, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>{percentage}%</h1>
-        <p style={{ fontSize: 16, color: sub, marginBottom: 48 }}>{getMessage()}</p>
+        <p style={{ fontSize: 16, color: sub, marginBottom: 8 }}>{getMessage()}</p>
+        <p style={{ fontSize: 13, color: sub, marginBottom: 48 }}>{formatMarks(score)} of {questions.length} marks · partial answers score half</p>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 48 }}>
           {[
-            { label: "Correct", value: Math.round(score), color: "#639922" },
-            { label: "Incorrect", value: questions.length - Math.round(score), color: "#E24B4A" },
-            { label: "Total", value: questions.length, color: C.orange },
+            { label: "Correct", value: verdicts.filter((v) => v === "correct").length, color: "#639922" },
+            { label: "Partial", value: verdicts.filter((v) => v === "partial").length, color: C.orange },
+            { label: "Incorrect", value: verdicts.filter((v) => v === "incorrect").length, color: "#E24B4A" },
           ].map((s) => (
             <div key={s.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px", border: `1px solid ${border}` }}>
               <div style={{ fontSize: 28, fontWeight: 500, color: s.color }}>{s.value}</div>
@@ -435,7 +467,7 @@ export default function QuizPage() {
         </div>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => { finishedRef.current = false; setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={() => { finishedRef.current = false; setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setVerdicts([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
             Try again
           </button>
           <a href="/dashboard" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: bgMid, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>

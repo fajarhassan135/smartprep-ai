@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
-import { useTheme } from "../../lib/ThemeContext";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
 
@@ -11,7 +10,6 @@ const C = {
 };
 
 export default function ProfilePage() {
-  const { dark } = useTheme();
   const { user, status } = useAuthGuard();
   const [fullName, setFullName] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -29,11 +27,11 @@ export default function ProfilePage() {
   const [deleting, setDeleting] = useState(false);
   const [showAvatarPreview, setShowAvatarPreview] = useState(false);
 
-  const bg = dark ? C.kite : C.snow;
-  const bgMid = dark ? C.kiteDeep : C.snowMist;
-  const text = dark ? C.snow : C.kite;
-  const sub = dark ? C.garnetLight : C.garnet;
-  const border = dark ? "rgba(245,244,237,0.08)" : "rgba(53,30,28,0.08)";
+  const bg = "var(--bg)";
+  const bgMid = "var(--bg-mid)";
+  const text = "var(--text)";
+  const sub = "var(--sub)";
+  const border = "var(--border)";
 
   useEffect(() => {
     if (!user) return;
@@ -106,8 +104,14 @@ export default function ProfilePage() {
     if (!user || !e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
+    // Extension comes from the validated type, never from the filename, so a
+    // crafted name cannot decide where the file lands or what it is served as.
+    const allowedTypes: Record<string, string> = {
+      "image/jpeg": "jpg",
+      "image/png": "png",
+      "image/webp": "webp",
+    };
+    if (!allowedTypes[file.type]) {
       setErrorMsg("Please upload a JPEG, PNG, or WebP image.");
       return;
     }
@@ -122,12 +126,12 @@ export default function ProfilePage() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    const fileExt = file.name.split(".").pop();
+    const fileExt = allowedTypes[file.type];
     const filePath = `${user.id}/avatar.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(filePath, file, { upsert: true });
+      .upload(filePath, file, { upsert: true, contentType: file.type });
 
     if (uploadError) {
       setErrorMsg(uploadError.message);
@@ -212,7 +216,7 @@ export default function ProfilePage() {
           </div>
         )}
         {errorMsg && (
-          <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 12, padding: "14px 20px", marginBottom: 24, fontSize: 13, color: C.orangeDark }}>
+          <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 12, padding: "14px 20px", marginBottom: 24, fontSize: 13, color: "var(--accent-ink)" }}>
             {errorMsg}
           </div>
         )}
@@ -256,7 +260,7 @@ export default function ProfilePage() {
         </div>
 
         {/* PROFILE DETAILS */}
-        <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
+        <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
           <h2 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 24 }}>Personal details</h2>
 
           <div style={{ marginBottom: 16 }}>
@@ -266,7 +270,7 @@ export default function ProfilePage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your full name"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -279,7 +283,7 @@ export default function ProfilePage() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="e.g. FJ or a nickname"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -300,7 +304,7 @@ export default function ProfilePage() {
               value={school}
               onChange={(e) => setSchool(e.target.value)}
               placeholder="Your school name"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -310,7 +314,7 @@ export default function ProfilePage() {
         </div>
 
         {/* CHANGE PASSWORD */}
-        <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
+        <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
           <h2 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 24 }}>Change password</h2>
 
           <div style={{ marginBottom: 16 }}>
@@ -320,7 +324,7 @@ export default function ProfilePage() {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Min. 6 characters"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -331,7 +335,7 @@ export default function ProfilePage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Repeat new password"
-              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: dark ? "rgba(255,255,255,0.06)" : "#fff", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
+              style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }}
             />
           </div>
 
@@ -341,7 +345,7 @@ export default function ProfilePage() {
         </div>
 
         {/* DANGER ZONE */}
-        <div style={{ background: dark ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.8)", border: `1px solid rgba(226,75,74,0.2)`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
+        <div style={{ background: "var(--card-strong)", border: `1px solid rgba(226,75,74,0.2)`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
           <h2 style={{ fontSize: 16, fontWeight: 500, color: "#E24B4A", marginBottom: 8 }}>Account</h2>
           <p style={{ fontSize: 13, color: sub, marginBottom: 20 }}>Logging out will end your current session on this device.</p>
           <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit", marginBottom: 24 }}>

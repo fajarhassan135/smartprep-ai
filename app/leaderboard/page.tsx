@@ -65,7 +65,7 @@ export default function LeaderboardPage() {
       <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 40px" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Leaderboard</p>
         <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Class rankings</h1>
-        <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>See how you stack up against other students preparing with ExamPrep AI.</p>
+        <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>See how you stack up against other students preparing with SmartPrep AI.</p>
 
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading leaderboard...</div>

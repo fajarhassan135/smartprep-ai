@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "../lib/ThemeContext";
 
 export const metadata: Metadata = {
-  title: "ExamPrep AI — Study Smarter, Score Higher",
+  title: "SmartPrep AI — Study Smarter, Score Higher",
   description: "AI-powered quizzes and past papers for Cambridge and Pakistan Board students.",
 };
 

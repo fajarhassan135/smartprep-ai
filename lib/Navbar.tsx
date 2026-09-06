@@ -76,7 +76,7 @@ export default function Navbar({ active }: { active?: string }) {
   return (
     <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
       <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-        Exam<span style={{ color: C.orange }}>Prep</span> AI
+        Smart<span style={{ color: C.orange }}>Prep</span> AI
       </Link>
       <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
         {links.map((link) => (

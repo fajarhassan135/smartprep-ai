@@ -47,7 +47,7 @@ export default function HomePage() {
       {/* NAVBAR */}
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", color: text }}>
-          Exam<span style={{ color: C.orange }}>Prep</span> AI
+          Smart<span style={{ color: C.orange }}>Prep</span> AI
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
           <a href="#subjects" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Subjects</a>
@@ -148,7 +148,7 @@ export default function HomePage() {
         <div style={{ backgroundColor: C.orange, borderRadius: 24, padding: "64px 40px", textAlign: "center" }}>
           <h2 style={{ fontSize: 34, fontWeight: 500, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>Ready to start preparing?</h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", marginBottom: 36, maxWidth: 420, margin: "0 auto 36px" }}>
-            Join thousands of students already using ExamPrep AI to study smarter and score higher.
+            Join thousands of students already using SmartPrep AI to study smarter and score higher.
           </p>
           <a href="/signup" style={{ display: "inline-block", padding: "13px 32px", backgroundColor: "#fff", color: C.orange, fontWeight: 500, fontSize: 14, borderRadius: 12, border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
             Create free account
@@ -160,9 +160,9 @@ export default function HomePage() {
       <footer style={{ borderTop: `1px solid ${border}`, padding: "32px 40px", backgroundColor: bg }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
-            Exam<span style={{ color: C.orange }}>Prep</span> AI
+            Smart<span style={{ color: C.orange }}>Prep</span> AI
           </div>
-          <div style={{ fontSize: 12, color: sub }}>© 2025 ExamPrep AI. Built for students, by students.</div>
+          <div style={{ fontSize: 12, color: sub }}>© 2025 SmartPrep AI. Built for students, by students.</div>
         </div>
       </footer>
 

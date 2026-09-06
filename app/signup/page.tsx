@@ -93,7 +93,7 @@ export default function SignupPage() {
             ←
           </button>
           <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-            Exam<span style={{ color: C.orange }}>Prep</span> AI
+            Smart<span style={{ color: C.orange }}>Prep</span> AI
           </Link>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>

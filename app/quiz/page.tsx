@@ -360,7 +360,7 @@ export default function QuizPage() {
       <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
         <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}` }}>
           <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-            Exam<span style={{ color: C.orange }}>Prep</span> AI
+            Smart<span style={{ color: C.orange }}>Prep</span> AI
           </a>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             {examMode === "exam" && (
@@ -459,7 +459,7 @@ export default function QuizPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}` }}>
         <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-          Exam<span style={{ color: C.orange }}>Prep</span> AI
+          Smart<span style={{ color: C.orange }}>Prep</span> AI
         </a>
         <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>← Dashboard</a>
       </nav>

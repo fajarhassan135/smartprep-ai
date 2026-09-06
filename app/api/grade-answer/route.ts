@@ -2,6 +2,7 @@ import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
 import { rateLimit } from "../../../lib/rateLimit";
+import { findLevel } from "../../../lib/curriculum";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -21,8 +22,10 @@ export async function POST(req: NextRequest) {
         { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
       );
     }
-    const { question, modelAnswer, keywords, studentAnswer, subject, board } =
+    const { question, modelAnswer, keywords, studentAnswer, subject, levelId } =
       await req.json();
+
+    const level = findLevel(String(levelId || ""));
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -34,7 +37,7 @@ export async function POST(req: NextRequest) {
         },
         {
           role: "user",
-          content: `Mark this ${board} ${subject} answer. Question: ${question} Model answer: ${modelAnswer} Key concepts: ${keywords?.join(", ")} Student answer: ${studentAnswer} Return ONLY this JSON: {"verdict":"correct" or "partial" or "incorrect","marks_hint":"e.g. 2/3 marks","feedback":"2-3 sentences about what was good what was missing and what the ideal answer includes"}`,
+          content: `Mark this ${subject} answer at ${level ? level.label + " (" + level.board + ")" : "exam"} standard, using that level's mark scheme expectations. Question: ${question} Model answer: ${modelAnswer} Key concepts: ${keywords?.join(", ")} Student answer: ${studentAnswer} Return ONLY this JSON: {"verdict":"correct" or "partial" or "incorrect","marks_hint":"e.g. 2/3 marks","feedback":"2-3 sentences about what was good what was missing and what the ideal answer includes"}`,
         },
       ],
     });

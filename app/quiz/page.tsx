@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase, authHeader } from "../../lib/supabase";
 import Navbar from "../../lib/Navbar";
 import { formatMarks } from "../../lib/formatMarks";
+import { SUBJECTS, LEVELS, findLevel } from "../../lib/curriculum";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
 const C = {
@@ -27,15 +28,6 @@ type Question = {
   keywords?: string[];
 };
 
-const SUBJECT_OPTIONS = [
-  "Mathematics",
-  "English",
-  "Computer Science",
-  "Physics",
-  "Business Studies",
-  "Economics",
-];
-
 type Mode = "setup" | "quiz" | "results";
 type Verdict = "correct" | "partial" | "incorrect" | "";
 type Difficulty = "easy" | "medium" | "hard";
@@ -50,9 +42,11 @@ export default function QuizPage() {
   const [subject, setSubject] = useState(() => {
     if (typeof window === "undefined") return "";
     const requested = new URLSearchParams(window.location.search).get("subject");
-    return requested && SUBJECT_OPTIONS.includes(requested) ? requested : "";
+    return requested && (SUBJECTS as readonly string[]).includes(requested) ? requested : "";
   });
-  const [board, setBoard] = useState("");
+  const [levelId, setLevelId] = useState("");
+  const level = findLevel(levelId);
+  const board = level?.board ?? "";
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [questionCount, setQuestionCount] = useState(10);
   const [examMode, setExamMode] = useState<"practice" | "exam">("practice");
@@ -100,6 +94,7 @@ export default function QuizPage() {
           user_id: user.id,
           subject,
           board,
+          level: level?.label ?? null,
           mode: examMode,
           difficulty,
           score: finalScore,
@@ -148,7 +143,7 @@ export default function QuizPage() {
       const res = await fetch("/api/generate-quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(await authHeader()) },
-        body: JSON.stringify({ subject, board, count: questionCount, difficulty }),
+        body: JSON.stringify({ subject, levelId, count: questionCount, difficulty }),
       });
       const data = await res.json();
 
@@ -205,7 +200,7 @@ export default function QuizPage() {
           keywords: questions[currentQ].keywords,
           studentAnswer: shortAnswer,
           subject,
-          board,
+          levelId,
         }),
       });
       const data = await res.json();
@@ -276,12 +271,12 @@ export default function QuizPage() {
         <div style={{ maxWidth: 600, margin: "0 auto", padding: "64px 24px" }}>
           <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>AI Quiz</p>
           <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Set up your quiz</h1>
-          <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Choose your subject, board and mode to get started.</p>
+          <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Choose your subject, exam level and mode to get started.</p>
 
           <div style={{ marginBottom: 24 }}>
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Subject</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              {SUBJECT_OPTIONS.map((s) => (
+              {SUBJECTS.map((s) => (
                 <button key={s} onClick={() => { setSubject(s); playClick(); }} style={{ flex: "1 1 30%", padding: "12px 8px", borderRadius: 12, border: subject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: subject === s ? "rgba(255,96,55,0.08)" : bg, color: subject === s ? C.orange : text, fontWeight: subject === s ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                   {s}
                 </button>
@@ -290,11 +285,12 @@ export default function QuizPage() {
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Board</label>
-            <div style={{ display: "flex", gap: 10 }}>
-              {["Cambridge IGCSE/A-Level", "Pakistan Board (Matric/FSc)"].map((b) => (
-                <button key={b} onClick={() => { setBoard(b); playClick(); }} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: board === b ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: board === b ? "rgba(255,96,55,0.08)" : bg, color: board === b ? C.orange : text, fontWeight: board === b ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
-                  {b}
+            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Exam level</label>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {LEVELS.map((l) => (
+                <button key={l.id} onClick={() => { setLevelId(l.id); playClick(); }} style={{ flex: "1 1 45%", padding: "12px 8px", borderRadius: 12, border: levelId === l.id ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: levelId === l.id ? "var(--accent-badge)" : bg, color: levelId === l.id ? C.orange : text, fontWeight: levelId === l.id ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                  <div>{l.label}</div>
+                  <div style={{ fontSize: 11, color: sub, marginTop: 4 }}>{l.board}</div>
                 </button>
               ))}
             </div>
@@ -381,7 +377,7 @@ export default function QuizPage() {
             <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>
               {q.type === "mcq" ? "Multiple choice" : "Short answer"}
             </span>
-            <span style={{ fontSize: 11, color: sub }}>{subject} · {board} · {difficulty}</span>
+            <span style={{ fontSize: 11, color: sub }}>{subject} · {level?.label} · {difficulty}</span>
           </div>
 
           <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 18, padding: "28px 32px", marginBottom: 24, backdropFilter: "blur(16px)" }}>

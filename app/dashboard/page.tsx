@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 import Navbar from "../../lib/Navbar";
+import { SUBJECTS, shortBoard } from "../../lib/curriculum";
 
 const C = {
   snow: "#F5F4ED",
@@ -25,19 +26,7 @@ type QuizSessionRow = {
   mode: string;
 };
 
-const SUBJECTS = [
-  "Mathematics",
-  "English",
-  "Computer Science",
-  "Physics",
-  "Business Studies",
-  "Economics",
-];
 
-/** "Cambridge IGCSE/A-Level" -> "Cambridge", anything else -> "Pak Board". */
-function shortBoard(board: string) {
-  return board.startsWith("Cambridge") ? "Cambridge" : "Pak Board";
-}
 
 export default function DashboardPage() {
   const { user, status } = useAuthGuard();

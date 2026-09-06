@@ -2,6 +2,7 @@ import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
 import { rateLimit } from "../../../lib/rateLimit";
+import { findLevel } from "../../../lib/curriculum";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -56,7 +57,12 @@ export async function POST(req: NextRequest) {
         { status: 429, headers: { "Retry-After": String(limited.retryAfterSeconds) } }
       );
     }
-    const { subject, board, count, difficulty } = await req.json();
+    const { subject, levelId, count, difficulty } = await req.json();
+
+    const level = findLevel(String(levelId || ""));
+    if (!subject || !level) {
+      return NextResponse.json({ error: "Pick a subject and exam level first." }, { status: 400 });
+    }
 
     const difficultyKey = (difficulty || "medium").toLowerCase();
     const difficultyInstruction =
@@ -68,11 +74,18 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "You are an expert exam question generator. You always respond with valid JSON arrays only. No markdown, no explanation, just the JSON array.",
+          content: "You are a senior examiner writing questions for a specific syllabus and level. You write at full exam standard. You always respond with valid JSON arrays only. No markdown, no explanation, just the JSON array.",
         },
         {
           role: "user",
-          content: `Generate exactly ${count} exam questions for ${board} students studying ${subject}, at a ${difficultyKey} difficulty level. ${difficultyInstruction} Mix 60% MCQ and 40% short answer. Return ONLY a valid JSON array. For MCQ use: {"type":"mcq","question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"A","explanation":"..."} For short answer use: {"type":"short","question":"...","model_answer":"...","keywords":["...","...","..."]} The answer field for MCQ must be just one letter A B C or D. Make questions exam appropriate for ${board} curriculum.`,
+          content: `Generate exactly ${count} exam questions for ${subject}.
+
+Syllabus level: ${level.description}
+Difficulty within that level: ${difficultyKey}. ${difficultyInstruction}
+
+Write at the standard of the real paper: use the board's command words, correct notation and units, and test method and understanding rather than recall of definitions. Do not write questions answerable from general knowledge alone.
+
+Mix 60% MCQ and 40% short answer. Return ONLY a valid JSON array. For MCQ use: {"type":"mcq","question":"...","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"A","explanation":"..."} For short answer use: {"type":"short","question":"...","model_answer":"...","keywords":["...","...","..."]} The answer field for MCQ must be just one letter A B C or D.`,
         },
       ],
     });

@@ -22,6 +22,7 @@ export default function LeaderboardPage() {
   const { status } = useAuthGuard();
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const bg = "var(--bg)";
@@ -41,7 +42,8 @@ export default function LeaderboardPage() {
         .order("avg_score", { ascending: false })
         .limit(50);
 
-      if (!error && data) setRows(data as LeaderboardRow[]);
+      if (error) setLoadError(error.message);
+      else setRows((data as LeaderboardRow[]) || []);
       setLoading(false);
     }
     load();
@@ -69,6 +71,10 @@ export default function LeaderboardPage() {
 
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading leaderboard...</div>
+        ) : loadError ? (
+          <div style={{ backgroundColor: "rgba(226,75,74,0.1)", border: "1px solid rgba(226,75,74,0.3)", borderRadius: 16, padding: "24px", fontSize: 13, color: "#E24B4A" }}>
+            Could not load the leaderboard: {loadError}
+          </div>
         ) : rows.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
             <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No rankings yet</div>

@@ -1,6 +1,7 @@
 import Groq from "groq-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { requireVerifiedUser } from "../../../lib/requireVerifiedUser";
+import { GROQ_MODEL } from "../../../lib/groqModel";
 import { rateLimit } from "../../../lib/rateLimit";
 import { findLevel } from "../../../lib/curriculum";
 
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     const cardCount = Math.min(Math.max(Number(count) || 5, 1), MAX_CARDS);
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: GROQ_MODEL,
       max_tokens: 3000,
       messages: [
         {

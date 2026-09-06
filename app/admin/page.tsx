@@ -1,29 +1,57 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
+import { SUBJECTS, LEVELS } from "../../lib/curriculum";
 
-const C = {
-  snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
-  garnet: "#733635", garnetLight: "#a07070", orange: "#FF6037", orangeDark: "#c44a26",
+const C = { orange: "#FF6037" };
+
+const bg = "var(--bg)";
+const bgMid = "var(--bg-mid)";
+const text = "var(--text)";
+const sub = "var(--sub)";
+const border = "var(--border)";
+
+const SESSIONS = ["May/June", "Oct/Nov", "Feb/March", "Annual"];
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px 16px",
+  borderRadius: 10,
+  border: `1px solid ${border}`,
+  backgroundColor: "var(--input-bg)",
+  color: text,
+  fontSize: 14,
+  fontFamily: "inherit",
+  outline: "none",
+  boxSizing: "border-box",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 500,
+  color: text,
+  display: "block",
+  marginBottom: 6,
 };
 
 export default function AdminPage() {
-  const [subject, setSubject] = useState("");
-  const [board, setBoard] = useState("");
-  const [year, setYear] = useState("");
-  const [paper, setPaper] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [authState, setAuthState] = useState<"checking" | "denied" | "ok">("checking");
   const [authError, setAuthError] = useState("");
 
-  const bg = "var(--bg)";
-  const bgMid = "var(--bg-mid)";
-  const text = "var(--text)";
-  const sub = "var(--sub)";
-  const border = "var(--border)";
+  const [subject, setSubject] = useState<string>(SUBJECTS[0]);
+  const [levelId, setLevelId] = useState<string>(LEVELS[0].id);
+  const [year, setYear] = useState("");
+  const [session, setSession] = useState(SESSIONS[0]);
+  const [paperLabel, setPaperLabel] = useState("");
+  const [docType, setDocType] = useState<"question_paper" | "mark_scheme">("question_paper");
+  const [mode, setMode] = useState<"file" | "link">("file");
+  const [externalUrl, setExternalUrl] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+
+  const [uploading, setUploading] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
 
   // The server decides who is an admin; this only controls what the page shows.
   // Every upload is re-checked server side, so a forged answer here buys nothing.
@@ -49,24 +77,33 @@ export default function AdminPage() {
     checkAccess();
   }, []);
 
+  const ready =
+    subject && levelId && year && paperLabel && (mode === "file" ? file : externalUrl);
+
   async function handleUpload() {
-    if (!file || !subject || !board || !year) return;
+    if (!ready) return;
     setUploading(true);
+    setNotice("");
+    setError("");
+
     try {
       const { data } = await supabase.auth.getSession();
       const accessToken = data.session?.access_token;
       if (!accessToken) {
-        alert("Session expired. Please log in again.");
+        setError("Session expired. Please log in again.");
         setUploading(false);
         return;
       }
 
       const form = new FormData();
-      form.append("file", file);
+      if (mode === "file" && file) form.append("file", file);
+      else form.append("externalUrl", externalUrl);
       form.append("subject", subject);
-      form.append("board", board);
+      form.append("levelId", levelId);
       form.append("year", year);
-      form.append("paper", paper);
+      form.append("session", session);
+      form.append("paperLabel", paperLabel);
+      form.append("docType", docType);
 
       const res = await fetch("/api/upload-past-paper", {
         method: "POST",
@@ -76,11 +113,12 @@ export default function AdminPage() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || "Upload failed");
 
-      setSuccess(true);
+      setNotice(`Added ${subject} ${paperLabel}, ${session} ${year}.`);
       setFile(null);
-      setSubject(""); setBoard(""); setYear(""); setPaper("");
+      setExternalUrl("");
+      setPaperLabel("");
     } catch (e: unknown) {
-      alert("Upload failed: " + (e instanceof Error ? e.message : String(e)));
+      setError(e instanceof Error ? e.message : String(e));
     }
     setUploading(false);
   }
@@ -104,85 +142,143 @@ export default function AdminPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>Smart<span style={{ color: C.orange }}>Prep</span> AI</Link>
+    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif" }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, position: "sticky", top: 0, zIndex: 50, backgroundColor: bg }}>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+          Smart<span style={{ color: C.orange }}>Prep</span> AI
+        </Link>
         <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Dashboard</a>
+          <a href="/past-papers" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Past papers</a>
           <span style={{ fontSize: 13, color: C.orange, fontWeight: 500 }}>Admin</span>
         </div>
       </nav>
 
-      <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Admin</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Upload past papers</h1>
-        <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Upload PDF past papers to the database. Students can then generate AI quizzes from them.</p>
+        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Add a past paper</h1>
+        <p style={{ fontSize: 14, color: sub, marginBottom: 40, lineHeight: 1.7 }}>
+          Upload a PDF you have the right to distribute, or catalogue the paper as a
+          link to its official page. Either way it appears on the past papers page,
+          filed by subject, level and year.
+        </p>
 
-        {success && (
-          <div style={{ backgroundColor: "rgba(99,153,34,0.1)", border: "1px solid rgba(99,153,34,0.3)", borderRadius: 12, padding: "16px 20px", marginBottom: 32, fontSize: 14, color: "#639922" }}>
-            ✓ Past paper uploaded successfully!
+        {notice && (
+          <div style={{ backgroundColor: "rgba(99,153,34,0.1)", border: "1px solid rgba(99,153,34,0.3)", borderRadius: 12, padding: "14px 18px", marginBottom: 24, fontSize: 13, color: "#639922" }}>
+            {notice}
+          </div>
+        )}
+        {error && (
+          <div style={{ backgroundColor: "rgba(226,75,74,0.1)", border: "1px solid rgba(226,75,74,0.3)", borderRadius: 12, padding: "14px 18px", marginBottom: 24, fontSize: 13, color: "#E24B4A" }}>
+            {error}
           </div>
         )}
 
-        <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+        <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "clamp(20px, 4vw, 32px)", backdropFilter: "blur(16px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Subject</label>
-              <select value={subject} onChange={(e) => setSubject(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
-                <option value="">Select subject</option>
-                <option>Mathematics</option>
-                <option>English</option>
-                <option>Computer Science</option>
+              <label style={labelStyle}>Subject</label>
+              <select value={subject} onChange={(e) => setSubject(e.target.value)} style={inputStyle}>
+                {SUBJECTS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Board</label>
-              <select value={board} onChange={(e) => setBoard(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none" }}>
-                <option value="">Select board</option>
-                <option>Cambridge IGCSE/A-Level</option>
-                <option>Pakistan Board (Matric/FSc)</option>
+              <label style={labelStyle}>Level</label>
+              <select value={levelId} onChange={(e) => setLevelId(e.target.value)} style={inputStyle}>
+                {LEVELS.map((l) => (
+                  <option key={l.id} value={l.id}>{l.label} · {l.board}</option>
+                ))}
               </select>
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 16 }}>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Year</label>
-              <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2023" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+              <label style={labelStyle}>Year</label>
+              <input type="number" value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 2023" style={inputStyle} />
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Paper number</label>
-              <input type="text" value={paper} onChange={(e) => setPaper(e.target.value)} placeholder="e.g. Paper 1" style={{ width: "100%", padding: "12px 16px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "var(--input-bg)", color: text, fontSize: 14, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+              <label style={labelStyle}>Session</label>
+              <select value={session} onChange={(e) => setSession(e.target.value)} style={inputStyle}>
+                {SESSIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
             </div>
           </div>
 
-          <div style={{ marginBottom: 28 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>PDF file</label>
-            <div style={{ border: `2px dashed ${file ? C.orange : border}`, borderRadius: 12, padding: "32px", textAlign: "center", backgroundColor: file ? "rgba(255,96,55,0.04)" : "transparent", cursor: "pointer" }}
-              onClick={() => document.getElementById("fileInput")?.click()}>
-              <input id="fileInput" type="file" accept=".pdf" style={{ display: "none" }} onChange={(e) => setFile(e.target.files?.[0] || null)} />
-              <div style={{ fontSize: 32, marginBottom: 12 }}>📄</div>
-              <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 4 }}>
-                {file ? file.name : "Click to upload PDF"}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 }}>
+            <div>
+              <label style={labelStyle}>Paper label</label>
+              <input type="text" value={paperLabel} onChange={(e) => setPaperLabel(e.target.value)} placeholder="e.g. Paper 4 Variant 2" style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Document</label>
+              <select value={docType} onChange={(e) => setDocType(e.target.value as "question_paper" | "mark_scheme")} style={inputStyle}>
+                <option value="question_paper">Question paper</option>
+                <option value="mark_scheme">Mark scheme</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+            {([
+              { val: "file", label: "Upload a PDF" },
+              { val: "link", label: "Link to official page" },
+            ] as const).map((m) => (
+              <button
+                key={m.val}
+                onClick={() => setMode(m.val)}
+                style={{ padding: "9px 16px", borderRadius: 999, border: mode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: mode === m.val ? "var(--accent-badge)" : bg, color: mode === m.val ? C.orange : text, fontSize: 12, fontWeight: mode === m.val ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+
+          {mode === "file" ? (
+            <div style={{ marginBottom: 28 }}>
+              <div
+                onClick={() => document.getElementById("fileInput")?.click()}
+                style={{ border: `2px dashed ${file ? C.orange : border}`, borderRadius: 12, padding: "32px", textAlign: "center", backgroundColor: file ? "var(--accent-badge)" : "transparent", cursor: "pointer" }}
+              >
+                <input id="fileInput" type="file" accept="application/pdf" style={{ display: "none" }} onChange={(e) => setFile(e.target.files?.[0] || null)} />
+                <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 4 }}>
+                  {file ? file.name : "Click to choose a PDF"}
+                </div>
+                <div style={{ fontSize: 12, color: sub }}>
+                  {file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF only, up to 20MB"}
+                </div>
               </div>
-              <div style={{ fontSize: 12, color: sub }}>{file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "Supports PDF files up to 10MB"}</div>
             </div>
-          </div>
+          ) : (
+            <div style={{ marginBottom: 28 }}>
+              <label style={labelStyle}>Official page URL</label>
+              <input type="url" value={externalUrl} onChange={(e) => setExternalUrl(e.target.value)} placeholder="https://..." style={inputStyle} />
+              <div style={{ fontSize: 11, color: sub, marginTop: 6 }}>
+                Students get a link straight to the source. Nothing is hosted here.
+              </div>
+            </div>
+          )}
 
-          <button onClick={handleUpload} disabled={uploading || !file || !subject || !board || !year} style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: !file || !subject || !board || !year ? 0.5 : 1 }}>
-            {uploading ? "Uploading..." : "Upload past paper"}
+          <button
+            onClick={handleUpload}
+            disabled={uploading || !ready}
+            style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: ready ? "pointer" : "not-allowed", fontFamily: "inherit", opacity: ready ? 1 : 0.5 }}
+          >
+            {uploading ? "Adding..." : "Add to catalogue"}
           </button>
         </div>
 
-        {/* INFO */}
         <div style={{ marginTop: 24, padding: "20px 24px", borderRadius: 16, backgroundColor: bgMid, border: `1px solid ${border}` }}>
-          <div style={{ fontSize: 13, fontWeight: 500, color: text, marginBottom: 8 }}>How it works</div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: text, marginBottom: 8 }}>Before you upload</div>
           <div style={{ fontSize: 13, color: sub, lineHeight: 1.7 }}>
-            1. Upload a PDF past paper here<br />
-            2. The system extracts text from the PDF<br />
-            3. Students can select this paper in the quiz section<br />
-            4. AI generates questions directly from the paper content
+            Exam papers are copyright their board. Upload PDFs only where you hold the
+            right to distribute them — for Cambridge that usually means your school&apos;s
+            own licence. Where you don&apos;t, catalogue the paper as a link instead: students
+            still find it through the same filters.
           </div>
         </div>
       </div>

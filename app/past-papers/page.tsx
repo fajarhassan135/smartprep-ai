@@ -1,65 +1,120 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { supabase, authHeader } from "../../lib/supabase";
 import Navbar from "../../lib/Navbar";
 import { useAuthGuard } from "../../lib/useAuthGuard";
+import { SUBJECTS, LEVELS } from "../../lib/curriculum";
 
-const C = {
-  snow: "#F5F4ED", snowMist: "#ECECDC", kite: "#351E1C", kiteDeep: "#2a1715",
-  garnet: "#733635", garnetLight: "#a07070", orange: "#FF6037", orangeDark: "#c44a26", aqua: "#A0C9CB",
-};
+const C = { orange: "#FF6037" };
 
 type Paper = {
+  id: string;
   subject: string;
   board: string;
-  year: number;
-  paper: string;
   level: string;
-  topics: string[];
-  fileUrl?: string;
+  year: number;
+  session: string;
+  paper_label: string;
+  doc_type: "question_paper" | "mark_scheme";
+  storage_path: string | null;
+  external_url: string | null;
 };
 
-const papers: Paper[] = [
-  { subject: "Mathematics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Algebra", "Geometry", "Statistics"] },
-  { subject: "Mathematics", board: "Cambridge", year: 2022, paper: "Paper 2", level: "IGCSE", topics: ["Calculus", "Trigonometry"] },
-  { subject: "Mathematics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "Matric", topics: ["Algebra", "Geometry"] },
-  { subject: "English", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Reading", "Writing"] },
-  { subject: "English", board: "Cambridge", year: 2022, paper: "Paper 2", level: "IGCSE", topics: ["Literature", "Comprehension"] },
-  { subject: "English", board: "Pakistan Board", year: 2023, paper: "Annual", level: "Matric", topics: ["Grammar", "Composition"] },
-  { subject: "Computer Science", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Programming", "Data Structures"] },
-  { subject: "Computer Science", board: "Cambridge", year: 2022, paper: "Paper 2", level: "IGCSE", topics: ["Networks", "Databases"] },
-  { subject: "Computer Science", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["OOP", "Web Development"] },
-  { subject: "Physics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "A-Level", topics: ["Mechanics", "Waves"] },
-  { subject: "Physics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Electromagnetism", "Optics"] },
-  { subject: "Business Studies", board: "Cambridge", year: 2023, paper: "Paper 1", level: "IGCSE", topics: ["Marketing", "Finance"] },
-  { subject: "Business Studies", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Management", "Operations"] },
-  { subject: "Economics", board: "Cambridge", year: 2023, paper: "Paper 1", level: "A-Level", topics: ["Microeconomics", "Macroeconomics"] },
-  { subject: "Economics", board: "Pakistan Board", year: 2023, paper: "Annual", level: "FSc", topics: ["Demand & Supply", "National Income"] },
-];
+const bg = "var(--bg)";
+const bgMid = "var(--bg-mid)";
+const text = "var(--text)";
+const sub = "var(--sub)";
+const border = "var(--border)";
+
+function pill(active: boolean): React.CSSProperties {
+  return {
+    padding: "8px 16px",
+    borderRadius: 999,
+    border: active ? `2px solid ${C.orange}` : `1px solid ${border}`,
+    backgroundColor: active ? "var(--accent-badge)" : bg,
+    color: active ? C.orange : text,
+    fontSize: 12,
+    fontWeight: active ? 500 : 400,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  };
+}
 
 export default function PastPapersPage() {
   const { status } = useAuthGuard();
-  const [selectedSubject, setSelectedSubject] = useState("All");
-  const [selectedBoard, setSelectedBoard] = useState("All");
 
-  const bg = "var(--bg)";
-  const bgMid = "var(--bg-mid)";
-  const text = "var(--text)";
-  const sub = "var(--sub)";
-  const border = "var(--border)";
+  const [papers, setPapers] = useState<Paper[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [subject, setSubject] = useState("All");
+  const [level, setLevel] = useState("All");
+  const [year, setYear] = useState<number | "All">("All");
+
+  // The paper currently open in the in-page reader.
+  const [viewing, setViewing] = useState<Paper | null>(null);
+  const [viewUrl, setViewUrl] = useState("");
+  const [opening, setOpening] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const { data, error: loadError } = await supabase
+        .from("past_papers")
+        .select("*")
+        .order("year", { ascending: false })
+        .order("subject")
+        .order("paper_label");
+
+      if (cancelled) return;
+      if (loadError) setError(loadError.message);
+      else setPapers((data as Paper[]) || []);
+      setLoading(false);
+    }
+
+    if (status === "ready") load();
+    return () => {
+      cancelled = true;
+    };
+  }, [status]);
+
+  const years = [...new Set(papers.map((p) => p.year))].sort((a, b) => b - a);
 
   const filtered = papers.filter((p) => {
-    if (selectedSubject !== "All" && p.subject !== selectedSubject) return false;
-    if (selectedBoard !== "All" && p.board !== selectedBoard) return false;
+    if (subject !== "All" && p.subject !== subject) return false;
+    if (level !== "All" && p.level !== level) return false;
+    if (year !== "All" && p.year !== year) return false;
     return true;
   });
 
-  function handleDownload(paper: Paper) {
-    if (paper.fileUrl) {
-      window.open(paper.fileUrl, "_blank");
-    } else {
-      alert("This past paper hasn't been uploaded yet. Check back soon.");
+  const openPaper = useCallback(async (paper: Paper) => {
+    setOpening(true);
+    setError("");
+    try {
+      const res = await fetch("/api/past-paper-url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await authHeader()) },
+        body: JSON.stringify({ paperId: paper.id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Could not open that paper.");
+        setOpening(false);
+        return;
+      }
+      if (data.external) {
+        // Catalogued as a link to the official page rather than a hosted file.
+        window.open(data.url, "_blank", "noopener,noreferrer");
+      } else {
+        setViewing(paper);
+        setViewUrl(data.url);
+      }
+    } catch {
+      setError("Could not reach the server. Check your connection and try again.");
     }
-  }
+    setOpening(false);
+  }, []);
 
   if (status !== "ready") {
     return (
@@ -70,67 +125,129 @@ export default function PastPapersPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif" }}>
       <Navbar active="/past-papers" />
 
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Past Papers</p>
         <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Browse past papers</h1>
-        <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>Filter by subject and board to find the papers you need.</p>
+        <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>
+          Filter by subject, level and year. Papers open here in the page.
+        </p>
+
+        {error && (
+          <div style={{ backgroundColor: "rgba(226,75,74,0.1)", border: "1px solid rgba(226,75,74,0.3)", borderRadius: 12, padding: "14px 18px", marginBottom: 24, fontSize: 13, color: "#E24B4A" }}>
+            {error}
+          </div>
+        )}
 
         {/* FILTERS */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 40, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 6 }}>Subject</label>
+            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Subject</label>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {["All", "Mathematics", "English", "Computer Science", "Physics", "Business Studies", "Economics"].map((s) => (
-                <button key={s} onClick={() => setSelectedSubject(s)} style={{ padding: "8px 16px", borderRadius: 999, border: selectedSubject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: selectedSubject === s ? "rgba(255,96,55,0.08)" : bg, color: selectedSubject === s ? C.orange : text, fontSize: 12, fontWeight: selectedSubject === s ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
-                  {s}
-                </button>
+              {["All", ...SUBJECTS].map((s) => (
+                <button key={s} onClick={() => setSubject(s)} style={pill(subject === s)}>{s}</button>
               ))}
             </div>
           </div>
-          <div>
-            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 6 }}>Board</label>
-            <div style={{ display: "flex", gap: 8 }}>
-              {["All", "Cambridge", "Pakistan Board"].map((b) => (
-                <button key={b} onClick={() => setSelectedBoard(b)} style={{ padding: "8px 16px", borderRadius: 999, border: selectedBoard === b ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: selectedBoard === b ? "rgba(255,96,55,0.08)" : bg, color: selectedBoard === b ? C.orange : text, fontSize: 12, fontWeight: selectedBoard === b ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
-                  {b}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* PAPERS GRID */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}>
-          {filtered.map((paper, i) => (
-            <div key={i} style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "24px", backdropFilter: "blur(16px)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: paper.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: paper.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
-                  {paper.board}
-                </span>
-                <span style={{ fontSize: 12, color: sub }}>{paper.year}</span>
-              </div>
-              <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 4 }}>{paper.subject}</div>
-              <div style={{ fontSize: 13, color: sub, marginBottom: 16 }}>{paper.paper} · {paper.level}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
-                {paper.topics.map((t) => (
-                  <span key={t} style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6, backgroundColor: bgMid, color: sub }}>{t}</span>
+          <div>
+            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Level</label>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {["All", ...LEVELS.map((l) => l.label)].map((l) => (
+                <button key={l} onClick={() => setLevel(l)} style={pill(level === l)}>{l}</button>
+              ))}
+            </div>
+          </div>
+
+          {years.length > 0 && (
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Year</label>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button onClick={() => setYear("All")} style={pill(year === "All")}>All</button>
+                {years.map((y) => (
+                  <button key={y} onClick={() => setYear(y)} style={pill(year === y)}>{y}</button>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button onClick={() => window.location.href = `/quiz?subject=${paper.subject}&board=${paper.board}`} style={{ flex: 1, padding: "10px", borderRadius: 10, backgroundColor: C.orange, color: "#fff", fontSize: 12, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
-                  Generate quiz
-                </button>
-                <button onClick={() => handleDownload(paper)} style={{ padding: "10px 14px", borderRadius: 10, backgroundColor: bgMid, color: text, fontSize: 12, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
-                  {paper.fileUrl ? "Download" : "Coming soon"}
+            </div>
+          )}
+        </div>
+
+        {/* LIST */}
+        {loading ? (
+          <div style={{ textAlign: "center", padding: 60, color: sub, fontSize: 14 }}>Loading papers...</div>
+        ) : papers.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 32px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
+            <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No papers yet</div>
+            <div style={{ fontSize: 13, color: sub, lineHeight: 1.7, maxWidth: 420, margin: "0 auto" }}>
+              The catalogue is empty. Papers added through the admin page appear here,
+              filed by subject, level and year.
+            </div>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div style={{ textAlign: "center", padding: 60, color: sub, fontSize: 14 }}>
+            Nothing matches those filters.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtered.map((p) => (
+              <div key={p.id} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", backdropFilter: "blur(16px)" }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
+                    {p.subject} — {p.paper_label}
+                  </div>
+                  <div style={{ fontSize: 11, color: sub, marginTop: 3 }}>
+                    {p.session} {p.year} · {p.doc_type === "mark_scheme" ? "Mark scheme" : "Question paper"}
+                  </div>
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: p.board === "Cambridge" ? "var(--teal-badge)" : "var(--accent-badge)", color: p.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
+                  {p.level}
+                </span>
+                <button onClick={() => openPaper(p)} disabled={opening} style={{ padding: "9px 20px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: C.orange, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                  {p.external_url ? "Open official page ↗" : "Read paper"}
                 </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* IN-PAGE READER */}
+      {viewing && (
+        <div
+          onClick={() => { setViewing(null); setViewUrl(""); }}
+          style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.6)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "clamp(12px, 3vw, 32px)" }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ backgroundColor: bgMid, border: `1px solid ${border}`, borderRadius: 20, width: "100%", maxWidth: 1000, height: "90vh", display: "flex", flexDirection: "column", overflow: "hidden" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 20px", borderBottom: `1px solid ${border}`, flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
+                  {viewing.subject} — {viewing.paper_label}
+                </div>
+                <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>
+                  {viewing.level} · {viewing.session} {viewing.year} ·{" "}
+                  {viewing.doc_type === "mark_scheme" ? "Mark scheme" : "Question paper"}
+                </div>
+              </div>
+              <button
+                onClick={() => { setViewing(null); setViewUrl(""); }}
+                style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: bg, color: text, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}
+              >
+                Close
+              </button>
+            </div>
+            <iframe
+              src={viewUrl}
+              title={`${viewing.subject} ${viewing.paper_label}`}
+              style={{ flex: 1, width: "100%", border: "none", backgroundColor: "#fff" }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

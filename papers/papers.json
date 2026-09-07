@@ -1078,5 +1078,293 @@
     "session": "May/June",
     "paperLabel": "Paper 4 Variant 1 (9093)",
     "docType": "mark_scheme"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/COMPUTER%20SC%20I%20(L).pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/COMPUTER%20SC%20I%20(HA).pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/COMPUTER%20SC%20(L).pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/COMPUTER%20SC%20(HA).pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/COMPUTER%20SC%20(L).pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/COMPUTER%20SC%20(HA).pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/COMPUTER%20SC%20(L).pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/COMPUTER%20SC%20(HA).pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/Eng-I%20(L).pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/Eng-I%20(HA).pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/ENGLISH%20COMP%20(L).pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/ENGLISH%20COMP%20(HA).pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/ENGLISH%20COMP%20(L).pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/ENGLISH%20COM%20(HA).pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/ENGLISH%20COMP%20(L).pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/ENGLISH%20COMP%20(HA).pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/MATH%20I%20(L).pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/MATH%20I%20(HA).pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/MATH%20(L).pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/MATH%20(HA).pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/MATH%20(L).pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/MATH%20(HA).pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/MATH%20(L).pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/MATH%20(HA).pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/PHYSICS%20I%20(L).pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/PHYSICS%20I%20(HA).pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/PHYSICS.pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/SSC_II_1ST_2022/PHYSICS%20(HA).pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/PHYSICS%20(L).pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_I_1ST%20_2022/PHYSICS%20(HA).pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part I (Hard Area)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/PHYSICS%20(L).pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Local)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://fbise.edu.pk/OLD_QUESTION_PAPER_2022/HSSC_II_1ST%20_2022/PHYSICS%20(HA).pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2022,
+    "session": "Annual",
+    "paperLabel": "Part II (Hard Area)",
+    "docType": "question_paper"
   }
 ]

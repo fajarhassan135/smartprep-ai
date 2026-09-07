@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * Build papers/papers.json from what Cambridge actually publishes.
+ * Build papers/papers.json from what the boards actually publish.
  *
- * Reads each syllabus's past-papers page, pulls out the PDF links it offers,
- * and turns them into catalogue entries pointing at cambridgeinternational.org.
+ * Reads Cambridge's per-syllabus past-papers pages and FBISE's old question
+ * paper index, pulls out the PDF links they offer, and turns them into
+ * catalogue entries pointing back at the official sites.
  * Nothing is downloaded or rehosted -- these are links to the official files.
  *
  *   node scripts/fetch-official-links.mjs             # writes papers/papers.json
@@ -81,6 +82,81 @@ function parsePdf(href) {
   return null;
 }
 
+// --- FBISE (Pakistan) --------------------------------------------------------
+
+const FBISE_ORIGIN = "https://fbise.edu.pk";
+const FBISE_INDEX = `${FBISE_ORIGIN}/Old%20Question%20Paper.php`;
+
+/** FBISE names files by subject; only the ones this app teaches are wanted. */
+const FBISE_SUBJECTS = [
+  { match: /^MATH/i, subject: "Mathematics" },
+  { match: /^PHYSICS/i, subject: "Physics" },
+  { match: /^COMPUTER\s*SC/i, subject: "Computer Science" },
+  { match: /^(ENGLISH|Eng-)/i, subject: "English" },
+];
+
+/**
+ * Paths look like:
+ *   OLD_QUESTION_PAPER_2022/HSSC_II_1ST _2022/MATH (HA).pdf
+ *   OLD_QUESTION_PAPER_2022/SSC_I_1ST_2022/PHYSICS (L).pdf
+ *
+ * SSC is Matric (classes 9 and 10), HSSC is FSc (classes 11 and 12); the I/II
+ * is which of the two years. (L) is the Local paper and (HA) the Hard Area
+ * paper -- two versions of the same sitting, so both are catalogued.
+ */
+function parseFbise(href) {
+  const parts = href.split("/");
+  if (parts.length < 3) return null;
+
+  const folder = parts[1];
+  const file = parts[parts.length - 1];
+
+  // e.g. "HSSC_II_1ST _2022" and "SSC_I_1ST_2022" -- the session part is not
+  // numeric and sometimes carries a trailing space.
+  const f = folder.match(/^(SSC|HSSC)_(I{1,2})_[^_]+_?(\d{4})$/i);
+  if (!f) return null;
+
+  const subject = FBISE_SUBJECTS.find((s) => s.match.test(file))?.subject;
+  if (!subject) return null;
+
+  const variant = /\(HA\)/i.test(file) ? "Hard Area" : /\(L\)/i.test(file) ? "Local" : null;
+  const part = f[2].toUpperCase() === "I" ? "Part I" : "Part II";
+
+  return {
+    subject,
+    level: f[1].toUpperCase() === "SSC" ? "Matric" : "FSc",
+    year: Number(f[3]),
+    session: "Annual",
+    paperLabel: variant ? `${part} (${variant})` : part,
+    docType: "question_paper",
+  };
+}
+
+async function fbiseEntries() {
+  const out = [];
+  try {
+    const res = await fetch(FBISE_INDEX, { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (!res.ok) {
+      summary.push(`FBISE: index returned ${res.status}`);
+      return out;
+    }
+    const html = await res.text();
+    const hrefs = [...new Set(
+      [...html.matchAll(/href="(OLD_QUESTION_PAPER[^"]+\.pdf)"/gi)].map((m) => m[1])
+    )];
+
+    for (const href of hrefs) {
+      const parsed = parseFbise(href);
+      if (!parsed || parsed.year < fromYear) continue;
+      out.push({ url: `${FBISE_ORIGIN}/${encodeURI(href)}`, ...parsed });
+    }
+    summary.push(`FBISE  old question papers        ${String(out.length).padStart(3)} papers from ${hrefs.length} PDFs on the page`);
+  } catch (e) {
+    summary.push(`FBISE: ${e.message}`);
+  }
+  return out;
+}
+
 const entries = [];
 const summary = [];
 
@@ -119,6 +195,8 @@ for (const s of SYLLABUSES) {
 
   summary.push(`${s.code} ${s.subject.padEnd(17)} ${s.level.padEnd(8)} ${String(kept).padStart(3)} papers from ${hrefs.length} PDFs on the page`);
 }
+
+entries.push(...(await fbiseEntries()));
 
 // Same paper twice would trip the catalogue's unique constraint.
 const seen = new Set();

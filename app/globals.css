@@ -463,6 +463,12 @@ nav {
    they register exactly and the swap reads as a flip rather than a
    substitution.
    --------------------------------------------------------------- */
+/* The cursor has to be on the mark itself. Hovering the wordmark beside it, or
+   anywhere else in the link, leaves it alone. */
+.logo-mark {
+  transition: transform var(--dur) var(--ease);
+}
+
 .logo-mark .logo-solid,
 .logo-mark .logo-inverted {
   transition: opacity var(--dur) var(--ease);
@@ -470,15 +476,15 @@ nav {
 
 .logo-mark .logo-inverted { opacity: 0; }
 
-.logo-mark:hover .logo-solid,
-a:hover .logo-mark .logo-solid,
-button:hover .logo-mark .logo-solid {
+.logo-mark:hover {
+  transform: scale(1.08);
+}
+
+.logo-mark:hover .logo-solid {
   opacity: 0;
 }
 
-.logo-mark:hover .logo-inverted,
-a:hover .logo-mark .logo-inverted,
-button:hover .logo-mark .logo-inverted {
+.logo-mark:hover .logo-inverted {
   opacity: 1;
 }
 
@@ -500,9 +506,7 @@ button:hover .logo-mark .logo-inverted {
 
 /* Long and eased, so it reads as a draught crossing the room rather than
    as something being shaken. */
-.logo-mark:hover .logo-tassel,
-a:hover .logo-mark .logo-tassel,
-button:hover .logo-mark .logo-tassel {
+.logo-mark:hover .logo-tassel {
   animation: tassel-sway 3.4s cubic-bezier(0.37, 0, 0.36, 1) infinite;
 }
 
@@ -533,9 +537,11 @@ button:hover .logo-mark .logo-tassel {
 
   /* The logo still inverts on hover -- that is a state change, not movement --
      but the tassel stops swinging. */
-  .logo-mark:hover .logo-tassel,
-  a:hover .logo-mark .logo-tassel,
-  button:hover .logo-mark .logo-tassel {
+  .logo-mark:hover .logo-tassel {
     animation: none;
+  }
+
+  .logo-mark:hover {
+    transform: none;
   }
 }

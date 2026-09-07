@@ -40,7 +40,8 @@ export default function HistoryPage() {
         .from("quiz_sessions")
         .select("*")
         .eq("user_id", userId)
-        .order("completed_at", { ascending: false });
+        .order("completed_at", { ascending: false })
+        .limit(500);
 
       if (cancelled) return;
       if (data) setSessions(data as QuizSessionRow[]);

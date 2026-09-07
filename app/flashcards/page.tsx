@@ -114,7 +114,8 @@ export default function FlashcardsPage() {
       .from("flashcards")
       .select("*")
       .eq("user_id", userId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(2000);
   }, []);
 
   const loadCards = useCallback(

@@ -631,3 +631,43 @@ h1, h2, h3 {
 .btn {
   font-weight: 600;
 }
+
+/* ---------------------------------------------------------------
+   Narrow screens.
+
+   Rows that pack several things across a line are fine on a laptop
+   and hostile on a phone: the leaderboard row left roughly 64px for
+   a student's name once the rank chip, three stat columns and their
+   gaps had taken their share. These let such a row break onto a
+   second line rather than crushing its most important column.
+   --------------------------------------------------------------- */
+@media (max-width: 560px) {
+  .row-stack {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  /* The trailing group drops to its own line and spreads out, instead of
+     competing with the name for width. */
+  .row-stack .row-stack-tail {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px !important;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Anything that must never be the thing that squashes. */
+  .row-stack .row-stack-grow {
+    flex: 1 1 60%;
+    min-width: 0;
+  }
+}
+
+/* Long names, school names and topics should wrap or ellipsis rather than
+   push the card sideways. */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -48,7 +48,9 @@ export default function DashboardPage() {
         .from("quiz_sessions")
         .select("*")
         .eq("user_id", userId)
-        .order("completed_at", { ascending: false });
+        .order("completed_at", { ascending: false })
+        // Stats and the streak are read from the recent run, not all of history.
+        .limit(500);
       if (cancelled) return;
       if (data) setSessions(data as QuizSessionRow[]);
       setLoadingStats(false);

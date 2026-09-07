@@ -15,36 +15,29 @@ export const revalidate = 300;
  */
 export async function GET() {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const headCount = async (table: string) => {
-      const { count, error } = await supabase
-        .from(table)
-        .select("*", { count: "exact", head: true });
-      return error ? 0 : count ?? 0;
+    // Missing configuration used to throw inside createClient and surface as an
+    // empty object, which looked identical to "no data yet". Say so instead.
+    if (!url || !key) {
+      console.error("Stats: SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_URL is not set");
+      return NextResponse.json({ error: "not_configured" }, { status: 200 });
+    }
+
+    const supabase = createClient(url, key);
+
+    // One row, however large the tables get. See migration 0007.
+    const { data, error } = await supabase.from("app_stats").select("*").single();
+
+    if (error || !data) {
+      console.error("Stats: app_stats view unavailable —", error?.message);
+      return NextResponse.json({ error: "unavailable" }, { status: 200 });
+    }
+
+    const { students, quizzes, questions, papers, flashcards } = data as {
+      students: number; quizzes: number; questions: number; papers: number; flashcards: number;
     };
-
-    const [students, quizzes, papers, flashcards] = await Promise.all([
-      supabase.auth.admin
-        .listUsers({ perPage: 1000 })
-        .then((r) => r.data?.users?.length ?? 0)
-        .catch(() => 0),
-      headCount("quiz_sessions"),
-      headCount("past_papers"),
-      headCount("flashcards"),
-    ]);
-
-    // Questions actually answered, rather than a number someone made up.
-    const { data: sessions } = await supabase
-      .from("quiz_sessions")
-      .select("total_questions");
-    const questions = (sessions || []).reduce(
-      (sum, s: { total_questions: number | null }) => sum + (s.total_questions || 0),
-      0
-    );
 
     return NextResponse.json(
       { students, quizzes, questions, papers, flashcards },

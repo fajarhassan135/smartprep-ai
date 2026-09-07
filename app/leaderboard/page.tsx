@@ -111,17 +111,17 @@ export default function LeaderboardPage() {
                 const rank = i + 4;
                 const isYou = row.user_id === currentUserId;
                 return (
-                  <div key={row.user_id} style={{ background: isYou ? "var(--accent-badge)" : "var(--card-strong)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px 24px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }}>
+                  <div key={row.user_id} style={{ background: isYou ? "var(--accent-badge)" : "var(--card-strong)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px clamp(14px, 4vw, 24px)", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }} className="row-stack">
                     <div style={{ width: 32, height: 32, borderRadius: 999, backgroundColor: bgMid, color: sub, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, flexShrink: 0 }}>
                       {rank}
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div className="row-stack-grow" style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 14, fontWeight: 600, color: text }}>
                         {row.display_name || "Anonymous"} {isYou && <span style={{ fontSize: 11, color: C.orange }}>(you)</span>}
                       </div>
-                      <div style={{ fontSize: 12, color: sub, marginTop: 2 }}>{row.school || "—"}</div>
+                      <div className="truncate" style={{ fontSize: 12, color: sub, marginTop: 2 }}>{row.school || "—"}</div>
                     </div>
-                    <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+                    <div className="row-stack-tail" style={{ display: "flex", gap: 24, alignItems: "center" }}>
                       <div style={{ textAlign: "center" }}>
                         <div style={{ fontSize: 14, fontWeight: 600, color: text }}>{row.total_quizzes}</div>
                         <div style={{ fontSize: 10, color: sub }}>quizzes</div>

@@ -67,7 +67,9 @@ export default function PastPapersPage() {
         .order("level")
         .order("year", { ascending: false })
         .order("session")
-        .order("paper_label");
+        .order("paper_label")
+        // The catalogue is browsed by filter, not by scrolling to the end of it.
+        .limit(2000);
 
       if (cancelled) return;
       if (loadError) setError(loadError.message);

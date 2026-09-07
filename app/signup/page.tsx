@@ -71,13 +71,13 @@ export default function SignupPage() {
           </div>
         </button>
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
-          <h2 style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 600, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
           <p style={{ fontSize: 14, color: sub, lineHeight: 1.7 }}>
             We sent a confirmation link to <strong>{email}</strong>. Click it to
             activate your account, then come back here and log in. If it hasn&apos;t
             arrived in a minute, check your spam folder.
           </p>
-          <a href="/login" style={{ display: "inline-block", marginTop: 28, padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
+          <a href="/login" style={{ display: "inline-block", marginTop: 28, padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
             Go to login
           </a>
         </div>
@@ -94,7 +94,7 @@ export default function SignupPage() {
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
           </button>
-          <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+          <Link href="/" style={{ fontSize: 15, fontWeight: 600, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             <Logo />
           </Link>
         </div>
@@ -105,7 +105,7 @@ export default function SignupPage() {
             </div>
           </button>
           <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>
-            Already have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Log in</span>
+            Already have an account? <span style={{ color: C.orange, fontWeight: 600 }}>Log in</span>
           </a>
         </div>
       </nav>
@@ -115,8 +115,8 @@ export default function SignupPage() {
         <div style={{ width: "100%", maxWidth: 420 }}>
 
           <div style={{ marginBottom: 40 }}>
-            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Get started free</p>
-            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Get started free</p>
+            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
             <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Join thousands of students preparing smarter.</p>
           </div>
 
@@ -127,7 +127,7 @@ export default function SignupPage() {
           )}
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Full name</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Full name</label>
             <input
               type="text"
               value={name}
@@ -138,7 +138,7 @@ export default function SignupPage() {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>
               Display name <span style={{ color: sub, fontWeight: 400 }}>(shown on leaderboard — optional)</span>
             </label>
             <input
@@ -151,7 +151,7 @@ export default function SignupPage() {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Email</label>
             <input
               type="email"
               value={email}
@@ -162,7 +162,7 @@ export default function SignupPage() {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>School <span style={{ color: sub, fontWeight: 400 }}>(optional)</span></label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>School <span style={{ color: sub, fontWeight: 400 }}>(optional)</span></label>
             <input
               type="text"
               value={school}
@@ -173,7 +173,7 @@ export default function SignupPage() {
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Password</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Password</label>
             <input
               type="password"
               value={password}
@@ -186,14 +186,14 @@ export default function SignupPage() {
           <button
             onClick={handleSignup}
             disabled={loading}
-            style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: loading ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", transition: "background 0.2s" }}
+            style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: loading ? C.garnet : C.orange, color: "#fff", fontWeight: 600, fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", transition: "background 0.2s" }}
           >
             {loading ? "Creating account..." : "Create account"}
           </button>
 
           <p style={{ textAlign: "center", fontSize: 12, color: sub, marginTop: 24, lineHeight: 1.6 }}>
             Already have an account?{" "}
-            <a href="/login" style={{ color: C.orange, textDecoration: "none", fontWeight: 500 }}>Log in</a>
+            <a href="/login" style={{ color: C.orange, textDecoration: "none", fontWeight: 600 }}>Log in</a>
           </p>
 
         </div>

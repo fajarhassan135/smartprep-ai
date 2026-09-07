@@ -77,8 +77,8 @@ export default function HistoryPage() {
       <Navbar active="/history" />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz History</p>
-        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your past quizzes</h1>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz History</p>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your past quizzes</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>Track your progress and see how you&apos;ve improved over time.</p>
 
         {/* STATS */}
@@ -89,7 +89,7 @@ export default function HistoryPage() {
             { label: "Best score", value: `${bestScore}%` },
           ].map((stat) => (
             <div key={stat.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px 24px", border: `1px solid ${border}` }}>
-              <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: text, marginBottom: 4 }}>{stat.value}</div>
+              <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 600, color: text, marginBottom: 4 }}>{stat.value}</div>
               <div style={{ fontSize: 12, color: sub }}>{stat.label}</div>
             </div>
           ))}
@@ -109,9 +109,9 @@ export default function HistoryPage() {
           <div style={{ textAlign: "center", padding: "60px", color: sub, fontSize: 14 }}>Loading your quiz history...</div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
-            <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No quizzes yet</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 8 }}>No quizzes yet</div>
             <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>Take your first quiz to see your history here!</div>
-            <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 500 }}>
+            <a href="/quiz" style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, textDecoration: "none", fontSize: 14, fontWeight: 600 }}>
               Start a quiz →
             </a>
           </div>
@@ -125,7 +125,7 @@ export default function HistoryPage() {
                 <div key={i} style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "20px 24px", backdropFilter: "blur(16px)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div>
-                      <div style={{ fontSize: 15, fontWeight: 500, color: text, marginBottom: 4 }}>{session.subject}</div>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: text, marginBottom: 4 }}>{session.subject}</div>
                       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                         <span style={{ fontSize: 11, padding: "3px 10px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>{session.mode === "exam" ? "Exam mode" : "Practice mode"}</span>
                         {session.difficulty && (
@@ -136,7 +136,7 @@ export default function HistoryPage() {
                       </div>
                     </div>
                     <div style={{ textAlign: "right" }}>
-                      <div style={{ fontSize: 24, fontWeight: 500, color: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A" }}>{pct}%</div>
+                      <div style={{ fontSize: 24, fontWeight: 600, color: pct >= 80 ? "#639922" : pct >= 60 ? C.orange : "#E24B4A" }}>{pct}%</div>
                       <div style={{ fontSize: 11, color: sub }}>{formatMarks(session.score)}/{session.total_questions} marks</div>
                     </div>
                   </div>

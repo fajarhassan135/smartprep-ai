@@ -71,8 +71,8 @@ export default function VerifyEmailPage() {
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ textAlign: "center", maxWidth: 440 }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>One more step</p>
-        <h1 style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text, marginBottom: 14, letterSpacing: "-0.03em" }}>Verify your email</h1>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>One more step</p>
+        <h1 style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 600, color: text, marginBottom: 14, letterSpacing: "-0.03em" }}>Verify your email</h1>
         <p style={{ fontSize: 14, color: sub, lineHeight: 1.7, marginBottom: 28 }}>
           We sent a confirmation link to <strong style={{ color: text }}>{email}</strong>.
           Click it and you can come straight back here.
@@ -90,10 +90,10 @@ export default function VerifyEmailPage() {
         )}
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <button onClick={resend} disabled={sending} style={{ padding: "13px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 500, border: "none", cursor: sending ? "default" : "pointer", fontFamily: "inherit", opacity: sending ? 0.6 : 1 }}>
+          <button onClick={resend} disabled={sending} style={{ padding: "13px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, fontSize: 14, fontWeight: 600, border: "none", cursor: sending ? "default" : "pointer", fontFamily: "inherit", opacity: sending ? 0.6 : 1 }}>
             {sending ? "Sending..." : "Resend link"}
           </button>
-          <button onClick={() => window.location.reload()} style={{ padding: "13px 28px", backgroundColor: "transparent", color: C.orange, borderRadius: 12, fontSize: 14, fontWeight: 500, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={() => window.location.reload()} style={{ padding: "13px 28px", backgroundColor: "transparent", color: C.orange, borderRadius: 12, fontSize: 14, fontWeight: 600, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
             I&apos;ve verified
           </button>
         </div>

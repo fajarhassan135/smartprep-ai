@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -57,6 +57,10 @@ body {
   --shadow-md: 0 2px 4px rgba(53, 30, 28, 0.06), 0 8px 20px rgba(53, 30, 28, 0.08);
   --shadow-lg: 0 4px 8px rgba(53, 30, 28, 0.07), 0 16px 40px rgba(53, 30, 28, 0.12);
   --shadow-accent: 0 2px 6px rgba(255, 96, 55, 0.25), 0 8px 24px rgba(255, 96, 55, 0.18);
+
+  --fill: #733635;
+  --fill-ink: #F5F4ED;
+  --fill-ink-soft: rgba(245, 244, 237, 0.78);
 }
 
 html.dark {
@@ -84,6 +88,10 @@ html.dark {
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 20px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.35), 0 16px 40px rgba(0, 0, 0, 0.45);
   --shadow-accent: 0 2px 6px rgba(255, 96, 55, 0.3), 0 8px 24px rgba(255, 96, 55, 0.22);
+
+  --fill: #FF6037;
+  --fill-ink: #2a1715;
+  --fill-ink-soft: rgba(42, 23, 21, 0.8);
 }
 
 html {
@@ -544,4 +552,82 @@ nav {
   .logo-mark:hover {
     transform: none;
   }
+}
+
+/* ---------------------------------------------------------------
+   The emphatic fill.
+
+   Wine red on a light page, orange on a dark one, with the ink
+   flipping to match: cream on the garnet, deep brown on the
+   orange. The two always move together, so no combination leaves
+   text sitting on a ground it cannot be read against.
+
+   Inline styles set colours on the children of these rows, so the
+   overrides have to win the cascade outright.
+   --------------------------------------------------------------- */
+.fill-strip {
+  background-color: var(--fill) !important;
+  color: var(--fill-ink) !important;
+}
+
+.fill-strip * {
+  color: var(--fill-ink) !important;
+}
+
+.fill-strip .muted,
+.fill-strip [data-muted] {
+  color: var(--fill-ink-soft) !important;
+}
+
+.fill-hover {
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.fill-hover:hover,
+.fill-hover:focus-visible {
+  background: var(--fill) !important;
+  border-color: var(--fill) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.fill-hover:hover *,
+.fill-hover:focus-visible * {
+  color: var(--fill-ink) !important;
+}
+
+/* The round subject initial and the board badge carry their own grounds; on
+   hover they become a translucent well in the fill rather than a light patch. */
+.fill-hover:hover [data-chip],
+.fill-hover:focus-visible [data-chip] {
+  background-color: rgba(245, 244, 237, 0.16) !important;
+}
+
+:root[data-theme="dark"] .fill-hover:hover [data-chip],
+:root[data-theme="dark"] .fill-hover:focus-visible [data-chip] {
+  background-color: rgba(42, 23, 21, 0.18) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .fill-hover:hover [data-chip],
+  :root:not([data-theme="light"]) .fill-hover:focus-visible [data-chip] {
+    background-color: rgba(42, 23, 21, 0.18) !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Weight. The app was set almost entirely in 400 and 500, which
+   reads thin at small sizes; headings and controls now carry more.
+   --------------------------------------------------------------- */
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.btn {
+  font-weight: 600;
 }

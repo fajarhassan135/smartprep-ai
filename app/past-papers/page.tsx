@@ -164,8 +164,8 @@ export default function PastPapersPage() {
       <Navbar active="/past-papers" />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Past Papers</p>
-        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Browse past papers</h1>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Past Papers</p>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Browse past papers</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>
           Filter by subject, level and year. Papers open here in the page.
         </p>
@@ -179,7 +179,7 @@ export default function PastPapersPage() {
         {/* FILTERS */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
           <div>
-            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Subject</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: sub, display: "block", marginBottom: 8 }}>Subject</label>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {["All", ...SUBJECTS].map((s) => (
                 <button key={s} onClick={() => setSubject(s)} style={pill(subject === s)}>{s}</button>
@@ -188,7 +188,7 @@ export default function PastPapersPage() {
           </div>
 
           <div>
-            <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Level</label>
+            <label style={{ fontSize: 11, fontWeight: 600, color: sub, display: "block", marginBottom: 8 }}>Level</label>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               {["All", ...LEVELS.map((l) => l.label)].map((l) => (
                 <button key={l} onClick={() => setLevel(l)} style={pill(level === l)}>{l}</button>
@@ -198,7 +198,7 @@ export default function PastPapersPage() {
 
           {years.length > 0 && (
             <div>
-              <label style={{ fontSize: 11, fontWeight: 500, color: sub, display: "block", marginBottom: 8 }}>Year</label>
+              <label style={{ fontSize: 11, fontWeight: 600, color: sub, display: "block", marginBottom: 8 }}>Year</label>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button onClick={() => setYear("All")} style={pill(year === "All")}>All</button>
                 {years.map((y) => (
@@ -214,7 +214,7 @@ export default function PastPapersPage() {
           <div style={{ textAlign: "center", padding: 60, color: sub, fontSize: 14 }}>Loading papers...</div>
         ) : papers.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 32px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
-            <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No papers yet</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 8 }}>No papers yet</div>
             <div style={{ fontSize: 13, color: sub, lineHeight: 1.7, maxWidth: 420, margin: "0 auto" }}>
               Nothing has been added yet. Papers appear here as soon as they are
               imported, filed by subject, level and year.
@@ -229,24 +229,24 @@ export default function PastPapersPage() {
             {groups.map((g) => (
               <div key={g.key} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", backdropFilter: "blur(16px)" }}>
                 <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: text }}>
                     {g.subject} — {g.paper_label}
                   </div>
                   <div style={{ fontSize: 11, color: sub, marginTop: 3 }}>
                     {g.session} {g.year}
                   </div>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-badge)" : "var(--accent-badge)", color: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
+                <span style={{ fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 999, background: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-badge)" : "var(--accent-badge)", color: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
                   {g.level}
                 </span>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {g.questionPaper && (
-                    <button onClick={() => openPaper(g.questionPaper!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                    <button onClick={() => openPaper(g.questionPaper!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                       Question paper
                     </button>
                   )}
                   {g.markScheme && (
-                    <button onClick={() => openPaper(g.markScheme!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "transparent", color: text, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                    <button onClick={() => openPaper(g.markScheme!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "transparent", color: text, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                       Mark scheme
                     </button>
                   )}
@@ -269,7 +269,7 @@ export default function PastPapersPage() {
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "16px 20px", borderBottom: `1px solid ${border}`, flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: text }}>
                   {viewing.subject} — {viewing.paper_label}
                 </div>
                 <div style={{ fontSize: 11, color: sub, marginTop: 2 }}>

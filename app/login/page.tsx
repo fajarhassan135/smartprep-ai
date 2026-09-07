@@ -61,7 +61,7 @@ export default function LoginPage() {
           <Link href="/" style={{ fontSize: 18, color: text, textDecoration: "none", lineHeight: 1 }}>
             ⌂
           </Link>
-          <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+          <Link href="/" style={{ fontSize: 15, fontWeight: 600, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             <Logo />
           </Link>
         </div>
@@ -72,7 +72,7 @@ export default function LoginPage() {
             </div>
           </button>
           <a href="/signup" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>
-            Don&apos;t have an account? <span style={{ color: C.orange, fontWeight: 500 }}>Sign up</span>
+            Don&apos;t have an account? <span style={{ color: C.orange, fontWeight: 600 }}>Sign up</span>
           </a>
         </div>
       </nav>
@@ -83,8 +83,8 @@ export default function LoginPage() {
 
           {/* HEADER */}
           <div style={{ marginBottom: 40 }}>
-            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Welcome back</p>
-            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Log in</h1>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Welcome back</p>
+            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Log in</h1>
             <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Continue your exam preparation journey.</p>
           </div>
 
@@ -97,7 +97,7 @@ export default function LoginPage() {
 
           {/* EMAIL */}
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Email</label>
             <input
               type="email"
               value={email}
@@ -109,7 +109,7 @@ export default function LoginPage() {
 
           {/* PASSWORD */}
           <div style={{ marginBottom: 24 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Password</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Password</label>
             <input
               type="password"
               value={password}
@@ -123,7 +123,7 @@ export default function LoginPage() {
           <button
             onClick={handleLogin}
             disabled={loading}
-            style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: loading ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", transition: "background 0.2s" }}
+            style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: loading ? C.garnet : C.orange, color: "#fff", fontWeight: 600, fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer", fontFamily: "inherit", transition: "background 0.2s" }}
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
@@ -140,14 +140,14 @@ export default function LoginPage() {
             onClick={async () => {
               await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${window.location.origin}/dashboard` } });
             }}
-            style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: inputBg, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${inputBorder}`, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
+            style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: inputBg, color: text, fontWeight: 600, fontSize: 14, border: `1px solid ${inputBorder}`, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }}
           >
             <span style={{ fontSize: 18 }}>G</span> Continue with Google
           </button>
 
           <p style={{ textAlign: "center", fontSize: 12, color: sub, marginTop: 24 }}>
             Don&apos;t have an account?{" "}
-            <a href="/signup" style={{ color: C.orange, textDecoration: "none", fontWeight: 500 }}>Sign up</a>
+            <a href="/signup" style={{ color: C.orange, textDecoration: "none", fontWeight: 600 }}>Sign up</a>
           </p>
 
         </div>

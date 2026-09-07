@@ -95,7 +95,7 @@ export default function HomePage() {
 
       {/* NAVBAR */}
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", color: text, whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.03em", color: text, whiteSpace: "nowrap" }}>
           <Logo />
         </div>
 
@@ -131,10 +131,10 @@ export default function HomePage() {
         <div className="rise-in" style={{ display: "flex", justifyContent: "center", marginBottom: 28, color: text }}>
           <LogoMark size={96} />
         </div>
-        <p className="rise-in" style={{ ["--i" as string]: 1, fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 16 }}>
+        <p className="rise-in" style={{ ["--i" as string]: 1, fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 16 }}>
           Cambridge & Pakistan Board
         </p>
-        <h1 className="rise-in" style={{ ["--i" as string]: 2, fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
+        <h1 className="rise-in" style={{ ["--i" as string]: 2, fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 600, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
           Study smarter.<br />
           <span style={{ color: C.orange }}>Score higher.</span>
         </h1>
@@ -152,14 +152,14 @@ export default function HomePage() {
       </section>
 
       {/* STATS */}
-      <section style={{ backgroundColor: bgMid, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
+      <section className="fill-strip" style={{ borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px clamp(16px, 4vw, 40px)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", textAlign: "center", gap: 16 }}>
           {shownStats.map((stat, i) => (
             <div key={stat.label}>
-              <div style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text }}>
+              <div style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 600, color: text }}>
                 <CountUp value={stat.num} delay={i * 110} />
               </div>
-              <div style={{ fontSize: 12, color: sub, marginTop: 6 }}>{stat.label}</div>
+              <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>{stat.label}</div>
             </div>
           ))}
         </div>
@@ -167,22 +167,22 @@ export default function HomePage() {
 
       {/* SUBJECTS */}
       <section id="subjects" style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Subjects</p>
-        <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Pick your subject & start</h2>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Subjects</p>
+        <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Pick your subject & start</h2>
         <div style={{ background: "var(--hero-panel)", borderRadius: 24, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
           {subjects.map((subject) => (
-            <div key={subject.title} style={{ background: "var(--card)", border: "var(--glass-border)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: "rgba(255,96,55,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "var(--accent-ink)", flexShrink: 0 }}>
+            <a key={subject.title} href="/signup" className="fill-hover" style={{ background: "var(--card)", border: "var(--glass-border)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)", textDecoration: "none" }}>
+              <div data-chip style={{ width: 44, height: 44, borderRadius: 12, background: "var(--accent-badge)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 700, color: "var(--accent-ink)", flexShrink: 0 }}>
                 {subject.title[0]}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: text }}>{subject.title}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: text }}>{subject.title}</div>
                 <div style={{ fontSize: 12, color: sub, marginTop: 3 }}>{subject.sub}</div>
               </div>
-              <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, background: subject.board === "Cambridge" ? "var(--teal-badge)" : "rgba(255,96,55,0.1)", color: subject.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)", flexShrink: 0 }}>
+              <span data-chip style={{ fontSize: 11, fontWeight: 600, padding: "4px 12px", borderRadius: 999, background: subject.board === "Cambridge" ? "var(--teal-badge)" : "var(--accent-badge)", color: subject.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)", flexShrink: 0 }}>
                 {subject.board}
               </span>
-            </div>
+            </a>
           ))}
         </div>
       </section>
@@ -190,12 +190,12 @@ export default function HomePage() {
       {/* FEATURES */}
       <section id="features" style={{ backgroundColor: bgMid, padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Features</p>
-          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Everything you need to ace your exams</h2>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Features</p>
+          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Everything you need to ace your exams</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {features.map((f) => (
-              <div key={f.title} style={{ backgroundColor: bg, borderRadius: 18, padding: 24, border: `1px solid ${border}` }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 8 }}>{f.title}</div>
+              <div key={f.title} className="fill-hover" style={{ backgroundColor: bg, borderRadius: 18, padding: 24, border: `1px solid ${border}` }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: text, marginBottom: 8 }}>{f.title}</div>
                 <div style={{ fontSize: 13, color: sub, lineHeight: 1.65 }}>{f.desc}</div>
               </div>
             ))}
@@ -206,11 +206,11 @@ export default function HomePage() {
       {/* CTA */}
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
         <div style={{ backgroundColor: C.orange, borderRadius: 24, padding: "clamp(40px, 8vw, 64px) clamp(20px, 4vw, 40px)", textAlign: "center" }}>
-          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>Ready to start preparing?</h2>
+          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 600, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>Ready to start preparing?</h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", marginBottom: 36, maxWidth: 420, margin: "0 auto 36px" }}>
             Join thousands of students already using SmartPrep AI to study smarter and score higher.
           </p>
-          <a href="/signup" style={{ display: "inline-block", padding: "13px 32px", backgroundColor: "#fff", color: C.orange, fontWeight: 500, fontSize: 14, borderRadius: 12, border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
+          <a href="/signup" style={{ display: "inline-block", padding: "13px 32px", backgroundColor: "#fff", color: C.orange, fontWeight: 600, fontSize: 14, borderRadius: 12, border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
             Create free account
           </a>
         </div>
@@ -219,7 +219,7 @@ export default function HomePage() {
       {/* FOOTER */}
       <footer style={{ borderTop: `1px solid ${border}`, padding: "32px clamp(16px, 4vw, 40px)", backgroundColor: bg }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: text }}>
             <Logo />
           </div>
           <div style={{ fontSize: 12, color: sub }}>© {new Date().getFullYear()} SmartPrep AI. Built for students, by students.</div>

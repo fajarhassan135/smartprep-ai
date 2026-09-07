@@ -83,7 +83,7 @@ export default function Navbar({ active }: { active?: string }) {
 
   return (
     <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50, gap: 16 }}>
-      <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
+      <Link href="/" style={{ fontSize: 15, fontWeight: 600, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
         <Logo />
       </Link>
 
@@ -114,7 +114,7 @@ export default function Navbar({ active }: { active?: string }) {
           {avatarUrl ? (
             <img src={avatarUrl} alt="Profile" style={{ width: 28, height: 28, borderRadius: 999, objectFit: "cover" }} />
           ) : (
-            <div style={{ width: 28, height: 28, borderRadius: 999, backgroundColor: C.orange, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 500 }}>
+            <div style={{ width: 28, height: 28, borderRadius: 999, backgroundColor: C.orange, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600 }}>
               {initial}
             </div>
           )}
@@ -122,7 +122,7 @@ export default function Navbar({ active }: { active?: string }) {
             Profile
           </span>
         </a>
-        <button onClick={handleLogout} style={{ fontSize: 13, fontWeight: 500, padding: "9px 20px", borderRadius: 999, backgroundColor: "transparent", color: C.orange, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
+        <button onClick={handleLogout} style={{ fontSize: 13, fontWeight: 600, padding: "9px 20px", borderRadius: 999, backgroundColor: "transparent", color: C.orange, border: `1px solid ${C.orange}`, cursor: "pointer", fontFamily: "inherit" }}>
           Log out
         </button>
       </div>

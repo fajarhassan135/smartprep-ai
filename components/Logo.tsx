@@ -89,7 +89,7 @@ export function Logo({ size = 34 }: { size?: number }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
       <LogoMark size={size} />
-      <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", whiteSpace: "nowrap" }}>
+      <span style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.03em", whiteSpace: "nowrap" }}>
         Smart<span style={{ color: "var(--accent)" }}>Prep</span> AI
       </span>
     </span>

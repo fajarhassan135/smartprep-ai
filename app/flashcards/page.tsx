@@ -39,7 +39,7 @@ const inputStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   fontSize: 12,
-  fontWeight: 500,
+  fontWeight: 600,
   color: text,
   display: "block",
   marginBottom: 6,
@@ -70,7 +70,7 @@ function FolderGrid({ items, onOpen }: { items: FolderItem[]; onOpen: (key: stri
           onClick={() => onOpen(item.key)}
           style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 16, padding: "22px 24px", textAlign: "left", cursor: "pointer", fontFamily: "inherit", backdropFilter: "blur(16px)" }}
         >
-          <div style={{ fontSize: 15, fontWeight: 500, color: text, marginBottom: 4 }}>{item.title}</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: text, marginBottom: 4 }}>{item.title}</div>
           {item.meta && <div style={{ fontSize: 11, color: sub, marginBottom: 6 }}>{item.meta}</div>}
           <div style={{ fontSize: 12, color: sub }}>
             {item.count} card{item.count === 1 ? "" : "s"}
@@ -308,8 +308,8 @@ export default function FlashcardsPage() {
       <Navbar active="/flashcards" />
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Flashcards</p>
-        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your card library</h1>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Flashcards</p>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your card library</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 32 }}>
           Sorted by subject, then exam level, then syllabus topic. Cards are saved to your account.
         </p>
@@ -382,9 +382,9 @@ export default function FlashcardsPage() {
               <div style={{ textAlign: "center", padding: 60, color: sub, fontSize: 14 }}>Loading your cards...</div>
             ) : cards.length === 0 ? (
               <div style={{ textAlign: "center", padding: 60, background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
-                <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No cards yet</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 8 }}>No cards yet</div>
                 <div style={{ fontSize: 13, color: sub, marginBottom: 24 }}>Write your own or generate a set for a topic you are revising.</div>
-                <button onClick={() => setView("create")} style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, border: "none", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                <button onClick={() => setView("create")} style={{ padding: "12px 28px", backgroundColor: C.orange, color: "#fff", borderRadius: 12, border: "none", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                   Add cards →
                 </button>
               </div>
@@ -422,18 +422,18 @@ export default function FlashcardsPage() {
                   <div className={`flashcard-inner ${flipped ? "is-flipped" : ""}`}>
                     <div className="flashcard-face front" style={{ background: "var(--card-solid)", border: `1px solid ${border}`, backdropFilter: "blur(16px)" }}>
                       <div>
-                        <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: sub, marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: sub, marginBottom: 16 }}>
                           Question — click to reveal
                         </div>
-                        <div style={{ fontSize: 19, fontWeight: 500, color: text, lineHeight: 1.5 }}>{card.front}</div>
+                        <div style={{ fontSize: 19, fontWeight: 600, color: text, lineHeight: 1.5 }}>{card.front}</div>
                       </div>
                     </div>
                     <div className="flashcard-face back" style={{ background: C.orange, border: `1px solid ${C.orange}` }}>
                       <div>
-                        <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>
                           Answer
                         </div>
-                        <div style={{ fontSize: 16, fontWeight: 500, color: "#fff", lineHeight: 1.6 }}>{card.back}</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: "#fff", lineHeight: 1.6 }}>{card.back}</div>
                       </div>
                     </div>
                   </div>
@@ -449,7 +449,7 @@ export default function FlashcardsPage() {
                   </button>
                   <button
                     onClick={() => setFlipped(!flipped)}
-                    style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}
+                    style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}
                   >
                     Flip card
                   </button>
@@ -474,7 +474,7 @@ export default function FlashcardsPage() {
         {view === "create" && (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
             <div>
-              <h3 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 20 }}>Where it goes</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 20 }}>Where it goes</h3>
 
               <div style={{ marginBottom: 16 }}>
                 <label style={labelStyle}>Subject</label>
@@ -504,7 +504,7 @@ export default function FlashcardsPage() {
                 </div>
               </div>
 
-              <h3 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 20 }}>Generate with AI</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 20 }}>Generate with AI</h3>
               <div style={{ marginBottom: 16 }}>
                 <label style={labelStyle}>How many cards</label>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -518,14 +518,14 @@ export default function FlashcardsPage() {
               <button
                 onClick={generateCards}
                 disabled={generating}
-                style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: generating ? C.garnet : C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: generating ? "not-allowed" : "pointer", fontFamily: "inherit" }}
+                style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: generating ? C.garnet : C.orange, color: "#fff", fontWeight: 600, fontSize: 14, border: "none", cursor: generating ? "not-allowed" : "pointer", fontFamily: "inherit" }}
               >
                 {generating ? "Writing exam-standard cards..." : `Generate ${genCount} cards`}
               </button>
             </div>
 
             <div>
-              <h3 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 20 }}>Write your own</h3>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 20 }}>Write your own</h3>
               <div style={{ marginBottom: 16 }}>
                 <label style={labelStyle}>Front (question)</label>
                 <textarea value={newFront} onChange={(e) => setNewFront(e.target.value)} placeholder="Explain why..." style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} />
@@ -537,7 +537,7 @@ export default function FlashcardsPage() {
               <button
                 onClick={addCard}
                 disabled={saving || !newFront.trim() || !newBack.trim()}
-                style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: !newFront.trim() || !newBack.trim() ? 0.5 : 1 }}
+                style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: !newFront.trim() || !newBack.trim() ? 0.5 : 1 }}
               >
                 {saving ? "Saving..." : "Save card"}
               </button>

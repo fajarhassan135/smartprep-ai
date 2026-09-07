@@ -206,8 +206,8 @@ export default function ProfilePage() {
       <Navbar active="/profile" />
 
       <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Account</p>
-        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your profile</h1>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Account</p>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 600, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your profile</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Manage your account details and password.</p>
 
         {successMsg && (
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                 style={{ width: 72, height: 72, borderRadius: 999, objectFit: "cover", flexShrink: 0, cursor: "pointer" }}
               />
             ) : (
-              <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: "#fff", flexShrink: 0 }}>
+              <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 600, color: "#fff", flexShrink: 0 }}>
                 {fullName ? fullName[0].toUpperCase() : email[0].toUpperCase()}
               </div>
             )}
@@ -252,7 +252,7 @@ export default function ProfilePage() {
             />
           </div>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 500, color: text, marginBottom: 4 }}>{fullName || "Student"}</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: text, marginBottom: 4 }}>{fullName || "Student"}</div>
             <div style={{ fontSize: 13, color: sub }}>{email}</div>
             {school && <div style={{ fontSize: 12, color: sub, marginTop: 2 }}>{school}</div>}
             {uploadingAvatar && <div style={{ fontSize: 12, color: C.orange, marginTop: 4 }}>Uploading...</div>}
@@ -261,10 +261,10 @@ export default function ProfilePage() {
 
         {/* PROFILE DETAILS */}
         <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 24 }}>Personal details</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 24 }}>Personal details</h2>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Full name</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Full name</label>
             <input
               type="text"
               value={fullName}
@@ -275,7 +275,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>
               Display name <span style={{ color: sub, fontWeight: 400 }}>(shown on leaderboard)</span>
             </label>
             <input
@@ -288,7 +288,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Email <span style={{ color: sub, fontWeight: 400 }}>(cannot be changed)</span></label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Email <span style={{ color: sub, fontWeight: 400 }}>(cannot be changed)</span></label>
             <input
               type="email"
               value={email}
@@ -298,7 +298,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: 28 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>School</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>School</label>
             <input
               type="text"
               value={school}
@@ -308,17 +308,17 @@ export default function ProfilePage() {
             />
           </div>
 
-          <button onClick={saveProfile} disabled={saving} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
+          <button onClick={saveProfile} disabled={saving} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: saving ? 0.7 : 1 }}>
             {saving ? "Saving..." : "Save changes"}
           </button>
         </div>
 
         {/* CHANGE PASSWORD */}
         <div style={{ background: "var(--card-strong)", border: `1px solid ${border}`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)", marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 24 }}>Change password</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: text, marginBottom: 24 }}>Change password</h2>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>New password</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>New password</label>
             <input
               type="password"
               value={newPassword}
@@ -329,7 +329,7 @@ export default function ProfilePage() {
           </div>
 
           <div style={{ marginBottom: 28 }}>
-            <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 6 }}>Confirm new password</label>
+            <label style={{ fontSize: 12, fontWeight: 600, color: text, display: "block", marginBottom: 6 }}>Confirm new password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -339,16 +339,16 @@ export default function ProfilePage() {
             />
           </div>
 
-          <button onClick={savePassword} disabled={savingPassword} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: savingPassword ? 0.7 : 1 }}>
+          <button onClick={savePassword} disabled={savingPassword} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: savingPassword ? 0.7 : 1 }}>
             {savingPassword ? "Updating..." : "Update password"}
           </button>
         </div>
 
         {/* DANGER ZONE */}
         <div style={{ background: "var(--card-strong)", border: `1px solid rgba(226,75,74,0.2)`, borderRadius: 20, padding: "32px", backdropFilter: "blur(16px)" }}>
-          <h2 style={{ fontSize: 16, fontWeight: 500, color: "#E24B4A", marginBottom: 8 }}>Account</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: "#E24B4A", marginBottom: 8 }}>Account</h2>
           <p style={{ fontSize: 13, color: sub, marginBottom: 20 }}>Logging out will end your current session on this device.</p>
-          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit", marginBottom: 24 }}>
+          <button onClick={async () => { await supabase.auth.signOut(); window.location.href = "/"; }} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 600, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit", marginBottom: 24 }}>
             Log out
           </button>
 
@@ -357,19 +357,19 @@ export default function ProfilePage() {
               Deleting your account permanently removes your profile, quiz history, and leaderboard standing. This cannot be undone.
             </p>
             {!showDeleteConfirm ? (
-              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 500, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
+              <button onClick={() => setShowDeleteConfirm(true)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: "#E24B4A", fontWeight: 600, fontSize: 14, border: "1px solid rgba(226,75,74,0.3)", cursor: "pointer", fontFamily: "inherit" }}>
                 Delete account
               </button>
             ) : (
               <div>
-                <p style={{ fontSize: 13, fontWeight: 500, color: "#E24B4A", marginBottom: 12 }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#E24B4A", marginBottom: 12 }}>
                   Are you sure? This is permanent.
                 </p>
                 <div style={{ display: "flex", gap: 12 }}>
-                  <button onClick={handleDeleteAccount} disabled={deleting} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "#E24B4A", color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: deleting ? 0.6 : 1 }}>
+                  <button onClick={handleDeleteAccount} disabled={deleting} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "#E24B4A", color: "#fff", fontWeight: 600, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", opacity: deleting ? 0.6 : 1 }}>
                     {deleting ? "Deleting..." : "Yes, delete my account"}
                   </button>
-                  <button onClick={() => setShowDeleteConfirm(false)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
+                  <button onClick={() => setShowDeleteConfirm(false)} style={{ padding: "12px 28px", borderRadius: 12, backgroundColor: "transparent", color: text, fontWeight: 600, fontSize: 14, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
                     Cancel
                   </button>
                 </div>

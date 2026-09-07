@@ -1,57 +1,1082 @@
 [
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-0580/past-papers/",
-    "subject": "Mathematics", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0580)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-0625/past-papers/",
-    "subject": "Physics", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0625)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-computer-science-0478/past-papers/",
-    "subject": "Computer Science", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0478)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-economics-0455/past-papers/",
-    "subject": "Economics", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0455)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-studies-0450/past-papers/",
-    "subject": "Business Studies", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0450)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-first-language-0500/past-papers/",
-    "subject": "English", "level": "IGCSE", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (0500)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/past-papers/",
-    "subject": "Mathematics", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9709)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-physics-9702/past-papers/",
-    "subject": "Physics", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9702)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-computer-science-9618/past-papers/",
-    "subject": "Computer Science", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9618)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-economics-9708/past-papers/",
-    "subject": "Economics", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9708)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-business-9609/past-papers/",
-    "subject": "Business Studies", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9609)" },
-
-  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-english-language-9093/past-papers/",
-    "subject": "English", "level": "A-Level", "year": 2026, "session": "All",
-    "paperLabel": "Official past papers (9093)" },
-
-  { "url": "https://fbise.edu.pk/Old%20Question%20Paper.php",
-    "subject": "Mathematics", "level": "Matric", "year": 2026, "session": "All",
-    "paperLabel": "FBISE old question papers (SSC)" },
-
-  { "url": "https://www.fbise.edu.pk/curriculum_model_paper.php",
-    "subject": "Mathematics", "level": "FSc", "year": 2026, "session": "All",
-    "paperLabel": "FBISE model papers & assessment frameworks (HSSC)" }
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569923-june-2024-question-paper-11.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569919-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0580)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569924-june-2024-question-paper-21.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569920-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0580)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569925-june-2024-question-paper-31.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/569921-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (0580)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671439-june-2024-question-paper-41.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671437-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (0580)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/663662-2025-specimen-paper-1.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2025,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/663664-2025-specimen-paper-2.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2025,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/663666-2025-specimen-paper-3.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2025,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/663668-2025-specimen-paper-4.pdf",
+    "subject": "Mathematics",
+    "level": "IGCSE",
+    "year": 2025,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (0580)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570010-june-2024-question-paper-11.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570004-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570011-june-2024-question-paper-21.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570005-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570012-june-2024-question-paper-31.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/570006-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671385-june-2024-question-paper-41.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671373-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671386-june-2024-question-paper-51.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671374-june-2024-mark-scheme-paper-51.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671387-june-2024-question-paper-61.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 6 Variant 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/671375-june-2024-mark-scheme-paper-61.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 6 Variant 1 (0625)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595783-2023-specimen-paper-1.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595784-2023-specimen-paper-2.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595785-2023-specimen-paper-3.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595786-2023-specimen-paper-4.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595788-2023-specimen-paper-5.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 5 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/595789-2023-specimen-paper-6.pdf",
+    "subject": "Physics",
+    "level": "IGCSE",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 6 (0625)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520650-june-2024-question-paper-11.pdf",
+    "subject": "Computer Science",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0478)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520648-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Computer Science",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0478)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520651-june-2024-question-paper-21.pdf",
+    "subject": "Computer Science",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0478)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520655-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Computer Science",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0478)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521309-june-2024-question-paper-11.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0455)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521303-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0455)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521311-june-2024-question-paper-21.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0455)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521307-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0455)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/718808-2027-specimen-paper-1.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2027,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (0455)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/718809-2027-specimen-paper-2.pdf",
+    "subject": "Economics",
+    "level": "IGCSE",
+    "year": 2027,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (0455)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520483-june-2024-question-paper-11.pdf",
+    "subject": "Business Studies",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0450)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/520484-june-2024-question-paper-21.pdf",
+    "subject": "Business Studies",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0450)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521350-june-2024-question-paper-11.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0500)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521328-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (0500)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521351-june-2024-question-paper-21.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0500)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/521329-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (0500)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/718842-2027-specimen-paper-1.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2027,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (0500)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/718843-2027-specimen-paper-2.pdf",
+    "subject": "English",
+    "level": "IGCSE",
+    "year": 2027,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (0500)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567744-june-2024-question-paper-11.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567738-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567745-june-2024-question-paper-21.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567739-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567746-june-2024-question-paper-31.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567740-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673793-june-2024-question-paper-41.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673787-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673795-june-2024-question-paper-51.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673789-june-2024-mark-scheme-paper-51.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673797-june-2024-question-paper-61.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 6 Variant 1 (9709)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673791-june-2024-mark-scheme-paper-61.pdf",
+    "subject": "Mathematics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 6 Variant 1 (9709)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567870-june-2024-question-paper-11.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567865-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567868-june-2024-question-paper-21.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567863-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567869-june-2024-question-paper-31.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567864-june-2023-mark-scheme-paper-31.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567871-june-2024-question-paper-41.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567866-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567872-june-2024-question-paper-51.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567867-june-2024-mark-scheme-paper-51.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 5 Variant 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751262-2022-specimen-paper-1.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751268-2022-specimen-mark-scheme-paper-1.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751263-2022-specimen-paper-2.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751273-2022-specimen-mark-scheme-paper-2.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751265-2022-specimen-paper-3.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751274-2022-specimen-mark-scheme-paper-3.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751269-2022-specimen-paper-4.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751275-2022-specimen-mark-scheme-paper-4.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751270-2022-specimen-paper-5.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 5 (9702)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/751276-2022-specimen-mark-scheme-paper-5.pdf",
+    "subject": "Physics",
+    "level": "A-Level",
+    "year": 2022,
+    "session": "Specimen",
+    "paperLabel": "Paper 5 (9702)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673628-june-2024-question-paper-11.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9618)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673620-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9618)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673630-june-2024-question-paper-21.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9618)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673622-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9618)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673637-june-2024-question-paper-31.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9618)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673624-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9618)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673639-june-2024-question-paper-41.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9618)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673626-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Computer Science",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9618)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567341-june-2024-question-paper-11.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567337-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9708)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567342-june-2024-question-paper-21.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567338-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9708)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567343-june-2024-question-paper-31.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567339-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9708)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673738-june-2024-question-paper-41.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/673736-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9708)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736722-2023-specimen-paper-1.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736724-2023-specimen-paper-2.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736726-2023-specimen-paper-3.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736728-2023-specimen-paper-4.pdf",
+    "subject": "Economics",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (9708)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566852-june-2024-question-paper-11.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566849-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9609)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566851-june-2024-question-paper-21.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566848-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9609)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566850-june-2024-question-paper-31.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/566847-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9609)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/726239-june-2024-question-paper-41.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/726237-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9609)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736705-2023-specimen-paper-1.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 1 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736729-2023-specimen-paper-2.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 2 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736731-2023-specimen-paper-3.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 3 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/736734-2023-specimen-paper-4.pdf",
+    "subject": "Business Studies",
+    "level": "A-Level",
+    "year": 2023,
+    "session": "Specimen",
+    "paperLabel": "Paper 4 (9609)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567374-june-2024-question-paper-11.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9093)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567370-june-2024-mark-scheme-paper-11.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 1 Variant 1 (9093)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567375-june-2024-question-paper-21.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9093)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567371-june-2024-mark-scheme-paper-21.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 2 Variant 1 (9093)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567376-june-2024-question-paper-31.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9093)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/567372-june-2024-mark-scheme-paper-31.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 3 Variant 1 (9093)",
+    "docType": "mark_scheme"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/672628-june-2024-question-paper-41.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9093)",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.cambridgeinternational.org/Images/672624-june-2024-mark-scheme-paper-41.pdf",
+    "subject": "English",
+    "level": "A-Level",
+    "year": 2024,
+    "session": "May/June",
+    "paperLabel": "Paper 4 Variant 1 (9093)",
+    "docType": "mark_scheme"
+  }
 ]

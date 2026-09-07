@@ -16,6 +16,7 @@ export default function Navbar({ active }: { active?: string }) {
   const { toggleDark } = useTheme();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [initial, setInitial] = useState("?");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const text = "var(--text)";
   const sub = "var(--sub)";
@@ -74,13 +75,23 @@ export default function Navbar({ active }: { active?: string }) {
   ];
 
   return (
-    <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
+    <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50, gap: 16 }}>
       <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
         Smart<span style={{ color: C.orange }}>Prep</span> AI
       </Link>
-      <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+
+      <button
+        className="nav-menu-button"
+        onClick={() => setMenuOpen((open) => !open)}
+        aria-expanded={menuOpen}
+        aria-label={menuOpen ? "Close menu" : "Open menu"}
+      >
+        {menuOpen ? "Close" : "Menu"}
+      </button>
+
+      <div className={`nav-links${menuOpen ? " is-open" : ""}`}>
         {links.map((link) => (
-          <a key={link.href} href={link.href} style={{ fontSize: 13, color: active === link.href ? C.orange : sub, textDecoration: "none", fontWeight: active === link.href ? 500 : 400 }}>
+          <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} style={{ fontSize: 13, color: active === link.href ? C.orange : sub, textDecoration: "none", fontWeight: active === link.href ? 500 : 400 }}>
             {link.label}
           </a>
         ))}

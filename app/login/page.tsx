@@ -51,7 +51,7 @@ export default function LoginPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
@@ -82,7 +82,7 @@ export default function LoginPage() {
           {/* HEADER */}
           <div style={{ marginBottom: 40 }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Welcome back</p>
-            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Log in</h1>
+            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Log in</h1>
             <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Continue your exam preparation journey.</p>
           </div>
 

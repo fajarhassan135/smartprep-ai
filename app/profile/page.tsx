@@ -205,9 +205,9 @@ export default function ProfilePage() {
 
       <Navbar active="/profile" />
 
-      <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 700, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Account</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your profile</h1>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your profile</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Manage your account details and password.</p>
 
         {successMsg && (
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                 style={{ width: 72, height: 72, borderRadius: 999, objectFit: "cover", flexShrink: 0, cursor: "pointer" }}
               />
             ) : (
-              <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 500, color: "#fff", flexShrink: 0 }}>
+              <div style={{ width: 72, height: 72, borderRadius: 999, backgroundColor: C.orange, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: "#fff", flexShrink: 0 }}>
                 {fullName ? fullName[0].toUpperCase() : email[0].toUpperCase()}
               </div>
             )}

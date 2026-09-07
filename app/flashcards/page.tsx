@@ -309,7 +309,7 @@ export default function FlashcardsPage() {
 
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Flashcards</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your card library</h1>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your card library</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 32 }}>
           Sorted by subject, then exam level, then syllabus topic. Cards are saved to your account.
         </p>

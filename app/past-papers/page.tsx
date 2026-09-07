@@ -130,7 +130,7 @@ export default function PastPapersPage() {
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Past Papers</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Browse past papers</h1>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Browse past papers</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>
           Filter by subject, level and year. Papers open here in the page.
         </p>
@@ -181,8 +181,8 @@ export default function PastPapersPage() {
           <div style={{ textAlign: "center", padding: "60px 32px", background: "var(--card-strong)", borderRadius: 20, border: `1px solid ${border}` }}>
             <div style={{ fontSize: 16, fontWeight: 500, color: text, marginBottom: 8 }}>No papers yet</div>
             <div style={{ fontSize: 13, color: sub, lineHeight: 1.7, maxWidth: 420, margin: "0 auto" }}>
-              The catalogue is empty. Papers added through the admin page appear here,
-              filed by subject, level and year.
+              Nothing has been added yet. Papers appear here as soon as they are
+              imported, filed by subject, level and year.
             </div>
           </div>
         ) : filtered.length === 0 ? (

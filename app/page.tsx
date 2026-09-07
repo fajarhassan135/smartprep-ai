@@ -1,8 +1,51 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useTheme } from "../lib/ThemeContext";
+
+type Stats = {
+  students?: number;
+  quizzes?: number;
+  questions?: number;
+  papers?: number;
+  flashcards?: number;
+};
 
 export default function HomePage() {
   const { toggleDark } = useTheme();
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Real counts, refreshed on every visit. Anything still at zero is left out
+  // rather than advertised, and the strip falls back to facts about the product
+  // until there is usage worth showing.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/stats")
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setStats(d); })
+      .catch(() => { if (!cancelled) setStats({}); });
+    return () => { cancelled = true; };
+  }, []);
+
+  const fmt = (n: number) => n.toLocaleString("en-GB");
+  const liveStats = stats
+    ? [
+        stats.questions ? { num: fmt(stats.questions), label: "Questions answered" } : null,
+        stats.quizzes ? { num: fmt(stats.quizzes), label: "Quizzes completed" } : null,
+        stats.students ? { num: fmt(stats.students), label: stats.students === 1 ? "Student" : "Students" } : null,
+        stats.papers ? { num: fmt(stats.papers), label: "Past papers" } : null,
+        stats.flashcards ? { num: fmt(stats.flashcards), label: "Flashcards made" } : null,
+      ].filter(Boolean).slice(0, 3)
+    : [];
+
+  // True on day one, and still true later.
+  const fallbackStats = [
+    { num: "6", label: "Subjects covered" },
+    { num: "4", label: "Exam levels" },
+    { num: "2", label: "Boards" },
+  ];
+
+  const shownStats = liveStats.length === 3 ? (liveStats as { num: string; label: string }[]) : fallbackStats;
 
   const C = {
     snow: "#F5F4ED",
@@ -45,13 +88,23 @@ export default function HomePage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, color: text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", color: text }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
+        <div style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", color: text, whiteSpace: "nowrap" }}>
           Smart<span style={{ color: C.orange }}>Prep</span> AI
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          <a href="#subjects" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Subjects</a>
-          <a href="#features" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Features</a>
+
+        <button
+          className="nav-menu-button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          {menuOpen ? "Close" : "Menu"}
+        </button>
+
+        <div className={`nav-links${menuOpen ? " is-open" : ""}`} style={{ gap: 28 }}>
+          <a onClick={() => setMenuOpen(false)} href="#subjects" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Subjects</a>
+          <a onClick={() => setMenuOpen(false)} href="#features" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Features</a>
           <button
             onClick={toggleDark}
             style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -68,11 +121,11 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "80px 40px 64px", textAlign: "center" }}>
+      <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(48px, 10vw, 80px) clamp(16px, 4vw, 40px) clamp(40px, 8vw, 64px)", textAlign: "center" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 16 }}>
           Cambridge & Pakistan Board
         </p>
-        <h1 style={{ fontSize: 56, fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
+        <h1 style={{ fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
           Study smarter.<br />
           <span style={{ color: C.orange }}>Score higher.</span>
         </h1>
@@ -91,14 +144,10 @@ export default function HomePage() {
 
       {/* STATS */}
       <section style={{ backgroundColor: bgMid, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px", display: "grid", gridTemplateColumns: "repeat(3,1fr)", textAlign: "center", gap: 16 }}>
-          {[
-            { num: "2,400+", label: "Past paper questions" },
-            { num: "6", label: "Subjects covered" },
-            { num: "92%", label: "Student pass rate" },
-          ].map((stat) => (
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px clamp(16px, 4vw, 40px)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", textAlign: "center", gap: 16 }}>
+          {shownStats.map((stat) => (
             <div key={stat.label}>
-              <div style={{ fontSize: 30, fontWeight: 500, color: text }}>{stat.num}</div>
+              <div style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text }}>{stat.num}</div>
               <div style={{ fontSize: 12, color: sub, marginTop: 6 }}>{stat.label}</div>
             </div>
           ))}
@@ -106,9 +155,9 @@ export default function HomePage() {
       </section>
 
       {/* SUBJECTS */}
-      <section id="subjects" style={{ maxWidth: 900, margin: "0 auto", padding: "72px 40px" }}>
+      <section id="subjects" style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Subjects</p>
-        <h2 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Pick your subject & start</h2>
+        <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Pick your subject & start</h2>
         <div style={{ background: "var(--hero-panel)", borderRadius: 24, padding: 24, display: "flex", flexDirection: "column", gap: 12 }}>
           {subjects.map((subject) => (
             <div key={subject.title} style={{ background: "var(--card)", border: "var(--glass-border)", borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", backdropFilter: "blur(16px)" }}>
@@ -128,11 +177,11 @@ export default function HomePage() {
       </section>
 
       {/* FEATURES */}
-      <section id="features" style={{ backgroundColor: bgMid, padding: "72px 40px" }}>
+      <section id="features" style={{ backgroundColor: bgMid, padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Features</p>
-          <h2 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Everything you need to ace your exams</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
+          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 40 }}>Everything you need to ace your exams</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {features.map((f) => (
               <div key={f.title} style={{ backgroundColor: bg, borderRadius: 18, padding: 24, border: `1px solid ${border}` }}>
                 <div style={{ fontSize: 14, fontWeight: 500, color: text, marginBottom: 8 }}>{f.title}</div>
@@ -144,9 +193,9 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section style={{ maxWidth: 900, margin: "0 auto", padding: "72px 40px" }}>
-        <div style={{ backgroundColor: C.orange, borderRadius: 24, padding: "64px 40px", textAlign: "center" }}>
-          <h2 style={{ fontSize: 34, fontWeight: 500, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>Ready to start preparing?</h2>
+      <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(44px, 9vw, 72px) clamp(16px, 4vw, 40px)" }}>
+        <div style={{ backgroundColor: C.orange, borderRadius: 24, padding: "clamp(40px, 8vw, 64px) clamp(20px, 4vw, 40px)", textAlign: "center" }}>
+          <h2 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, color: "#fff", letterSpacing: "-0.03em", marginBottom: 16 }}>Ready to start preparing?</h2>
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.8)", marginBottom: 36, maxWidth: 420, margin: "0 auto 36px" }}>
             Join thousands of students already using SmartPrep AI to study smarter and score higher.
           </p>
@@ -157,12 +206,12 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: `1px solid ${border}`, padding: "32px 40px", backgroundColor: bg }}>
+      <footer style={{ borderTop: `1px solid ${border}`, padding: "32px clamp(16px, 4vw, 40px)", backgroundColor: bg }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
             Smart<span style={{ color: C.orange }}>Prep</span> AI
           </div>
-          <div style={{ fontSize: 12, color: sub }}>© 2025 SmartPrep AI. Built for students, by students.</div>
+          <div style={{ fontSize: 12, color: sub }}>© {new Date().getFullYear()} SmartPrep AI. Built for students, by students.</div>
         </div>
       </footer>
 

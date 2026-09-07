@@ -69,7 +69,7 @@ export default function SignupPage() {
           </div>
         </button>
         <div style={{ textAlign: "center", maxWidth: 400, padding: 40 }}>
-          <h2 style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
+          <h2 style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: text, marginBottom: 12, letterSpacing: "-0.03em" }}>Check your email</h2>
           <p style={{ fontSize: 14, color: sub, lineHeight: 1.7 }}>
             We sent a confirmation link to <strong>{email}</strong>. Click it to
             activate your account, then come back here and log in. If it hasn&apos;t
@@ -87,7 +87,7 @@ export default function SignupPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", flexDirection: "column", transition: "background 0.3s" }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => router.back()} style={{ background: "none", border: "none", color: sub, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
             ←
@@ -114,7 +114,7 @@ export default function SignupPage() {
 
           <div style={{ marginBottom: 40 }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Get started free</p>
-            <h1 style={{ fontSize: 34, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
+            <h1 style={{ fontSize: "clamp(25px, 6vw, 34px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Create account</h1>
             <p style={{ fontSize: 14, color: sub, lineHeight: 1.6 }}>Join thousands of students preparing smarter.</p>
           </div>
 

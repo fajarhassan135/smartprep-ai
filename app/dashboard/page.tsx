@@ -157,7 +157,7 @@ export default function DashboardPage() {
 
       <div style={{ marginBottom: 48 }}>
   <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 8 }}>Welcome back</p>
-  <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>
+  <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>
     {greeting}
   </h1>
   <p style={{ fontSize: 14, color: sub }}>{punchline}</p>

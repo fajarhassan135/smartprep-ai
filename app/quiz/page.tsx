@@ -268,9 +268,9 @@ export default function QuizPage() {
       <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
         <Navbar active="/quiz" />
 
-        <div style={{ maxWidth: 600, margin: "0 auto", padding: "64px 24px" }}>
+        <div style={{ maxWidth: 600, margin: "0 auto", padding: "clamp(40px, 8vw, 64px) clamp(16px, 4vw, 24px)" }}>
           <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>AI Quiz</p>
-          <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Set up your quiz</h1>
+          <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Set up your quiz</h1>
           <p style={{ fontSize: 14, color: sub, marginBottom: 48 }}>Choose your subject, exam level and mode to get started.</p>
 
           <div style={{ marginBottom: 24 }}>
@@ -354,7 +354,7 @@ export default function QuizPage() {
 
     return (
       <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
-        <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}` }}>
+        <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}` }}>
           <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
             Smart<span style={{ color: C.orange }}>Prep</span> AI
           </a>
@@ -372,7 +372,7 @@ export default function QuizPage() {
           <div style={{ height: 3, width: `${progress}%`, backgroundColor: C.orange, transition: "width 0.4s" }} />
         </div>
 
-        <div style={{ maxWidth: 680, margin: "0 auto", padding: "48px 24px" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", padding: "clamp(32px, 7vw, 48px) clamp(16px, 4vw, 24px)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
             <span style={{ fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 999, backgroundColor: bgMid, color: sub }}>
               {q.type === "mcq" ? "Multiple choice" : "Short answer"}
@@ -453,27 +453,27 @@ export default function QuizPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
-      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 40px", borderBottom: `1px solid ${border}` }}>
+      <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}` }}>
         <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
           Smart<span style={{ color: C.orange }}>Prep</span> AI
         </a>
         <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>← Dashboard</a>
       </nav>
 
-      <div style={{ maxWidth: 600, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
+      <div style={{ maxWidth: 600, margin: "0 auto", padding: "clamp(40px, 8vw, 64px) clamp(16px, 4vw, 24px)", textAlign: "center" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz complete</p>
-        <h1 style={{ fontSize: 56, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>{percentage}%</h1>
+        <h1 style={{ fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>{percentage}%</h1>
         <p style={{ fontSize: 16, color: sub, marginBottom: 8 }}>{getMessage()}</p>
         <p style={{ fontSize: 13, color: sub, marginBottom: 48 }}>{formatMarks(score)} of {questions.length} marks · partial answers score half</p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, marginBottom: 48 }}>
           {[
             { label: "Correct", value: verdicts.filter((v) => v === "correct").length, color: "#639922" },
             { label: "Partial", value: verdicts.filter((v) => v === "partial").length, color: C.orange },
             { label: "Incorrect", value: verdicts.filter((v) => v === "incorrect").length, color: "#E24B4A" },
           ].map((s) => (
             <div key={s.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px", border: `1px solid ${border}` }}>
-              <div style={{ fontSize: 28, fontWeight: 500, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: s.color }}>{s.value}</div>
               <div style={{ fontSize: 12, color: sub, marginTop: 4 }}>{s.label}</div>
             </div>
           ))}

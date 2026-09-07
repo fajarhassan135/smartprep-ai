@@ -64,9 +64,9 @@ export default function LeaderboardPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <Navbar active="/leaderboard" />
 
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 800, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Leaderboard</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Class rankings</h1>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Class rankings</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>See how you stack up against other students preparing with SmartPrep AI.</p>
 
         {loading ? (
@@ -97,7 +97,7 @@ export default function LeaderboardPage() {
                         {row.display_name || "Anonymous"} {row.user_id === currentUserId && <span style={{ fontSize: 11 }}>(you)</span>}
                       </div>
                       <div style={{ fontSize: 12, color: rank === 1 ? "rgba(255,255,255,0.75)" : sub, marginBottom: 16 }}>{row.school || "—"}</div>
-                      <div style={{ fontSize: 28, fontWeight: 500, color: rank === 1 ? "#fff" : C.orange }}>{row.avg_score}%</div>
+                      <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: rank === 1 ? "#fff" : C.orange }}>{row.avg_score}%</div>
                       <div style={{ fontSize: 11, color: rank === 1 ? "rgba(255,255,255,0.75)" : sub, marginTop: 4 }}>{row.total_quizzes} quizzes</div>
                     </div>
                   );

@@ -72,7 +72,7 @@ export default function VerifyEmailPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <div style={{ textAlign: "center", maxWidth: 440 }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>One more step</p>
-        <h1 style={{ fontSize: 30, fontWeight: 500, color: text, marginBottom: 14, letterSpacing: "-0.03em" }}>Verify your email</h1>
+        <h1 style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text, marginBottom: 14, letterSpacing: "-0.03em" }}>Verify your email</h1>
         <p style={{ fontSize: 14, color: sub, lineHeight: 1.7, marginBottom: 28 }}>
           We sent a confirmation link to <strong style={{ color: text }}>{email}</strong>.
           Click it and you can come straight back here.

@@ -76,20 +76,20 @@ export default function HistoryPage() {
 
       <Navbar active="/history" />
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px 40px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: "48px clamp(16px, 4vw, 40px)" }}>
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 12 }}>Quiz History</p>
-        <h1 style={{ fontSize: 36, fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your past quizzes</h1>
+        <h1 style={{ fontSize: "clamp(26px, 6.5vw, 36px)", fontWeight: 500, letterSpacing: "-0.03em", color: text, marginBottom: 8 }}>Your past quizzes</h1>
         <p style={{ fontSize: 14, color: sub, marginBottom: 40 }}>Track your progress and see how you&apos;ve improved over time.</p>
 
         {/* STATS */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16, marginBottom: 40 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16, marginBottom: 40 }}>
           {[
             { label: "Total quizzes", value: sessions.length },
             { label: "Average score", value: `${avgScore}%` },
             { label: "Best score", value: `${bestScore}%` },
           ].map((stat) => (
             <div key={stat.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px 24px", border: `1px solid ${border}` }}>
-              <div style={{ fontSize: 28, fontWeight: 500, color: text, marginBottom: 4 }}>{stat.value}</div>
+              <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: text, marginBottom: 4 }}>{stat.value}</div>
               <div style={{ fontSize: 12, color: sub }}>{stat.label}</div>
             </div>
           ))}

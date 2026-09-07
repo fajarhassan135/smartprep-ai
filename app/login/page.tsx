@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { playToggle } from "../../lib/sound";
+import { Logo } from "../../components/Logo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../lib/supabase";
@@ -60,11 +62,11 @@ export default function LoginPage() {
             ⌂
           </Link>
           <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-            Smart<span style={{ color: C.orange }}>Prep</span> AI
+            <Logo />
           </Link>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <button onClick={toggleDark} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          <button onClick={() => { playToggle(); toggleDark(); }} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <div className="theme-switch">
               <div className="theme-switch-knob" />
             </div>

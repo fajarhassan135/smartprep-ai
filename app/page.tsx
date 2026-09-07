@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { playToggle } from "../lib/sound";
+import { Logo, LogoMark } from "../components/Logo";
 import { useTheme } from "../lib/ThemeContext";
 
 type Stats = {
@@ -90,7 +92,7 @@ export default function HomePage() {
       {/* NAVBAR */}
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{ fontSize: 15, fontWeight: 500, letterSpacing: "-0.03em", color: text, whiteSpace: "nowrap" }}>
-          Smart<span style={{ color: C.orange }}>Prep</span> AI
+          <Logo />
         </div>
 
         <button
@@ -106,7 +108,7 @@ export default function HomePage() {
           <a onClick={() => setMenuOpen(false)} href="#subjects" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Subjects</a>
           <a onClick={() => setMenuOpen(false)} href="#features" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Features</a>
           <button
-            onClick={toggleDark}
+            onClick={() => { playToggle(); toggleDark(); }}
             style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
           >
             <div style={{ width: 44, height: 24, borderRadius: 999, backgroundColor: "var(--text)", position: "relative", transition: "background 0.3s", flexShrink: 0 }}>
@@ -114,7 +116,7 @@ export default function HomePage() {
             </div>
           </button>
           <a href="/login" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>Log in</a>
-          <a href="/signup" style={{ fontSize: 13, fontWeight: 500, padding: "9px 20px", borderRadius: 999, backgroundColor: C.orange, color: "#fff", border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
+          <a href="/signup" className="btn btn-primary btn-sm" style={{ borderRadius: 999 }}>
             Sign up
           </a>
         </div>
@@ -122,10 +124,13 @@ export default function HomePage() {
 
       {/* HERO */}
       <section style={{ maxWidth: 900, margin: "0 auto", padding: "clamp(48px, 10vw, 80px) clamp(16px, 4vw, 40px) clamp(40px, 8vw, 64px)", textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 16 }}>
+        <div className="rise-in" style={{ display: "flex", justifyContent: "center", marginBottom: 28, color: text }}>
+          <LogoMark size={96} />
+        </div>
+        <p className="rise-in" style={{ ["--i" as string]: 1, fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: C.orange, marginBottom: 16 }}>
           Cambridge & Pakistan Board
         </p>
-        <h1 style={{ fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
+        <h1 className="rise-in" style={{ ["--i" as string]: 2, fontSize: "clamp(34px, 9vw, 56px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 24, color: text }}>
           Study smarter.<br />
           <span style={{ color: C.orange }}>Score higher.</span>
         </h1>
@@ -133,10 +138,10 @@ export default function HomePage() {
           AI quizzes written to your syllabus, plus the real past papers. Built for IGCSE, A-Level, Matric & FSc students who want results, not just practice.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
-          <a href="/signup" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
+          <a href="/signup" className="btn btn-primary">
             Start for free
           </a>
-          <a href="/past-papers" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: "transparent", color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>
+          <a href="/past-papers" className="btn btn-secondary">
             See past papers
           </a>
         </div>
@@ -209,7 +214,7 @@ export default function HomePage() {
       <footer style={{ borderTop: `1px solid ${border}`, padding: "32px clamp(16px, 4vw, 40px)", backgroundColor: bg }}>
         <div style={{ maxWidth: 900, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
-            Smart<span style={{ color: C.orange }}>Prep</span> AI
+            <Logo />
           </div>
           <div style={{ fontSize: 12, color: sub }}>© {new Date().getFullYear()} SmartPrep AI. Built for students, by students.</div>
         </div>

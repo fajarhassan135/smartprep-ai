@@ -1,8 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { Logo } from "../../components/Logo";
 import { supabase, authHeader } from "../../lib/supabase";
 import Navbar from "../../lib/Navbar";
 import { formatMarks } from "../../lib/formatMarks";
+import { playTap, playCorrect, playWrong, playComplete } from "../../lib/sound";
 import { SUBJECTS, LEVELS, findLevel } from "../../lib/curriculum";
 import { useAuthGuard } from "../../lib/useAuthGuard";
 
@@ -88,6 +90,7 @@ export default function QuizPage() {
   async function finishQuiz(finalScore: number) {
     if (finishedRef.current) return;
     finishedRef.current = true;
+    playComplete();
     if (timerRef.current) clearInterval(timerRef.current);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -178,7 +181,12 @@ export default function QuizPage() {
     setAnswered(true);
     const q = questions[currentQ];
     const correct = option === q.answer;
-    if (correct) setScore((s) => s + 1);
+    if (correct) {
+      setScore((s) => s + 1);
+      playCorrect();
+    } else {
+      playWrong();
+    }
     const newAnswers = [...answers];
     newAnswers[currentQ] = option;
     setAnswers(newAnswers);
@@ -222,8 +230,15 @@ export default function QuizPage() {
       newVerdicts[currentQ] =
         data.verdict === "correct" ? "correct" : data.verdict === "partial" ? "partial" : "incorrect";
       setVerdicts(newVerdicts);
-      if (data.verdict === "correct") setScore((s) => s + 1);
-      else if (data.verdict === "partial") setScore((s) => s + 0.5);
+      if (data.verdict === "correct") {
+        setScore((s) => s + 1);
+        playCorrect();
+      } else if (data.verdict === "partial") {
+        setScore((s) => s + 0.5);
+        playCorrect();
+      } else {
+        playWrong();
+      }
       setAnswered(true);
     } catch {
       alert("Failed to grade answer.");
@@ -287,29 +302,6 @@ export default function QuizPage() {
     setHintLoading(false);
   }
 
-  function playClick() {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
-    const ctx = new AudioContextClass();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.setValueAtTime(800, ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.06);
-    g.gain.setValueAtTime(0.1, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
-    o.start(); o.stop(ctx.currentTime + 0.08);
-  }
-
-  if (status !== "ready") {
-    return (
-      <div style={{ minHeight: "100vh", backgroundColor: bg, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif" }}>
-        <div style={{ fontSize: 14, color: sub }}>Loading...</div>
-      </div>
-    );
-  }
-
   // SETUP SCREEN
   if (mode === "setup") {
     return (
@@ -325,7 +317,7 @@ export default function QuizPage() {
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Subject</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
               {SUBJECTS.map((s) => (
-                <button key={s} onClick={() => { setSubject(s); playClick(); }} style={{ flex: "1 1 30%", padding: "12px 8px", borderRadius: 12, border: subject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: subject === s ? "var(--accent-badge)" : bg, color: subject === s ? "var(--accent-ink)" : text, fontWeight: subject === s ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                <button key={s} onClick={() => { setSubject(s); playTap(); }} style={{ flex: "1 1 30%", padding: "12px 8px", borderRadius: 12, border: subject === s ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: subject === s ? "var(--accent-badge)" : bg, color: subject === s ? "var(--accent-ink)" : text, fontWeight: subject === s ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                   {s}
                 </button>
               ))}
@@ -336,7 +328,7 @@ export default function QuizPage() {
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Exam level</label>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {LEVELS.map((l) => (
-                <button key={l.id} onClick={() => { setLevelId(l.id); playClick(); }} style={{ flex: "1 1 45%", padding: "12px 8px", borderRadius: 12, border: levelId === l.id ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: levelId === l.id ? "var(--accent-badge)" : bg, color: levelId === l.id ? "var(--accent-ink)" : text, fontWeight: levelId === l.id ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                <button key={l.id} onClick={() => { setLevelId(l.id); playTap(); }} style={{ flex: "1 1 45%", padding: "12px 8px", borderRadius: 12, border: levelId === l.id ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: levelId === l.id ? "var(--accent-badge)" : bg, color: levelId === l.id ? "var(--accent-ink)" : text, fontWeight: levelId === l.id ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                   <div>{l.label}</div>
                   <div style={{ fontSize: 11, color: sub, marginTop: 4 }}>{l.board}</div>
                 </button>
@@ -348,7 +340,7 @@ export default function QuizPage() {
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Difficulty</label>
             <div style={{ display: "flex", gap: 10 }}>
               {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
-                <button key={d} onClick={() => { setDifficulty(d); playClick(); }} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: difficulty === d ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: difficulty === d ? "var(--accent-badge)" : bg, color: difficulty === d ? "var(--accent-ink)" : text, fontWeight: difficulty === d ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize", transition: "all 0.15s" }}>
+                <button key={d} onClick={() => { setDifficulty(d); playTap(); }} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: difficulty === d ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: difficulty === d ? "var(--accent-badge)" : bg, color: difficulty === d ? "var(--accent-ink)" : text, fontWeight: difficulty === d ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize", transition: "all 0.15s" }}>
                   {d}
                 </button>
               ))}
@@ -359,7 +351,7 @@ export default function QuizPage() {
             <label style={{ fontSize: 12, fontWeight: 500, color: text, display: "block", marginBottom: 10 }}>Number of questions</label>
             <div style={{ display: "flex", gap: 10 }}>
               {[5, 10, 15, 20].map((n) => (
-                <button key={n} onClick={() => { setQuestionCount(n); playClick(); }} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: questionCount === n ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: questionCount === n ? "var(--accent-badge)" : bg, color: questionCount === n ? "var(--accent-ink)" : text, fontWeight: questionCount === n ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
+                <button key={n} onClick={() => { setQuestionCount(n); playTap(); }} style={{ flex: 1, padding: "12px 8px", borderRadius: 12, border: questionCount === n ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: questionCount === n ? "var(--accent-badge)" : bg, color: questionCount === n ? "var(--accent-ink)" : text, fontWeight: questionCount === n ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s" }}>
                   {n}
                 </button>
               ))}
@@ -373,7 +365,7 @@ export default function QuizPage() {
                 { val: "practice", label: "Practice", desc: "Hints & explanations" },
                 { val: "exam", label: "Exam", desc: "Timed, no hints" },
               ].map((m) => (
-                <button key={m.val} onClick={() => { setExamMode(m.val as "practice" | "exam"); playClick(); }} style={{ flex: 1, padding: "14px", borderRadius: 12, border: examMode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: examMode === m.val ? "var(--accent-badge)" : bg, color: examMode === m.val ? "var(--accent-ink)" : text, fontWeight: examMode === m.val ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "all 0.15s" }}>
+                <button key={m.val} onClick={() => { setExamMode(m.val as "practice" | "exam"); playTap(); }} style={{ flex: 1, padding: "14px", borderRadius: 12, border: examMode === m.val ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: examMode === m.val ? "var(--accent-badge)" : bg, color: examMode === m.val ? "var(--accent-ink)" : text, fontWeight: examMode === m.val ? 500 : 400, fontSize: 13, cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "all 0.15s" }}>
                   <div>{m.label}</div>
                   <div style={{ fontSize: 11, color: sub, marginTop: 4 }}>{m.desc}</div>
                 </button>
@@ -404,7 +396,7 @@ export default function QuizPage() {
       <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
         <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}` }}>
           <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-            Smart<span style={{ color: C.orange }}>Prep</span> AI
+            <Logo />
           </a>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             {examMode === "exam" && (
@@ -440,8 +432,9 @@ export default function QuizPage() {
                 const isCorrect = answered && letters[i] === q.answer;
                 const isWrong = answered && isSelected && letters[i] !== q.answer;
                 return (
-                  <button key={i} onClick={() => { checkMCQ(letters[i]); playClick(); }} disabled={answered}
-                    style={{ padding: "14px 18px", borderRadius: 12, border: isCorrect ? `2px solid #639922` : isWrong ? `2px solid #E24B4A` : isSelected ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: isCorrect ? "rgba(99,153,34,0.1)" : isWrong ? "rgba(226,75,74,0.1)" : isSelected ? "var(--accent-badge)" : bg, color: isCorrect ? "#639922" : isWrong ? "#E24B4A" : text, fontSize: 14, cursor: answered ? "default" : "pointer", fontFamily: "inherit", textAlign: "left", display: "flex", alignItems: "center", gap: 12, transition: "all 0.15s" }}>
+                  <button key={i} onClick={() => { checkMCQ(letters[i]); }} disabled={answered}
+                    className={`rise-in${isCorrect ? " is-correct" : ""}${isWrong ? " is-wrong" : ""}`}
+                    style={{ ["--i" as string]: i, padding: "14px 18px", borderRadius: 12, border: isCorrect ? `2px solid #639922` : isWrong ? `2px solid #E24B4A` : isSelected ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: isCorrect ? "rgba(99,153,34,0.1)" : isWrong ? "rgba(226,75,74,0.1)" : isSelected ? "var(--accent-badge)" : bg, color: isCorrect ? "#639922" : isWrong ? "#E24B4A" : text, fontSize: 14, cursor: answered ? "default" : "pointer", fontFamily: "inherit", textAlign: "left", display: "flex", alignItems: "center", gap: 12, transition: "all 0.15s" }}>
                     <span style={{ width: 28, height: 28, borderRadius: 999, backgroundColor: isCorrect ? "#639922" : isWrong ? "#E24B4A" : bgMid, color: isCorrect || isWrong ? "#fff" : sub, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 500, flexShrink: 0 }}>
                       {letters[i]}
                     </span>
@@ -523,7 +516,7 @@ export default function QuizPage() {
     <div style={{ minHeight: "100vh", backgroundColor: bg, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}` }}>
         <a href="/dashboard" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-          Smart<span style={{ color: C.orange }}>Prep</span> AI
+          <Logo />
         </a>
         <a href="/dashboard" style={{ fontSize: 13, color: sub, textDecoration: "none" }}>← Dashboard</a>
       </nav>

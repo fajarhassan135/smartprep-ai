@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import { Logo } from "../components/Logo";
 import Link from "next/link";
 import { useTheme } from "./ThemeContext";
 import { supabase } from "./supabase";
+import { playToggle, playToggleOn, soundEnabled, setSoundEnabled } from "./sound";
 
 const C = {
   snow: "#F5F4ED",
@@ -17,6 +19,7 @@ export default function Navbar({ active }: { active?: string }) {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [initial, setInitial] = useState("?");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [soundOn, setSoundOn] = useState(false);
 
   const text = "var(--text)";
   const sub = "var(--sub)";
@@ -38,31 +41,35 @@ export default function Navbar({ active }: { active?: string }) {
     loadAvatar();
   }, []);
 
+  useEffect(() => {
+    // Read the stored preference after mount: it lives in localStorage, which
+    // the server render cannot see.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) setSoundOn(soundEnabled());
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   async function handleLogout() {
     await supabase.auth.signOut();
     window.location.href = "/";
   }
 
-  function playToggleSound() {
-    const AudioContextClass =
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
-    const ctx = new AudioContextClass();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.frequency.setValueAtTime(600, ctx.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.1);
+  function handleToggleClick() {
+    playToggle();
+    toggleDark();
   }
 
-  function handleToggleClick() {
-    playToggleSound();
-    toggleDark();
+  function handleSoundToggle() {
+    const next = !soundOn;
+    setSoundEnabled(next);
+    setSoundOn(next);
+    // Play the confirmation even though sound was off a moment ago, so the
+    // click that enables it is the click you hear.
+    if (next) playToggleOn();
   }
 
   const links = [
@@ -77,7 +84,7 @@ export default function Navbar({ active }: { active?: string }) {
   return (
     <nav style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px clamp(16px, 4vw, 40px)", borderBottom: `1px solid ${border}`, backgroundColor: bg, position: "sticky", top: 0, zIndex: 50, gap: 16 }}>
       <Link href="/" style={{ fontSize: 15, fontWeight: 500, color: text, textDecoration: "none", letterSpacing: "-0.03em" }}>
-        Smart<span style={{ color: C.orange }}>Prep</span> AI
+        <Logo />
       </Link>
 
       <button
@@ -95,6 +102,9 @@ export default function Navbar({ active }: { active?: string }) {
             {link.label}
           </a>
         ))}
+        <button onClick={handleSoundToggle} className="pill" aria-pressed={soundOn} aria-label={soundOn ? "Turn sound off" : "Turn sound on"} title={soundOn ? "Sound on" : "Sound off"} style={{ padding: "6px 12px", fontSize: 12 }}>
+          {soundOn ? "Sound on" : "Sound off"}
+        </button>
         <button onClick={handleToggleClick} style={{ background: "none", border: "none", cursor: "pointer", padding: 0 }} aria-label="Toggle dark mode">
           <div className="theme-switch">
             <div className="theme-switch-knob" />

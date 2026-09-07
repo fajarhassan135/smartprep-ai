@@ -76,7 +76,7 @@ export default function HomePage() {
   ];
 
   const features = [
-    { title: "AI Quiz Generation", desc: "Questions generated from real past papers, tailored to your board and level." },
+    { title: "AI Quiz Generation", desc: "Exam-standard questions written to your syllabus, board and level, at the difficulty you choose." },
     { title: "Timed Exam Mode", desc: "Simulate real exam conditions with a countdown timer and strict mode." },
     { title: "Progress Analytics", desc: "Track your scores, weak topics, and improvement over time." },
     { title: "Flashcards", desc: "Create and study flashcards for quick revision before your exam." },
@@ -130,7 +130,7 @@ export default function HomePage() {
           <span style={{ color: C.orange }}>Score higher.</span>
         </h1>
         <p style={{ fontSize: 16, color: sub, lineHeight: 1.7, maxWidth: 520, margin: "0 auto 40px" }}>
-          AI-powered quizzes from real past papers. Built for IGCSE, A-Level, Matric & FSc students who want results, not just practice.
+          AI quizzes written to your syllabus, plus the real past papers. Built for IGCSE, A-Level, Matric & FSc students who want results, not just practice.
         </p>
         <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
           <a href="/signup" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit", textDecoration: "none" }}>

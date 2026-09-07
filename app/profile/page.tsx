@@ -216,7 +216,7 @@ export default function ProfilePage() {
           </div>
         )}
         {errorMsg && (
-          <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 12, padding: "14px 20px", marginBottom: 24, fontSize: 13, color: "var(--accent-ink)" }}>
+          <div style={{ backgroundColor: "var(--accent-badge)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 12, padding: "14px 20px", marginBottom: 24, fontSize: 13, color: "var(--accent-ink)" }}>
             {errorMsg}
           </div>
         )}

@@ -111,7 +111,7 @@ export default function LeaderboardPage() {
                 const rank = i + 4;
                 const isYou = row.user_id === currentUserId;
                 return (
-                  <div key={row.user_id} style={{ background: isYou ? "rgba(255,96,55,0.08)" : "var(--card-strong)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px 24px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }}>
+                  <div key={row.user_id} style={{ background: isYou ? "var(--accent-badge)" : "var(--card-strong)", border: isYou ? `1px solid ${C.orange}` : `1px solid ${border}`, borderRadius: 14, padding: "16px 24px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(16px)" }}>
                     <div style={{ width: 32, height: 32, borderRadius: 999, backgroundColor: bgMid, color: sub, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 500, flexShrink: 0 }}>
                       {rank}
                     </div>

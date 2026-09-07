@@ -32,7 +32,7 @@ function pill(active: boolean): React.CSSProperties {
     borderRadius: 999,
     border: active ? `2px solid ${C.orange}` : `1px solid ${border}`,
     backgroundColor: active ? "var(--accent-badge)" : bg,
-    color: active ? C.orange : text,
+    color: active ? "var(--accent-ink)" : text,
     fontSize: 12,
     fontWeight: active ? 500 : 400,
     cursor: "pointer",
@@ -241,7 +241,7 @@ export default function PastPapersPage() {
                 </span>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {g.questionPaper && (
-                    <button onClick={() => openPaper(g.questionPaper!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: C.orange, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                    <button onClick={() => openPaper(g.questionPaper!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
                       Question paper
                     </button>
                   )}

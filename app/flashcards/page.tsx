@@ -51,7 +51,7 @@ function pill(active: boolean): React.CSSProperties {
     borderRadius: 999,
     border: active ? `2px solid ${C.orange}` : `1px solid ${border}`,
     backgroundColor: active ? "var(--accent-badge)" : bg,
-    color: active ? C.orange : text,
+    color: active ? "var(--accent-ink)" : text,
     fontSize: 12,
     fontWeight: active ? 500 : 400,
     cursor: "pointer",
@@ -352,7 +352,7 @@ export default function FlashcardsPage() {
                     <span>/</span>
                     <button
                       onClick={() => openFolder(() => { setOpenLevel(null); setOpenTopic(null); })}
-                      style={{ background: "none", border: "none", color: openLevel ? C.orange : text, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0 }}
+                      style={{ background: "none", border: "none", color: openLevel ? "var(--accent-ink)" : text, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0 }}
                     >
                       {openSubject}
                     </button>
@@ -363,7 +363,7 @@ export default function FlashcardsPage() {
                     <span>/</span>
                     <button
                       onClick={() => openFolder(() => setOpenTopic(null))}
-                      style={{ background: "none", border: "none", color: openTopic ? C.orange : text, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0 }}
+                      style={{ background: "none", border: "none", color: openTopic ? "var(--accent-ink)" : text, cursor: "pointer", fontSize: 13, fontFamily: "inherit", padding: 0 }}
                     >
                       {openLevel}
                     </button>
@@ -449,7 +449,7 @@ export default function FlashcardsPage() {
                   </button>
                   <button
                     onClick={() => setFlipped(!flipped)}
-                    style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: C.orange, fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}
+                    style={{ padding: "12px 24px", borderRadius: 12, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: "var(--accent-ink)", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}
                   >
                     Flip card
                   </button>

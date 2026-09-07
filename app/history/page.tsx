@@ -98,7 +98,7 @@ export default function HistoryPage() {
         {/* FILTER */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
           {["All", "Mathematics", "English", "Computer Science", "Physics", "Business Studies", "Economics"].map((f) => (
-            <button key={f} onClick={() => setFilter(f)} style={{ padding: "8px 16px", borderRadius: 999, border: filter === f ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: filter === f ? "rgba(255,96,55,0.08)" : bg, color: filter === f ? C.orange : text, fontSize: 12, fontWeight: filter === f ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
+            <button key={f} onClick={() => setFilter(f)} style={{ padding: "8px 16px", borderRadius: 999, border: filter === f ? `2px solid ${C.orange}` : `1px solid ${border}`, backgroundColor: filter === f ? "var(--accent-badge)" : bg, color: filter === f ? "var(--accent-ink)" : text, fontSize: 12, fontWeight: filter === f ? 500 : 400, cursor: "pointer", fontFamily: "inherit" }}>
               {f}
             </button>
           ))}

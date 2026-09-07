@@ -119,7 +119,7 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div style={{ backgroundColor: "rgba(255,96,55,0.08)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: "var(--accent-ink)" }}>
+            <div style={{ backgroundColor: "var(--accent-badge)", border: "1px solid rgba(255,96,55,0.2)", borderRadius: 10, padding: "12px 16px", marginBottom: 20, fontSize: 13, color: "var(--accent-ink)" }}>
               {error}
             </div>
           )}

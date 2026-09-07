@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { playToggle } from "../lib/sound";
 import { Logo, LogoMark } from "../components/Logo";
+import { CountUp } from "../components/CountUp";
 import { useTheme } from "../lib/ThemeContext";
 
 type Stats = {
@@ -29,25 +30,28 @@ export default function HomePage() {
     return () => { cancelled = true; };
   }, []);
 
-  const fmt = (n: number) => n.toLocaleString("en-GB");
-  const liveStats = stats
-    ? [
-        stats.questions ? { num: fmt(stats.questions), label: "Questions answered" } : null,
-        stats.quizzes ? { num: fmt(stats.quizzes), label: "Quizzes completed" } : null,
-        stats.students ? { num: fmt(stats.students), label: stats.students === 1 ? "Student" : "Students" } : null,
-        stats.papers ? { num: fmt(stats.papers), label: "Past papers" } : null,
-        stats.flashcards ? { num: fmt(stats.flashcards), label: "Flashcards made" } : null,
-      ].filter(Boolean).slice(0, 3)
-    : [];
+  type Stat = { num: number; label: string };
+
+  const liveStats = (
+    stats
+      ? [
+          stats.questions ? { num: stats.questions, label: "Questions answered" } : null,
+          stats.quizzes ? { num: stats.quizzes, label: "Quizzes completed" } : null,
+          stats.students ? { num: stats.students, label: stats.students === 1 ? "Student" : "Students" } : null,
+          stats.papers ? { num: stats.papers, label: "Past papers" } : null,
+          stats.flashcards ? { num: stats.flashcards, label: "Flashcards made" } : null,
+        ].filter(Boolean).slice(0, 3)
+      : []
+  ) as Stat[];
 
   // True on day one, and still true later.
-  const fallbackStats = [
-    { num: "6", label: "Subjects covered" },
-    { num: "4", label: "Exam levels" },
-    { num: "2", label: "Boards" },
+  const fallbackStats: Stat[] = [
+    { num: 6, label: "Subjects covered" },
+    { num: 4, label: "Exam levels" },
+    { num: 2, label: "Boards" },
   ];
 
-  const shownStats = liveStats.length === 3 ? (liveStats as { num: string; label: string }[]) : fallbackStats;
+  const shownStats = liveStats.length === 3 ? liveStats : fallbackStats;
 
   const C = {
     snow: "#F5F4ED",
@@ -150,9 +154,11 @@ export default function HomePage() {
       {/* STATS */}
       <section style={{ backgroundColor: bgMid, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${border}` }}>
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px clamp(16px, 4vw, 40px)", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", textAlign: "center", gap: 16 }}>
-          {shownStats.map((stat) => (
+          {shownStats.map((stat, i) => (
             <div key={stat.label}>
-              <div style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text }}>{stat.num}</div>
+              <div style={{ fontSize: "clamp(24px, 5.5vw, 30px)", fontWeight: 500, color: text }}>
+                <CountUp value={stat.num} delay={i * 110} />
+              </div>
               <div style={{ fontSize: 12, color: sub, marginTop: 6 }}>{stat.label}</div>
             </div>
           ))}

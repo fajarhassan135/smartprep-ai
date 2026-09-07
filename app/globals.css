@@ -454,16 +454,56 @@ nav {
   animation: shake 380ms var(--ease);
 }
 
-/* The logo's orbits turn slowly. Slow enough to notice only if you look. */
-@keyframes orbit-drift {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* ---------------------------------------------------------------
+   The logo.
+
+   At rest the board is solid and the S is a hole. On hover the two
+   trade places: the board drops to an outline and the S fills in.
+   Both states are the same drawing read the other way round, so
+   they register exactly and the swap reads as a flip rather than a
+   substitution.
+   --------------------------------------------------------------- */
+.logo-mark .logo-solid,
+.logo-mark .logo-inverted {
+  transition: opacity var(--dur) var(--ease);
 }
 
-.logo-orbit {
-  animation: orbit-drift 34s linear infinite;
-  transform-box: fill-box;
-  transform-origin: center;
+.logo-mark .logo-inverted { opacity: 0; }
+
+.logo-mark:hover .logo-solid,
+a:hover .logo-mark .logo-solid,
+button:hover .logo-mark .logo-solid {
+  opacity: 0;
+}
+
+.logo-mark:hover .logo-inverted,
+a:hover .logo-mark .logo-inverted,
+button:hover .logo-mark .logo-inverted {
+  opacity: 1;
+}
+
+/* The tassel swings from where it is tied to the board's corner, not from
+   the middle of the artwork: (-49, 2) in viewBox units is 9px right and
+   54px down from the top-left of the -58 -52 box. */
+.logo-mark .logo-tassel {
+  transform-box: view-box;
+  transform-origin: 9px 54px;
+}
+
+@keyframes tassel-sway {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(7deg); }
+  50%  { transform: rotate(-5deg); }
+  75%  { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Long and eased, so it reads as a draught crossing the room rather than
+   as something being shaken. */
+.logo-mark:hover .logo-tassel,
+a:hover .logo-mark .logo-tassel,
+button:hover .logo-mark .logo-tassel {
+  animation: tassel-sway 3.4s cubic-bezier(0.37, 0, 0.36, 1) infinite;
 }
 
 /* Numbers that tick or change should not reflow the layout as they do. */
@@ -489,5 +529,13 @@ nav {
   .card-interactive:hover,
   .pill:hover {
     transform: none;
+  }
+
+  /* The logo still inverts on hover -- that is a state change, not movement --
+     but the tassel stops swinging. */
+  .logo-mark:hover .logo-tassel,
+  a:hover .logo-mark .logo-tassel,
+  button:hover .logo-mark .logo-tassel {
+    animation: none;
   }
 }

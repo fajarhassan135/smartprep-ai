@@ -1366,5 +1366,239 @@
     "session": "Annual",
     "paperLabel": "Part II (Hard Area)",
     "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-I/Final%20Assessment%20Framework%20Model%20Question%20Paper%20Computer%20Science%20SSC-I.pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/computer/Final_Assessment_Framework_Model_Question_Paper_ComputerScience_SSC-I.pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/computer/SSC-II%20Final%20Model%20Paper%20Computer%20Science.pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Computer%20Science%20SSC-II.pdf",
+    "subject": "Computer Science",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-I/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20English%20SSC-I.pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/english/Final_English%20SSC-II_merged.pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20English%20SSC-II_compressed.pdf",
+    "subject": "English",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/maths/Final_Assessment_Framework_Model_Question_Paper_Mathematics_SSC-I.pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/maths/Final%20SSC-II%20Mathematics%20Science%20Model%20Paper.pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Mathematics%20SSC-II.pdf",
+    "subject": "Mathematics",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-I/Final%20Assessment%20Framework%20Model%20Question%20Paper%20Physics%20SSC-I.pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/physics/Final_Assessment_Framework_Model_Question_Paper_Physics_SSC-I.pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/physics/Final%20Model%20Paper%20Physics%20SSC-II%20revised.pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/SSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Physics%20SSC-II.pdf",
+    "subject": "Physics",
+    "level": "Matric",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-I/Final%20Assessment%20Framework%20Model%20Question%20Paper%20Computer%20Science%20HSSC-I.pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/computer/Final%20HSSC-II%20Model%20Paper%20Computer%20Science.pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Computer%20Science%20HSSC-II.pdf",
+    "subject": "Computer Science",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-I/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20English%20HSSC-I.pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/english/Final_English%20HSSC-II_merged.pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20English%20HSSC-II.pdf",
+    "subject": "English",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/maths/Final_Assessment_Framework_Model_Question_Paper_Mathematics_HSSC-I_.pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Mathematics%20HSSC-II.pdf",
+    "subject": "Mathematics",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-I/Final%20Assessment%20Framework%20Model%20Question%20Paper%20Physics%20HSSC-I.pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/physics/Final_Assessment_Framework_Model_Question_Paper_Physics_HSSC-I.pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part I",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2024New/physics/Final%20Model%20paper%20Physics%20HSSC-II%20revised.pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2024,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
+  },
+  {
+    "url": "https://www.fbise.edu.pk/ModelPaper/2025/Assessment%20Frameworks/HSSC-II/Final%20Assessment%20Framework%20+%20Model%20Question%20Paper%20Physics%20HSSC-II.pdf",
+    "subject": "Physics",
+    "level": "FSc",
+    "year": 2025,
+    "session": "Model paper",
+    "paperLabel": "Model paper Part II",
+    "docType": "question_paper"
   }
 ]

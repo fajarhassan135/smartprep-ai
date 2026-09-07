@@ -113,7 +113,7 @@ function parseFbise(href) {
 
   // e.g. "HSSC_II_1ST _2022" and "SSC_I_1ST_2022" -- the session part is not
   // numeric and sometimes carries a trailing space.
-  const f = folder.match(/^(SSC|HSSC)_(I{1,2})_[^_]+_?(\d{4})$/i);
+  const f = folder.match(/^(HSSC|SSC)_(I{1,2})_[^_]+_?(\d{4})$/i);
   if (!f) return null;
 
   const subject = FBISE_SUBJECTS.find((s) => s.match.test(file))?.subject;
@@ -153,6 +153,75 @@ async function fbiseEntries() {
     summary.push(`FBISE  old question papers        ${String(out.length).padStart(3)} papers from ${hrefs.length} PDFs on the page`);
   } catch (e) {
     summary.push(`FBISE: ${e.message}`);
+  }
+  return out;
+}
+
+
+const FBISE_MODEL_INDEX = "https://www.fbise.edu.pk/curriculum_model_paper.php";
+
+/**
+ * FBISE's model papers, which fill the years its old-paper index does not
+ * cover. Here the subject and level live in the filename rather than the
+ * folder, e.g.
+ *   ModelPaper/2025/Assessment Frameworks/SSC-II/... Mathematics SSC-II.pdf
+ *   ModelPaper/2024New/physics/Final Model paper Physics HSSC-II revised.pdf
+ *
+ * Practical assessments and notifications are not papers a student sits, so
+ * they are left out.
+ */
+function parseFbiseModel(href) {
+  if (/Practical|PBA|Notification|List of Practicals/i.test(href)) return null;
+
+  const file = href.split("/").pop();
+
+  const subject =
+    /Physics/i.test(file) ? "Physics"
+    : /Computer\s*Sc/i.test(file) ? "Computer Science"
+    : /Math/i.test(file) ? "Mathematics"
+    : /English/i.test(file) ? "English"
+    : null;
+  if (!subject) return null;
+
+  const lvl = file.match(/(HSSC|SSC)[\s_-]*(I{1,2})/i);
+  if (!lvl) return null;
+
+  const yearFolder = href.match(/ModelPaper\/(\d{4})/i);
+  if (!yearFolder) return null;
+
+  return {
+    subject,
+    level: lvl[1].toUpperCase() === "SSC" ? "Matric" : "FSc",
+    year: Number(yearFolder[1]),
+    session: "Model paper",
+    paperLabel: `Model paper ${lvl[2].toUpperCase() === "I" ? "Part I" : "Part II"}`,
+    docType: "question_paper",
+  };
+}
+
+async function fbiseModelEntries() {
+  const out = [];
+  try {
+    const res = await fetch(FBISE_MODEL_INDEX, { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (!res.ok) {
+      summary.push(`FBISE model papers: index returned ${res.status}`);
+      return out;
+    }
+    const html = await res.text();
+    const hrefs = [...new Set(
+      [...html.matchAll(/href="(ModelPaper\/[^"]+\.pdf)"/gi)].map((m) => m[1])
+    )];
+
+    for (const href of hrefs) {
+      const parsed = parseFbiseModel(href);
+      if (!parsed || parsed.year < fromYear) continue;
+      // The site has a double slash in some paths; tidy before encoding.
+      const clean = href.replace(/\/{2,}/g, "/");
+      out.push({ url: `https://www.fbise.edu.pk/${encodeURI(clean)}`, ...parsed });
+    }
+    summary.push(`FBISE  model papers              ${String(out.length).padStart(3)} papers from ${hrefs.length} PDFs on the page`);
+  } catch (e) {
+    summary.push(`FBISE model papers: ${e.message}`);
   }
   return out;
 }
@@ -197,6 +266,7 @@ for (const s of SYLLABUSES) {
 }
 
 entries.push(...(await fbiseEntries()));
+entries.push(...(await fbiseModelEntries()));
 
 // Same paper twice would trip the catalogue's unique constraint.
 const seen = new Set();

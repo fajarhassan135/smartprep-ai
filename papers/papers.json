@@ -1,0 +1,57 @@
+[
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-mathematics-0580/past-papers/",
+    "subject": "Mathematics", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0580)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-physics-0625/past-papers/",
+    "subject": "Physics", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0625)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-computer-science-0478/past-papers/",
+    "subject": "Computer Science", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0478)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-economics-0455/past-papers/",
+    "subject": "Economics", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0455)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-business-studies-0450/past-papers/",
+    "subject": "Business Studies", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0450)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-english-first-language-0500/past-papers/",
+    "subject": "English", "level": "IGCSE", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (0500)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-mathematics-9709/past-papers/",
+    "subject": "Mathematics", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9709)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-physics-9702/past-papers/",
+    "subject": "Physics", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9702)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-computer-science-9618/past-papers/",
+    "subject": "Computer Science", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9618)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-economics-9708/past-papers/",
+    "subject": "Economics", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9708)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-business-9609/past-papers/",
+    "subject": "Business Studies", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9609)" },
+
+  { "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-english-language-9093/past-papers/",
+    "subject": "English", "level": "A-Level", "year": 2026, "session": "All",
+    "paperLabel": "Official past papers (9093)" },
+
+  { "url": "https://fbise.edu.pk/Old%20Question%20Paper.php",
+    "subject": "Mathematics", "level": "Matric", "year": 2026, "session": "All",
+    "paperLabel": "FBISE old question papers (SSC)" },
+
+  { "url": "https://www.fbise.edu.pk/curriculum_model_paper.php",
+    "subject": "Mathematics", "level": "FSc", "year": 2026, "session": "All",
+    "paperLabel": "FBISE model papers & assessment frameworks (HSSC)" }
+]

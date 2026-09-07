@@ -29,7 +29,7 @@ type Question = {
 };
 
 type Mode = "setup" | "quiz" | "results";
-type Verdict = "correct" | "partial" | "incorrect" | "";
+type Verdict = "correct" | "partial" | "incorrect" | "skipped" | "";
 type Difficulty = "easy" | "medium" | "hard";
 
 export default function QuizPage() {
@@ -58,6 +58,8 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
   const [setupError, setSetupError] = useState("");
+  const [hint, setHint] = useState("");
+  const [hintLoading, setHintLoading] = useState(false);
   const [grading, setGrading] = useState(false);
   const [shortAnswer, setShortAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
@@ -157,6 +159,7 @@ export default function QuizPage() {
 
       setQuestions(data.questions);
       finishedRef.current = false;
+      setHint("");
       setAnswers(new Array(data.questions.length).fill(""));
       setFeedback(new Array(data.questions.length).fill(""));
       setVerdicts(new Array(data.questions.length).fill(""));
@@ -236,7 +239,52 @@ export default function QuizPage() {
       setAnswered(false);
       setSelectedOption("");
       setShortAnswer("");
+      setHint("");
     }
+  }
+
+  /**
+   * Move past a question without answering it. Available in both modes: in a
+   * real exam you are free to leave a question and come back, and forcing an
+   * answer here would put noise in the score.
+   */
+  function skipQuestion() {
+    const newVerdicts = [...verdicts];
+    newVerdicts[currentQ] = "skipped";
+    setVerdicts(newVerdicts);
+
+    const newFeedback = [...feedback];
+    newFeedback[currentQ] = "";
+    setFeedback(newFeedback);
+
+    if (currentQ + 1 >= questions.length) {
+      finishQuiz(score);
+    } else {
+      setCurrentQ((q) => q + 1);
+      setAnswered(false);
+      setSelectedOption("");
+      setShortAnswer("");
+      setHint("");
+    }
+  }
+
+  // Practice only: a nudge towards the method, never the answer.
+  async function getHint() {
+    if (hintLoading) return;
+    setHintLoading(true);
+    try {
+      const q = questions[currentQ];
+      const res = await fetch("/api/hint", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await authHeader()) },
+        body: JSON.stringify({ question: q.question, options: q.options, subject, levelId }),
+      });
+      const data = await res.json();
+      setHint(res.ok && data.hint ? data.hint : data.error || "Could not get a hint.");
+    } catch {
+      setHint("Could not reach the tutor. Check your connection and try again.");
+    }
+    setHintLoading(false);
   }
 
   function playClick() {
@@ -432,6 +480,26 @@ export default function QuizPage() {
             </div>
           )}
 
+          {!answered && examMode === "practice" && (
+            <div style={{ marginBottom: 16 }}>
+              {hint ? (
+                <div style={{ padding: "14px 18px", borderRadius: 12, backgroundColor: "var(--teal-badge)", border: "1px solid var(--teal-badge)", fontSize: 13, color: "var(--teal-ink)", lineHeight: 1.6 }}>
+                  <strong style={{ fontWeight: 500 }}>Hint:</strong> {hint}
+                </div>
+              ) : (
+                <button onClick={getHint} disabled={hintLoading} style={{ padding: "10px 20px", borderRadius: 10, border: `1px solid var(--teal-ink)`, backgroundColor: "transparent", color: "var(--teal-ink)", fontSize: 13, fontWeight: 500, cursor: hintLoading ? "default" : "pointer", fontFamily: "inherit" }}>
+                  {hintLoading ? "Thinking..." : "Give me a hint"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {!answered && (
+            <button onClick={skipQuestion} style={{ width: "100%", padding: "13px", borderRadius: 12, backgroundColor: "transparent", color: sub, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, cursor: "pointer", fontFamily: "inherit" }}>
+              {currentQ + 1 >= questions.length ? "Skip & see results" : "Skip this question"}
+            </button>
+          )}
+
           {answered && (
             <button onClick={nextQuestion} style={{ width: "100%", padding: "14px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 15, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
               {currentQ + 1 >= questions.length ? "See results →" : "Next question →"}
@@ -471,6 +539,7 @@ export default function QuizPage() {
             { label: "Correct", value: verdicts.filter((v) => v === "correct").length, color: "#639922" },
             { label: "Partial", value: verdicts.filter((v) => v === "partial").length, color: C.orange },
             { label: "Incorrect", value: verdicts.filter((v) => v === "incorrect").length, color: "#E24B4A" },
+            { label: "Skipped", value: verdicts.filter((v) => v === "skipped").length, color: sub },
           ].map((s) => (
             <div key={s.label} style={{ backgroundColor: bgMid, borderRadius: 16, padding: "20px", border: `1px solid ${border}` }}>
               <div style={{ fontSize: "clamp(22px, 5vw, 28px)", fontWeight: 500, color: s.color }}>{s.value}</div>
@@ -480,7 +549,7 @@ export default function QuizPage() {
         </div>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <button onClick={() => { finishedRef.current = false; setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setVerdicts([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={() => { finishedRef.current = false; setHint(""); setMode("setup"); setScore(0); setCurrentQ(0); setAnswers([]); setFeedback([]); setVerdicts([]); setAnswered(false); setSelectedOption(""); setShortAnswer(""); }} style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: C.orange, color: "#fff", fontWeight: 500, fontSize: 14, border: "none", cursor: "pointer", fontFamily: "inherit" }}>
             Try again
           </button>
           <a href="/dashboard" style={{ padding: "13px 28px", borderRadius: 12, backgroundColor: bgMid, color: text, fontWeight: 500, fontSize: 14, border: `1px solid ${border}`, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>

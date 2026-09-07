@@ -1,80 +1,75 @@
 /**
- * SmartPrep AI's mark.
+ * SmartPrep AI's mark: a graduation cap seen from above.
  *
- * Contour lines rippling out from a single point in the shape of a head, ringed
- * by two orbits: a mind widening around an idea.
+ * The board is an isometric projection of a square — the same matrix is applied
+ * to the S inside it, so the letter sits on the board's own 30° grid rather than
+ * being laid flat on top of it.
  *
- * The outer line carries the head, neck and shoulders; the inner rings follow
- * just the skull, the way contours on a map simplify as they climb. Drawing all
- * six from one scaled outline made it read as a bullseye instead of a head, so
- * the silhouette and the ripples are separate shapes.
+ * The S is cut out with a mask rather than filled, so it is a real hole: the
+ * ground shows through and one mark works on cream, on brown, or on anything
+ * else, with no second asset for dark mode. The board takes currentColor; only
+ * the tassel carries the accent.
  *
- * Only the core and the orbits are accent-coloured. Everything else is
- * currentColor, so the mark takes the text colour it sits in and needs no
- * second asset for dark mode.
+ * Every instance draws the identical mask, so they can share one id safely.
  */
 
-/** The head, neck and shoulders. */
-const SILHOUETTE =
-  "M0,-40 C15,-40 26,-27 26,-11 C26,0 22,9 15,15 L15,24 C15,26 16,28 19,29 " +
-  "C29,33 35,38 38,44 L-38,44 C-35,38 -29,33 -19,29 C-16,28 -15,26 -15,24 " +
-  "L-15,15 C-22,9 -26,0 -26,-11 C-26,-27 -15,-40 0,-40 Z";
+const MASK_ID = "smartprep-cap";
 
-/**
- * The skull alone, repeated inward as ripples. Centred on the origin so that
- * scaling shrinks it towards its own middle: scaling the head-positioned shape
- * instead pulled every ring down towards the neck.
- */
-const RIPPLE = "M0,-23 C12,-23 21,-13 21,0 C21,13 12,23 0,23 C-12,23 -21,13 -21,0 C-21,-13 -12,-23 0,-23 Z";
+/** Maps a square onto the board's isometric plane. */
+const ISO = "matrix(0.866,0.5,-0.866,0.5,0,0)";
 
-/** Where the skull's centre sits in the viewBox. */
-const SKULL_Y = -13;
+export function LogoMark({ size = 32, bold = false }: { size?: number; bold?: boolean }) {
+  // Small renderings need a heavier cut, or the S closes up.
+  const cut = bold ? 14 : 11;
+  const capWeight = bold ? 11 : 9;
 
-const RIPPLES = [1, 0.78, 0.57, 0.37];
-
-export function LogoMark({ size = 32, spin = true }: { size?: number; spin?: boolean }) {
   return (
     <svg
       width={size}
-      height={size}
-      viewBox="-50 -50 100 100"
+      height={(size * 104) / 116}
+      viewBox="-58 -52 116 104"
       fill="none"
       role="img"
       aria-label="SmartPrep AI"
-      style={{ flexShrink: 0, display: "block" }}
+      style={{ flexShrink: 0, display: "block", overflow: "visible" }}
     >
-      {/* Orbits sit behind the head. Kept inside the viewBox so the mark never
-          bleeds into whatever it is placed next to. */}
-      <g
-        stroke="var(--accent, #FF6037)"
-        strokeWidth="1.5"
-        className={spin ? "logo-orbit" : undefined}
-      >
-        <ellipse cx="0" cy="0" rx="45" ry="17" transform="rotate(-20)" opacity="0.9" />
-        <ellipse cx="0" cy="0" rx="45" ry="17" transform="rotate(34)" opacity="0.45" />
-      </g>
+      <defs>
+        <mask id={MASK_ID}>
+          <g transform={ISO}>
+            <rect x="-30" y="-30" width="60" height="60" fill="#fff" />
+            <path
+              d="M16,-16 L-10,-16 L-10,0 L10,0 L10,16 L-16,16"
+              stroke="#000"
+              strokeWidth={cut}
+              fill="none"
+              strokeLinecap="square"
+            />
+          </g>
+        </mask>
+      </defs>
 
-      <g stroke="currentColor" strokeLinejoin="round" strokeLinecap="round">
-        <path d={SILHOUETTE} strokeWidth="3" opacity="0.95" />
-        {RIPPLES.map((scale, i) => (
-          <path
-            key={scale}
-            d={RIPPLE}
-            transform={`translate(0 ${SKULL_Y}) scale(${scale})`}
-            strokeWidth={3 / scale}
-            opacity={0.3 + i * 0.16}
-          />
-        ))}
-      </g>
+      {/* The cap beneath the board. */}
+      <path
+        d="M-27,10 L-27,26 L0,42 L27,26 L27,10"
+        stroke="currentColor"
+        strokeWidth={capWeight}
+        fill="none"
+        strokeLinejoin="round"
+      />
 
-      {/* The idea at the centre. */}
-      <circle cx="0" cy={SKULL_Y} r="3.6" fill="var(--accent, #FF6037)" />
+      {/* The board, with the S taken out of it. */}
+      <rect x="-58" y="-52" width="116" height="104" fill="currentColor" mask={`url(#${MASK_ID})`} />
+
+      {/* Tassel. */}
+      <path d="M-49,2 L-49,20" stroke="var(--accent, #FF6037)" strokeWidth="3" strokeLinecap="round" />
+      <circle cx="-49" cy="24" r="4.5" fill="var(--accent, #FF6037)" />
+      <path d="M-49,28 L-54,42 L-44,42 Z" fill="var(--accent, #FF6037)" />
     </svg>
   );
 }
 
 /** Mark plus wordmark, as used in navigation. */
-export function Logo({ size = 30 }: { size?: number }) {
+export function Logo({ size = 34 }: { size?: number }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
       <LogoMark size={size} />

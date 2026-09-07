@@ -63,8 +63,10 @@ export default function PastPapersPage() {
       const { data, error: loadError } = await supabase
         .from("past_papers")
         .select("*")
-        .order("year", { ascending: false })
         .order("subject")
+        .order("level")
+        .order("year", { ascending: false })
+        .order("session")
         .order("paper_label");
 
       if (cancelled) return;
@@ -87,6 +89,39 @@ export default function PastPapersPage() {
     if (year !== "All" && p.year !== year) return false;
     return true;
   });
+
+  type PaperGroup = {
+    key: string;
+    subject: string;
+    level: string;
+    year: number;
+    session: string;
+    paper_label: string;
+    questionPaper?: Paper;
+    markScheme?: Paper;
+  };
+
+  const groups: PaperGroup[] = [];
+  const groupIndex = new Map<string, PaperGroup>();
+
+  for (const p of filtered) {
+    const key = [p.subject, p.level, p.year, p.session, p.paper_label].join("|");
+    let group = groupIndex.get(key);
+    if (!group) {
+      group = {
+        key,
+        subject: p.subject,
+        level: p.level,
+        year: p.year,
+        session: p.session,
+        paper_label: p.paper_label,
+      };
+      groupIndex.set(key, group);
+      groups.push(group);
+    }
+    if (p.doc_type === "mark_scheme") group.markScheme = p;
+    else group.questionPaper = p;
+  }
 
   const openPaper = useCallback(async (paper: Paper) => {
     setOpening(true);
@@ -191,22 +226,31 @@ export default function PastPapersPage() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {filtered.map((p) => (
-              <div key={p.id} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", backdropFilter: "blur(16px)" }}>
+            {groups.map((g) => (
+              <div key={g.key} style={{ background: "var(--card)", border: `1px solid ${border}`, borderRadius: 14, padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", backdropFilter: "blur(16px)" }}>
                 <div style={{ flex: 1, minWidth: 200 }}>
                   <div style={{ fontSize: 14, fontWeight: 500, color: text }}>
-                    {p.subject} — {p.paper_label}
+                    {g.subject} — {g.paper_label}
                   </div>
                   <div style={{ fontSize: 11, color: sub, marginTop: 3 }}>
-                    {p.session} {p.year} · {p.doc_type === "mark_scheme" ? "Mark scheme" : "Question paper"}
+                    {g.session} {g.year}
                   </div>
                 </div>
-                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: p.board === "Cambridge" ? "var(--teal-badge)" : "var(--accent-badge)", color: p.board === "Cambridge" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
-                  {p.level}
+                <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 10px", borderRadius: 999, background: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-badge)" : "var(--accent-badge)", color: g.level === "IGCSE" || g.level === "A-Level" ? "var(--teal-ink)" : "var(--accent-ink)" }}>
+                  {g.level}
                 </span>
-                <button onClick={() => openPaper(p)} disabled={opening} style={{ padding: "9px 20px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: C.orange, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
-                  {p.external_url ? "Open official page ↗" : "Read paper"}
-                </button>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {g.questionPaper && (
+                    <button onClick={() => openPaper(g.questionPaper!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${C.orange}`, backgroundColor: "var(--accent-badge)", color: C.orange, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                      Question paper
+                    </button>
+                  )}
+                  {g.markScheme && (
+                    <button onClick={() => openPaper(g.markScheme!)} disabled={opening} style={{ padding: "9px 18px", borderRadius: 10, border: `1px solid ${border}`, backgroundColor: "transparent", color: text, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>
+                      Mark scheme
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
